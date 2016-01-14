@@ -12,6 +12,8 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:id="@+id/login_username"
+            android:inputType="text"
+            android:maxLines="1"
             android:hint="@string/login_username"/>
 
         <EditText
@@ -25,7 +27,23 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:id="@+id/login_loginbutton"
-            android:text="@string/login_loginbutton"/>
+            android:text="@string/login_loginbutton"
+            android:onClick="login"/>
+
+        <TextView
+            android:id="@+id/login_separator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:text="@string/login_separator"/>
+
+        <Button
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/login_registerbutton"
+            android:text="@string/login_registerbutton"
+            android:onClick="register"/>
 
     </LinearLayout>
 
