@@ -7,4 +7,10 @@
     <string name="login_loginbutton">Log In</string>
     <string name="login_separator">  - OR - </string>
     <string name="login_registerbutton">Register</string>
+
+    <!-- Register -->
+    <string name="register_firstName">First Name</string>
+    <string name="register_lastName">Last Name</string>
+    <string name="register_password">Password</string>
+    <string name="register_passwordConfirm">Confirm Password</string>
 </resources>

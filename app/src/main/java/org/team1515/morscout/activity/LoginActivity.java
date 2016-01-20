@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +37,20 @@ public class LoginActivity extends AppCompatActivity {
 
         preferences = getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(this);
+
+        if(preferences.contains("username")
+                && preferences.contains("firstName")
+                && preferences.contains("lastName")
+                && preferences.contains("teamCode")
+                && preferences.contains("teamNumber")
+                && preferences.contains("teamName")
+                && preferences.contains("admin")) {
+
+        }
+
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
     public void login(View view) {
@@ -58,8 +73,10 @@ public class LoginActivity extends AppCompatActivity {
         Map<String, String> params = new HashMap<>();
         params.put("username", username);
         params.put("password", password);
+
         CookieRequest loginRequest = new CookieRequest(Request.Method.POST,
                 "/login",
+                params,
                 preferences,
                 new Response.Listener<String>() {
                     @Override
