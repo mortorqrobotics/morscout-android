@@ -75,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (isEmpty) {
+            isEmpty = false;
             return;
         }
 
@@ -102,6 +103,10 @@ public class LoginActivity extends AppCompatActivity {
                                     .putInt("teamNumber", userObject.getInt("teamNumber"))
                                     .putString("teamName", userObject.getString("teamName"))
                                     .apply();
+
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
                         } catch(JSONException e) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                             builder.setTitle("Login Error");
@@ -119,9 +124,5 @@ public class LoginActivity extends AppCompatActivity {
                 }
         );
         queue.add(loginRequest);
-
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
     }
 }

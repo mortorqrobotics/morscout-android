@@ -82,6 +82,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if (isEmpty) {
+            isEmpty = false;
             return;
         }
 
