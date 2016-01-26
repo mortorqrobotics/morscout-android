@@ -3,6 +3,7 @@ package org.team1515.morscout.activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -21,6 +22,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.team1515.morscout.R;
+import org.team1515.morscout.fragment.HomeFragment;
 import org.team1515.morscout.network.CookieRequest;
 
 import java.util.HashMap;
@@ -29,6 +31,8 @@ import java.util.Map;
 public class LoginActivity extends AppCompatActivity {
     SharedPreferences preferences;
     RequestQueue queue;
+
+    boolean isEmpty = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,14 +65,18 @@ public class LoginActivity extends AppCompatActivity {
 
         if(username.trim().isEmpty()) {
             usernameView.setText("");
-            usernameView.setHintTextColor(getResources().getColor(R.color.red));
-            return;
+            usernameView.setHintTextColor(Color.RED);
+            isEmpty = true;
         }
-        if(password.isEmpty()) {
-            passwordView.setHintTextColor(getResources().getColor(R.color.red));
-            return;
+        if(password.trim().isEmpty()) {
+            passwordView.setText("");
+            passwordView.setHintTextColor(Color.RED);
+            isEmpty = true;
         }
 
+        if (isEmpty) {
+            return;
+        }
 
         Map<String, String> params = new HashMap<>();
         params.put("username", username);
@@ -85,13 +93,14 @@ public class LoginActivity extends AppCompatActivity {
                         try {
                             JSONObject userObject = new JSONObject(response);
                             preferences.edit()
+                                    .putString("_id", userObject.getString("_id"))
                                     .putString("username", userObject.getString("username"))
                                     .putString("firstName", userObject.getString("firstName"))
                                     .putString("lastName", userObject.getString("lastName"))
+                                    .putBoolean("admin", userObject.getBoolean("admin"))
                                     .putString("teamCode", userObject.getString("teamCode"))
                                     .putInt("teamNumber", userObject.getInt("teamNumber"))
                                     .putString("teamName", userObject.getString("teamName"))
-                                    .putBoolean("admin", userObject.getBoolean("admin"))
                                     .apply();
                         } catch(JSONException e) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
@@ -110,10 +119,9 @@ public class LoginActivity extends AppCompatActivity {
                 }
         );
         queue.add(loginRequest);
-    }
 
-    public void register(View view) {
-        Intent intent = new Intent(this, RegisterActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 }

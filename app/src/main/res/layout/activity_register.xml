@@ -9,7 +9,8 @@
     <LinearLayout
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
 
         <EditText android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,6 +19,38 @@
         android:maxLines="1"
         android:textColor="@color/colorAccent"
         android:hint="@string/register_firstName" />
+
+        <EditText android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/register_lastName"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="@color/colorAccent"
+            android:hint="@string/register_lastName" />
+
+        <EditText android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/register_teamCode"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="@color/colorAccent"
+            android:hint="@string/register_teamCode" />
+
+        <EditText android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/register_password"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="@color/colorAccent"
+            android:hint="@string/register_password" />
+
+        <EditText android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/register_passwordConfirm"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="@color/colorAccent"
+            android:hint="@string/register_passwordConfirm" />
 
 
     </LinearLayout>
