@@ -34,15 +34,12 @@ import org.team1515.morscout.fragment.TeamListFragment;
 import org.team1515.morscout.network.ImageCookieRequest;
 
 public class MainActivity extends AppCompatActivity {
-    SectionPagerAdapter sectionPagerAdapter;
+    private SharedPreferences preferences;
+    private RequestQueue queue;
 
-    SharedPreferences preferences;
-    RequestQueue queue;
-
-    PopupMenu popupMenu;
-
-    DrawerLayout drawerLayout;
-    ActionBarDrawerToggle drawerToggle;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle drawerToggle;
+    private SectionPagerAdapter sectionPagerAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
@@ -55,35 +52,11 @@ public class MainActivity extends AppCompatActivity {
         //Set up action bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        //Set up action bar profile picture
-//        final ImageButton profilePic = (ImageButton) toolbar.findViewById(R.id.actionbar_pic);
-//        profilePic.setClickable(true);
-//        profilePic.setVisibility(View.VISIBLE);
-//        ImageCookieRequest profilePicRequest = new ImageCookieRequest("http://www.morteam.com" + preferences.getString("profpicpath", "") + "-60",
-//                preferences, new Response.Listener<Bitmap>() {
-//            @Override
-//            public void onResponse(Bitmap response) {
-//                profilePic.setImageBitmap(response);
-//            }
-//        }, 0, 0, null, Bitmap.Config.RGB_565, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                System.out.println(error);
-//            }
-//        });
-//        queue.add(profilePicRequest);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        sectionPagerAdapter = new SectionPagerAdapter(getSupportFragmentManager());
-        ViewPager viewPager = (ViewPager) findViewById(R.id.main_viewpager);
-        viewPager.setAdapter(sectionPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
-
-        drawerLayout = (DrawerLayout) findViewById(R.id.main_drawerlayout);
-        final ActionBar actionBar = getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);

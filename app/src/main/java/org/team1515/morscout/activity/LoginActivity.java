@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,26 +33,42 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences preferences;
     RequestQueue queue;
 
-    boolean isEmpty = false;
+    public static final String[] userData = {
+            "_id",
+            "username",
+            "firstName",
+            "lastName",
+            "teamCode",
+            "teamNumber",
+            "teamName",
+            "admin"
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_main);
 
         preferences = getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(this);
 
-        if(preferences.contains("username")
-                && preferences.contains("firstName")
-                && preferences.contains("lastName")
-                && preferences.contains("teamCode")
-                && preferences.contains("teamNumber")
-                && preferences.contains("teamName")
-                && preferences.contains("admin")) {
-
+        boolean loggedIn = true;
+        for(String data : userData) {
+            if(!preferences.contains(data)) {
+                loggedIn = false;
+                break;
+            }
         }
 
+        if(loggedIn) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+        //If not logged in, create login activity
+        setContentView(R.layout.activity_login);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -66,16 +83,11 @@ public class LoginActivity extends AppCompatActivity {
         if(username.trim().isEmpty()) {
             usernameView.setText("");
             usernameView.setHintTextColor(Color.RED);
-            isEmpty = true;
+            return;
         }
         if(password.trim().isEmpty()) {
             passwordView.setText("");
             passwordView.setHintTextColor(Color.RED);
-            isEmpty = true;
-        }
-
-        if (isEmpty) {
-            isEmpty = false;
             return;
         }
 
@@ -93,18 +105,16 @@ public class LoginActivity extends AppCompatActivity {
                         System.out.println(response);
                         try {
                             JSONObject userObject = new JSONObject(response);
-                            preferences.edit()
-                                    .putString("_id", userObject.getString("_id"))
-                                    .putString("username", userObject.getString("username"))
-                                    .putString("firstName", userObject.getString("firstName"))
-                                    .putString("lastName", userObject.getString("lastName"))
-                                    .putBoolean("admin", userObject.getBoolean("admin"))
-                                    .putString("teamCode", userObject.getString("teamCode"))
-                                    .putInt("teamNumber", userObject.getInt("teamNumber"))
-                                    .putString("teamName", userObject.getString("teamName"))
-                                    .apply();
 
+                            //Put user data in local storage and intent
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            for(String data : userData) {
+                                editor.putString(data, userObject.getString(data));
+                                intent.putExtra(data, userObject.getString(data));
+                            }
+                            editor.apply();
+
                             startActivity(intent);
                             finish();
                         } catch(JSONException e) {

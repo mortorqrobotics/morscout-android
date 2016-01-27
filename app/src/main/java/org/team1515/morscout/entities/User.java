@@ -18,38 +18,37 @@ import java.util.Map;
 /**
  * Created by prozwood on 1/26/16.
  */
-public class User {
+public class User extends Entity {
     private String firstName;
     private String lastName;
     private String id;
     private String profPicPath;
-    private Bitmap profPic;
     private String email;
     private String phone;
 
-    public User(String firstName, String lastName, String id/*, String profPicPath*/, String email, String phone) {
+    public User(String id, String firstName, String lastName, String profPicPath, String email, String phone) {
+        super(id);
         this.firstName = firstName;
         this.lastName = lastName;
-        this.id = id;
-//        this.profPicPath = profPicPath;
-        profPic = null;
+        this.profPicPath = profPicPath;
         this.email = email;
         this.phone = phone;
+
     }
 
-    public User(String firstName, String lastName, String id/*, String profPicPath*/) {
-        this(firstName, lastName, id/*, profPicPath*/, "", "");
+    public User(String firstName, String lastName, String id, String profPicPath) {
+        this(firstName, lastName, id, profPicPath, "", "");
     }
 
-    public User(String firstName, String lastName/*, String profPicPath*/) {
-        this(firstName, lastName, ""/*, profPicPath*/);
+    public User(String firstName, String lastName, String profPicPath) {
+        this(firstName, lastName, "", profPicPath);
     }
 
     public User(String id) {
-        this.id = id;
+        this(id, "", "", "");
     }
 
-    public String getFullName() {
+    public String getName() {
         return firstName + " " + lastName;
     }
 
@@ -60,37 +59,6 @@ public class User {
     public String getLastName() {
         return lastName;
     }
-
-    public String getId() {
-        return id;
-    }
-
-//    public Bitmap getProfPic() {
-//        return profPic;
-//    }
-
-//    public void requestProfPic(SharedPreferences preferences, RequestQueue queue, final PictureCallBack callBack) {
-//        ImageCookieRequest messagePicRequest = new ImageCookieRequest(
-//                "http://www.morteam.com" + profPicPath,
-//                preferences,
-//                new Response.Listener<Bitmap>() {
-//                    @Override
-//                    public void onResponse(Bitmap response) {
-//                        profPic = response;
-//                        try {
-//                            callBack.onComplete();
-//                        } catch (NullPointerException e) {
-//
-//                        }
-//                    }
-//                }, 0, 0, null, Bitmap.Config.RGB_565, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                System.out.println(error);
-//            }
-//        });
-//        queue.add(messagePicRequest);
-//    }
 
     public String getEmail() {
         return email;
@@ -106,42 +74,6 @@ public class User {
 
     public String getPhoneFormatted() {
         return formatPhoneNumber(phone);
-    }
-
-    public void populate(final SharedPreferences preferences, final RequestQueue queue, final boolean getProfPic) {
-        Map<String, String> params = new HashMap<>();
-        params.put("_id", getId());
-        CookieRequest userRequest = new CookieRequest(Request.Method.POST,
-                "/f/getuser",
-                params,
-                preferences,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject userObject = new JSONObject(response);
-                            firstName = userObject.getString("firstname");
-                            lastName = userObject.getString("lastname");
-                            profPicPath = userObject.getString("profpicpath");
-                            email = userObject.getString("email");
-                            phone = userObject.getString("phone");
-//                            if(getProfPic) {
-//                                requestProfPic(preferences, queue, null);
-//                            }
-
-                        } catch(JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                }
-        );
-        queue.add(userRequest);
     }
 }
 
