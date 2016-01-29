@@ -14,6 +14,7 @@
     <string name="register_teamCode">Team Code</string>
     <string name="register_password">Password</string>
     <string name="register_passwordConfirm">Confirm Password</string>
+    <string name="register_registerbutton">Register</string>
 
     <!-- Navigation drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>

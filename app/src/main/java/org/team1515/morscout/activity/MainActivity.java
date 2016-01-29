@@ -1,5 +1,7 @@
 package org.team1515.morscout.activity;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -15,9 +17,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -31,6 +36,7 @@ import org.team1515.morscout.fragment.MatchesFragment;
 import org.team1515.morscout.fragment.SettingsFragment;
 import org.team1515.morscout.fragment.TeamFragment;
 import org.team1515.morscout.fragment.TeamListFragment;
+import org.team1515.morscout.network.CookieRequest;
 import org.team1515.morscout.network.ImageCookieRequest;
 
 public class MainActivity extends AppCompatActivity {
@@ -68,8 +74,19 @@ public class MainActivity extends AppCompatActivity {
                 supportInvalidateOptionsMenu();
             }
         };
+
         drawerToggle.setDrawerIndicatorEnabled(true);
         drawerLayout.setDrawerListener(drawerToggle);
+    }
+
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        //Checking for the "menu" key
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            //OPEN MENU HERE
+            return true;
+        } else {
+            return super.onKeyUp(keyCode, event);
+        }
     }
 
     private class SectionPagerAdapter extends FragmentPagerAdapter {
@@ -112,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 case 6:
                     return feedbackFragment;
                 default:
-                    return new Fragment();
+                    return homeFragment;
             }
         }
 

@@ -33,6 +33,8 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences preferences;
     RequestQueue queue;
 
+    boolean isEmpty = false;
+
     public static final String[] userData = {
             "_id",
             "username",
@@ -83,11 +85,16 @@ public class LoginActivity extends AppCompatActivity {
         if(username.trim().isEmpty()) {
             usernameView.setText("");
             usernameView.setHintTextColor(Color.RED);
-            return;
+            isEmpty = true;
         }
         if(password.trim().isEmpty()) {
             passwordView.setText("");
             passwordView.setHintTextColor(Color.RED);
+            isEmpty = true;
+        }
+
+        if (isEmpty) {
+            isEmpty = false;
             return;
         }
 
@@ -134,5 +141,10 @@ public class LoginActivity extends AppCompatActivity {
                 }
         );
         queue.add(loginRequest);
+    }
+
+    public void register(View view) {
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
     }
 }
