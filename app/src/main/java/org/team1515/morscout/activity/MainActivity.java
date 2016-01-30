@@ -1,5 +1,8 @@
 package org.team1515.morscout.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
@@ -15,16 +18,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
 import org.team1515.morscout.R;
+import org.team1515.morscout.fragment.FeedbackFragment;
+import org.team1515.morscout.fragment.HelpFragment;
 import org.team1515.morscout.fragment.HomeFragment;
 import org.team1515.morscout.fragment.MatchesFragment;
 import org.team1515.morscout.fragment.SettingsFragment;
 import org.team1515.morscout.fragment.TeamListFragment;
+import org.team1515.morscout.network.CookieRequest;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -35,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Fragment homeFrag,
             matchesFrag,
             teamListFrag,
-            syncFrag,
             settingsFrag,
             helpFrag,
             feedbackFrag;
@@ -43,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // Navigation Drawer
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,10 +66,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         homeFrag = new HomeFragment();
         matchesFrag = new MatchesFragment();
         teamListFrag = new TeamListFragment();
-        syncFrag = new Fragment();
         settingsFrag = new SettingsFragment();
-        helpFrag = new Fragment();
-        feedbackFrag = new Fragment();
+        helpFrag = new HelpFragment();
+        feedbackFrag = new FeedbackFragment();
 
         //Set default fragment
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -142,13 +150,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         switch (item.getItemId()) {
             case R.id.nav_item_1:
-                transaction.replace(R.id.main_frame, matchesFrag);
+                transaction.replace(R.id.main_frame, homeFrag);
                 break;
             case R.id.nav_item_2:
-                transaction.replace(R.id.main_frame, teamListFrag);
+                transaction.replace(R.id.main_frame, matchesFrag);
                 break;
             case R.id.nav_item_3:
-                transaction.replace(R.id.main_frame, syncFrag);
+                transaction.replace(R.id.main_frame, teamListFrag);
                 break;
             case R.id.nav_item_4:
                 transaction.replace(R.id.main_frame, settingsFrag);
@@ -160,7 +168,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 transaction.replace(R.id.main_frame, feedbackFrag);
                 break;
             case R.id.nav_item_7:
-                //TODO: Log out user
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Are you sure you want to logout?");
+                builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        CookieRequest logoutRequest = new CookieRequest(Request.Method.POST,
+                                "/logout",
+                                preferences,
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        preferences.edit().clear().apply();
+                                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                                        startActivity(intent);
+                                        preferences.edit().clear().apply();
+                                        finish();
+                                    }
+                                });
+                        queue.add(logoutRequest);
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", null);
+                builder.create().show();
                 break;
             default:
                 transaction.replace(R.id.main_frame, homeFrag);
