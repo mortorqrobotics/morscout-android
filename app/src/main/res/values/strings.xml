@@ -19,7 +19,17 @@
     <!-- Navigation drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_item_1">All Matches</string>
+    <string name="nav_item_2">Team List</string>
+    <string name="nav_item_3">Sync</string>
+    <string name="nav_item_4">Settings</string>
+    <string name="nav_item_5">Help</string>
+    <string name="nav_item_6">Feedback</string>
+    <string name="nav_item_7">Log Out</string>
 
-    <!--Settings-->
+    <!-- Home -->
+    <string name="home_title">MorScout</string>
+
+    <!-- Settings -->
     <string name="settings_year">Choose Year</string>
 </resources>
