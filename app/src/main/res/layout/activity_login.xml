@@ -17,7 +17,6 @@
             android:id="@+id/login_username"
             android:inputType="text"
             android:maxLines="1"
-            android:textColor="@color/colorAccent"
             android:hint="@string/login_username"/>
 
         <EditText
@@ -25,7 +24,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/login_password"
             android:hint="@string/login_password"
-            android:textColor="@color/colorAccent"
             android:inputType="textPassword"/>
 
         <Button
@@ -33,7 +31,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/login_loginbutton"
             android:text="@string/login_loginbutton"
-            android:textColor="@color/background"
             android:onClick="login"/>
 
         <TextView
@@ -49,7 +46,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/login_registerbutton"
             android:text="@string/login_registerbutton"
-            android:textColor="@color/background"
             android:onClick="register"/>
     </LinearLayout>
 

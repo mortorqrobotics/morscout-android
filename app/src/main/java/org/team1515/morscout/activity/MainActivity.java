@@ -2,6 +2,7 @@ package org.team1515.morscout.activity;
 
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -66,11 +68,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Set up action bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        TextView toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "Exo2-Medium.ttf");
+        toolbarTitle.setTypeface(typeface);
+
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
         }
 
         // Set up navigation drawer

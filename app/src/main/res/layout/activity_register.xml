@@ -17,7 +17,6 @@
         android:id="@+id/register_firstName"
         android:inputType="text"
         android:maxLines="1"
-        android:textColor="@color/colorAccent"
         android:hint="@string/register_firstName" />
 
         <EditText android:layout_width="match_parent"
@@ -25,7 +24,6 @@
             android:id="@+id/register_lastName"
             android:inputType="text"
             android:maxLines="1"
-            android:textColor="@color/colorAccent"
             android:hint="@string/register_lastName" />
 
         <EditText android:layout_width="match_parent"
@@ -33,7 +31,6 @@
             android:id="@+id/register_teamCode"
             android:inputType="text"
             android:maxLines="1"
-            android:textColor="@color/colorAccent"
             android:hint="@string/register_teamCode" />
 
         <EditText android:layout_width="match_parent"
@@ -41,7 +38,6 @@
             android:id="@+id/register_password"
             android:inputType="text"
             android:maxLines="1"
-            android:textColor="@color/colorAccent"
             android:hint="@string/register_password" />
 
         <EditText android:layout_width="match_parent"
@@ -49,7 +45,6 @@
             android:id="@+id/register_passwordConfirm"
             android:inputType="text"
             android:maxLines="1"
-            android:textColor="@color/colorAccent"
             android:hint="@string/register_passwordConfirm" />
 
         <Button
@@ -57,7 +52,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/register_registerbutton"
             android:text="@string/register_registerbutton"
-            android:textColor="@color/background"
             android:onClick="register"/>
 
     </LinearLayout>
