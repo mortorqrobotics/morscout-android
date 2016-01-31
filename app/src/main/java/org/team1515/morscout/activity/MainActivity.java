@@ -188,9 +188,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 new Response.ErrorListener() {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
+                                        preferences.edit().clear().apply();
                                         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                                         startActivity(intent);
-                                        preferences.edit().clear().apply();
                                         finish();
                                     }
                                 });
