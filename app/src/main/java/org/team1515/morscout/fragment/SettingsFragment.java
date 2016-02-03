@@ -38,7 +38,6 @@ import java.util.Map;
  * Created by prozwood on 1/25/16.
  */
 public class SettingsFragment extends Fragment {
-
     private RequestQueue queue;
     private SharedPreferences preferences;
 
@@ -47,7 +46,6 @@ public class SettingsFragment extends Fragment {
 
     List<String> spinnerArray;
     Spinner regionalsList;
-    int[] regionals;
 
     Button setRegional;
 
@@ -58,12 +56,6 @@ public class SettingsFragment extends Fragment {
 
         preferences = getActivity().getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(getContext());
-        queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
-            @Override
-            public void onRequestFinished(Request<Object> request) {
-                // CODE
-            }
-        });
 
         regionalYear = (TextView) view.findViewById(R.id.settings_year);
         regionalYear.addTextChangedListener(new TextWatcher() {
@@ -104,7 +96,8 @@ public class SettingsFragment extends Fragment {
         getRegionals();
     }
 
-    /*TODO: THIS CODE DOES NOT WORK; REQUEST RETURNS ERROR 404; NOT SURE WHAT PARAMS NEED TO BE*/
+    // SERVER OFFLINE 2/2/16
+    // CODE WORKING
 
     public void getRegionals() {
         setRegional.setOnClickListener(new Button.OnClickListener() {
@@ -112,16 +105,11 @@ public class SettingsFragment extends Fragment {
                 Map<String, String> params = new HashMap<>();
                 params.put("year", year);
 
-                CookieRequest requestRegionals = new CookieRequest(Request.Method.GET, "/getRegionalsForTeam", params, preferences, new Response.Listener<String>() {
+                CookieRequest requestRegionals = new CookieRequest(Request.Method.POST, "/getRegionalsForTeam", params, preferences, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            Toast.makeText(getContext(), response ,Toast.LENGTH_SHORT).show();
-//                            JSONArray regionalsOptions = new JSONArray(response);
-//                            for (int i = 0; i < regionalsOptions.length(); i++) {
-//                                JSONObject object = regionalsOptions.getJSONObject(i);
-//                                spinnerArray.add(object.toString());
-//                            }
+                            Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -129,7 +117,7 @@ public class SettingsFragment extends Fragment {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getContext(), "Error. Please try again later.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
                     }
                 });
                 queue.add(requestRegionals);
@@ -137,12 +125,12 @@ public class SettingsFragment extends Fragment {
                 regionalsList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                        String selected = regionalsList.getSelectedItem().toString();
-                        if (selected.equals("sand")) {
-                            Toast.makeText(getActivity().getApplicationContext(), "SAND", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getActivity().getApplicationContext(), "WICH", Toast.LENGTH_SHORT).show();
-                        }
+//                        String selected = regionalsList.getSelectedItem().toString();
+//                        if (selected.equals("sand")) {
+//                            Toast.makeText(getActivity().getApplicationContext(), "SAND", Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            Toast.makeText(getActivity().getApplicationContext(), "WICH", Toast.LENGTH_SHORT).show();
+//                        }
                     }
 
                     @Override
