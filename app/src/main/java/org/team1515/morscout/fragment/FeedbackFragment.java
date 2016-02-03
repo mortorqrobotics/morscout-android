@@ -56,6 +56,8 @@ public class FeedbackFragment extends Fragment {
                     public void onResponse(String response) {
                         try {
                             Toast.makeText(getContext(), response, Toast.LENGTH_SHORT).show();
+                            feedbackText.setText("");
+                            teamNumberText.setText("");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

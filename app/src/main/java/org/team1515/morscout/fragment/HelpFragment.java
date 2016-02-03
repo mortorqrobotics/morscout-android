@@ -32,7 +32,7 @@ public class HelpFragment extends Fragment {
 
         questions = new ArrayList<TextView>();
         questions.add((TextView) view.findViewById(R.id.help_question1));
-        questions.add((TextView) view.findViewById(R.id.help_question12));
+        questions.add((TextView) view.findViewById(R.id.help_question2));
 
         for(int i = 0; i < questions.size(); i++) {
             tempText = questions.get(i).getText().toString();
