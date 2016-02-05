@@ -1,43 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Feedback"
         android:layout_gravity="center"
-        android:textSize="40dp"/>
+        android:text="Feedback"
+        android:textSize="40dp" />
+
     <EditText
+        android:id="@+id/feedback_teamNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="120dp"
-        android:layout_marginLeft="36.7dp"
+        android:background="@drawable/text_box"
         android:hint="Team number"
-        android:id="@+id/feedback_teamNumber"
-        android:textColorHint="#848484"
+        android:layout_marginLeft="37.5dp"
         android:textColor="#000000"
-        android:background="@drawable/text_box"/>
+        android:textColorHint="#848484" />
 
     <EditText
+        android:id="@+id/feedback_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/text_box"
         android:layout_gravity="center"
         android:hint="Team 1515 wants your feedback!"
-        android:id="@+id/feedback_text"
-        android:textColorHint="#848484"
         android:textColor="#000000"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/text_box"/>
+        android:textColorHint="#848484" />
 
     <Button
+        android:id="@+id/feedback_submit"
         android:layout_width="wrap_content"
+        android:layout_marginLeft="33.7dp"
         android:layout_height="wrap_content"
         android:text="Submit"
-        android:id="@+id/feedback_submit"
-        android:layout_marginLeft="32.7dp"
-        android:textColor="#000000"/>
+        android:textColor="#000000" />
 
 </LinearLayout>

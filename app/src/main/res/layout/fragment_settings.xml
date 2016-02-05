@@ -20,18 +20,20 @@
             android:text="@string/settings_chooseRegional"
             android:textSize="40dp" />
 
-        <EditText
+        <Spinner
             android:id="@+id/settings_year"
-            android:layout_width="200dp"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
             android:layout_height="wrap_content"
-            android:hint="@string/settings_year"
-            android:inputType="text"
-            android:maxLines="1"
-            android:textColor="@color/colorAccent" />
+            android:entries="@array/spinnerItems"/>
 
         <Spinner
             android:id="@+id/settings_regionalsList"
             android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"/>
 
