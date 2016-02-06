@@ -20,6 +20,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
 import org.team1515.morscout.R;
+import org.team1515.morscout.entities.User;
 import org.team1515.morscout.network.CookieRequest;
 
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public class TeamListFragment extends Fragment {
     private SharedPreferences preferences;
 
     EditText searchTeams;
-    String teamNumber;
+    String teamSearch;
 
     TableLayout teamsTable;
 
@@ -61,7 +62,7 @@ public class TeamListFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 // TODO Auto-generated method stub
-                teamNumber = searchTeams.getText().toString();
+                teamSearch = searchTeams.getText().toString();
             }
         });
 

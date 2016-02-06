@@ -41,44 +41,108 @@ public class SettingsFragment extends Fragment {
     private RequestQueue queue;
     private SharedPreferences preferences;
 
+    Spinner regionalYears;
     Spinner regionalsList;
 
-    List<String> spinnerArray;
+    ArrayAdapter<String> yearsAdapter;
+    ArrayAdapter<String> regionalsAdapter;
 
-    Button setRegional;
+    List<String> yearsArray;
+    List<String> regionalsArray;
+    List<String> eventCodes;
+
+    String year;
+    String currentRegional;
+
+    int position;
+
+    Button setRegionalButton;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        setRegional = (Button) view.findViewById(R.id.settings_setRegional);
+        setRegionalButton = (Button) view.findViewById(R.id.settings_setRegional);
 
         preferences = getActivity().getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(getContext());
 
-        spinnerArray = new ArrayList<>();
+        yearsArray = new ArrayList<>();
+        for (int i = 1992; i < 2017; i++) {
+            yearsArray.add(i + "");
+        }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_spinner_item, spinnerArray);
+        yearsAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_spinner_item, yearsArray);
+        yearsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        regionalYears = (Spinner) view.findViewById(R.id.settings_year);
+        regionalYears.setAdapter(yearsAdapter);
+
+        regionalsArray = new ArrayList<>();
+
+        regionalsAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_spinner_item, regionalsArray);
+        regionalsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         regionalsList = (Spinner) view.findViewById(R.id.settings_regionalsList);
-        regionalsList.setAdapter(adapter);
+        regionalsList.setAdapter(regionalsAdapter);
+
+        eventCodes = new ArrayList<>();
 
         return view;
     }
 
-    // SERVER OFFLINE 2/2/16
-    // CODE WORKING
+    @Override
+    public void onStart() {
+        super.onStart();
+        setRegionalListener();
+        setYearListener();
+    }
+
+    public void setRegionalListener() {
+        setRegionalButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                position = regionalsList.getSelectedItemPosition();
+                if (position > -1 && position < eventCodes.size()) {
+                    currentRegional = eventCodes.get(position);
+                    setRegional();
+                }
+            }
+        });
+    }
+
+    public void setYearListener() {
+        regionalYears.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                year = regionalYears.getSelectedItem().toString();
+                getRegionals();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
+    }
 
     public void getRegionals() {
         Map<String, String> params = new HashMap<>();
-        params.put("year", "2015");
+        params.put("year", year);
 
         CookieRequest requestRegionals = new CookieRequest(Request.Method.POST, "/getRegionalsForTeam", params, preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
-                    Toast.makeText(getContext(), response, Toast.LENGTH_LONG).show();
+                    JSONArray jsonArray = new JSONArray(response);
+                    regionalsArray.clear();
+                    eventCodes.clear();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject regional = jsonArray.getJSONObject(i);
+                        regionalsArray.add(regional.getString("name"));
+                        eventCodes.add(regional.getString("event_code"));
+                    }
+                    regionalsAdapter.notifyDataSetChanged();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -90,23 +154,24 @@ public class SettingsFragment extends Fragment {
             }
         });
         queue.add(requestRegionals);
+    }
 
-        regionalsList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    public void setRegional() {
+        Map<String, String> params = new HashMap<>();
+        params.put("eventCode", currentRegional);
+        params.put("year", year);
+
+        CookieRequest setRegionalRequest = new CookieRequest(Request.Method.POST, "/chooseCurrentRegional", params, preferences, new Response.Listener<String>() {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-//                        String selected = regionalsList.getSelectedItem().toString();
-//                        if (selected.equals("sand")) {
-//                            Toast.makeText(getActivity().getApplicationContext(), "SAND", Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            Toast.makeText(getActivity().getApplicationContext(), "WICH", Toast.LENGTH_SHORT).show();
-//                        }
+            public void onResponse(String response) {
+                Toast.makeText(getContext(), "Regional has been set to the " + regionalsArray.get(position) + "!", Toast.LENGTH_SHORT).show();
             }
-
+        }, new Response.ErrorListener() {
             @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
             }
-
         });
+        queue.add(setRegionalRequest);
     }
 }
