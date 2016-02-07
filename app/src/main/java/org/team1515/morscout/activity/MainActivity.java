@@ -18,11 +18,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -172,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_item_7:
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Are you sure you want to logout?");
+                builder.setMessage("Are you sure you want to logout?");
                 builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -191,10 +193,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 new Response.ErrorListener() {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
-                                        preferences.edit().clear().apply();
-                                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                                        startActivity(intent);
-                                        finish();
+                                        AlertDialog.Builder offlineLogout = new AlertDialog.Builder(MainActivity.this);
+                                        offlineLogout.setMessage("Are you sure you want to log off while offline? You may not be able to log back in.");
+                                        offlineLogout.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                preferences.edit().clear().apply();
+                                                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        });
+                                        offlineLogout.setNegativeButton("Cancel", null);
+                                        offlineLogout.create().show();
                                     }
                                 });
                         queue.add(logoutRequest);

@@ -92,7 +92,7 @@ public class MatchesFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), "An error has occured. Please try again later.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
             }
         });
         queue.add(requestMatches);

@@ -2,6 +2,7 @@ package org.team1515.morscout.fragment;
 
 import android.app.DownloadManager;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -35,6 +36,8 @@ public class FeedbackFragment extends Fragment {
 
     Button submitFeedback;
 
+    boolean isEmpty;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_feedback, container, false);
 
@@ -45,33 +48,69 @@ public class FeedbackFragment extends Fragment {
         feedbackText = (EditText) view.findViewById(R.id.feedback_text);
 
         submitFeedback = (Button) view.findViewById(R.id.feedback_submit);
-        submitFeedback.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                Map<String, String> params = new HashMap<>();
-                params.put("teamNumber", teamNumberText.getText().toString());
-                params.put("content", feedbackText.getText().toString());
 
-                CookieRequest sendFeedback = new CookieRequest(Request.Method.POST, "/sendFeedback", params, preferences, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            Toast.makeText(getContext(), response, Toast.LENGTH_SHORT).show();
-                            feedbackText.setText("");
-                            teamNumberText.setText("");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                queue.add(sendFeedback);
-            }
-        });
+        isEmpty = false;
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        setFeedbackListener();
+    }
+
+    public void setFeedbackListener() {
+        submitFeedback.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                sendFeedback();
+            }
+        });
+    }
+
+    public void sendFeedback() {
+
+        String teamNumber = teamNumberText.getText().toString();
+        String content = feedbackText.getText().toString();
+
+        if (teamNumber.trim().isEmpty()) {
+            teamNumberText.setText("");
+            teamNumberText.setHintTextColor(Color.RED);
+            isEmpty = true;
+        }
+
+        if (content.trim().isEmpty()) {
+            feedbackText.setText("");
+            feedbackText.setHintTextColor(Color.RED);
+            isEmpty = true;
+        }
+
+        if (isEmpty) {
+            Toast.makeText(getContext(), "Please fill out your form completely.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Map<String, String> params = new HashMap<>();
+        params.put("teamNumber", teamNumber);
+        params.put("content", content);
+
+        CookieRequest sendFeedback = new CookieRequest(Request.Method.POST, "/sendFeedback", params, preferences, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    Toast.makeText(getContext(), response, Toast.LENGTH_SHORT).show();
+                    feedbackText.setText("");
+                    teamNumberText.setText("");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        queue.add(sendFeedback);
     }
 }
