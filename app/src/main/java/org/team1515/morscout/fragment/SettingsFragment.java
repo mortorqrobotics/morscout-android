@@ -140,7 +140,7 @@ public class SettingsFragment extends Fragment {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject regional = jsonArray.getJSONObject(i);
                         regionalsArray.add(regional.getString("name"));
-                        eventCodes.add(regional.getString("event_code"));
+                        eventCodes.add(regional.getString("key"));
                     }
                     regionalsAdapter.notifyDataSetChanged();
                 } catch (Exception e) {
@@ -164,7 +164,11 @@ public class SettingsFragment extends Fragment {
         CookieRequest setRegionalRequest = new CookieRequest(Request.Method.POST, "/chooseCurrentRegional", params, preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Toast.makeText(getContext(), "Regional has been set to the " + regionalsArray.get(position) + "!", Toast.LENGTH_SHORT).show();
+                try {
+                    Toast.makeText(getContext(), "Regional has been set to the " + regionalsArray.get(position) + "!", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
