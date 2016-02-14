@@ -6,14 +6,21 @@ package org.team1515.morscout.entity;
 public class Match extends Entity {
 
     String id;
+    String number;
+    String time;
 
-    public Match(String id) {
+    public Match(String id, String number, String time) {
         super(id);
-        this.id = id;
+        this.number = number;
+        this.time = time;
     }
 
     @Override
     public String getName() {
-        return id;
+        return number;
+    }
+
+    public String getTime() {
+        return time;
     }
 }

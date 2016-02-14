@@ -92,7 +92,6 @@ public class TeamListFragment extends Fragment {
                     teams = new ArrayList<>();
 
                     JSONArray jsonArray = new JSONArray(response);
-                    System.out.println(jsonArray.toString());
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject team = jsonArray.getJSONObject(i);
                         teams.add(new Team(team.getString("key"), team.getString("team_number"), team.getString("nickname")));

@@ -18,11 +18,41 @@
         android:id="@+id/matches_searchbar"
         android:textColorHint="#b3b3b3"/>
 
-    <android.support.v7.widget.RecyclerView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/matchlist"
-        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:id="@+id/matches_matchNumberHead"
+            android:layout_marginBottom="1dp"
+            android:layout_marginLeft="0.5dp"
+            android:background="@drawable/border_style"
+            android:textSize="17sp"
+            android:gravity="center"
+            android:text="#"/>
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/matches_matchTimeHead"
+            android:layout_marginBottom="1dp"
+            android:layout_marginLeft="0.5dp"
+            android:background="@drawable/border_style"
+            android:textSize="17sp"
+            android:gravity="center"
+            android:text="Time"/>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/matches_list"
         android:scrollbars="vertical"/>
 
 </LinearLayout>

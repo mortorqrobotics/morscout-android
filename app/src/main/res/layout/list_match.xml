@@ -6,15 +6,22 @@
     android:gravity="center">
 
     <TextView
-        android:ellipsize="end"
         android:gravity="start"
-        android:id="@+id/matchlist_match"
+        android:id="@+id/matchlist_matchNumber"
+        android:width="30dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
+        android:layout_marginRight="2dp"
+        android:background="@drawable/border_style"
+        android:layout_width="wrap_content"/>
+    <TextView
+        android:gravity="start"
+        android:id="@+id/matchlist_matchTime"
+        android:width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
         android:layout_marginRight="5dp"
-        android:layout_width="wrap_content"
-        android:maxLines="100"
-        android:scrollHorizontally="false"
-        android:singleLine="false" />
+        android:background="@drawable/border_style"
+        android:layout_width="wrap_content"/>
 
 </LinearLayout>
