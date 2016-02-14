@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,8 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.team1515.morscout.R;
-import org.team1515.morscout.entities.Match;
-import org.team1515.morscout.entities.Team;
+import org.team1515.morscout.entity.Match;
 import org.team1515.morscout.network.CookieRequest;
 
 import java.util.ArrayList;
@@ -99,8 +99,8 @@ public class MatchesFragment extends Fragment {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            RelativeLayout relativeLayout = (RelativeLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.teamlist_list, parent, false);
-            ViewHolder viewHolder = new ViewHolder(relativeLayout);
+            LinearLayout layout = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.list_match, parent, false);
+            ViewHolder viewHolder = new ViewHolder(layout);
             return viewHolder;
         }
 
@@ -130,19 +130,7 @@ public class MatchesFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            TextView team = (TextView) holder.relativeLayout.findViewById(R.id.teamlist_team);
 
-            CardView cardView = (CardView) holder.relativeLayout.findViewById(R.id.teamlist_cardview);
-
-            View.OnClickListener dateClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // CODE
-                }
-            };
-
-            cardView.setOnClickListener(dateClickListener);
-            team.setOnClickListener(dateClickListener);
         }
 
         @Override
@@ -151,17 +139,12 @@ public class MatchesFragment extends Fragment {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            public RelativeLayout relativeLayout;
+            public LinearLayout layout;
 
-            public ViewHolder(RelativeLayout relativeLayout) {
-                super(relativeLayout);
-                this.relativeLayout = relativeLayout;
+            public ViewHolder(LinearLayout layout) {
+                super(layout);
+                this.layout = layout;
             }
-        }
-
-        public void addMatch(Match newMatch) {
-            matches.add(newMatch);
-            notifyDataSetChanged();
         }
     }
 }

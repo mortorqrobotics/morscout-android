@@ -1,4 +1,4 @@
-package org.team1515.morscout.entities;
+package org.team1515.morscout.entity;
 
 public abstract class Entity {
     private String id;

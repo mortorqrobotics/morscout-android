@@ -1,19 +1,4 @@
-package org.team1515.morscout.entities;
-
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.team1515.morscout.network.CookieRequest;
-
-import java.util.HashMap;
-import java.util.Map;
+package org.team1515.morscout.entity;
 
 /**
  * Created by prozwood on 1/26/16.

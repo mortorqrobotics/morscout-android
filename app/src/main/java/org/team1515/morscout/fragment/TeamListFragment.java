@@ -3,7 +3,6 @@ package org.team1515.morscout.fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -12,8 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -26,15 +23,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.team1515.morscout.R;
-import org.team1515.morscout.entities.Team;
+import org.team1515.morscout.adapter.TeamListAdapter;
+import org.team1515.morscout.entity.Team;
 import org.team1515.morscout.network.CookieRequest;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by prozwood on 1/25/16.
- */
 public class TeamListFragment extends Fragment {
     private RequestQueue queue;
     private SharedPreferences preferences;
@@ -42,9 +37,11 @@ public class TeamListFragment extends Fragment {
     EditText searchTeams;
     String teamSearch;
 
+    List<Team> teams;
+
     RecyclerView teamsList;
-    TeamListAdapter listAdapter;
-    LinearLayoutManager teamListLayoutManager;
+    TeamListAdapter teamListAdapter;
+    LinearLayoutManager teamListManager;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_teamlist, container, false);
@@ -52,7 +49,7 @@ public class TeamListFragment extends Fragment {
         preferences = getActivity().getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(getContext());
 
-        searchTeams = (EditText) view.findViewById(R.id.teams_searchbar);
+        searchTeams = (EditText) view.findViewById(R.id.teamlist_searchbar);
         searchTeams.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -74,92 +71,63 @@ public class TeamListFragment extends Fragment {
             }
         });
 
-        teamsList = (RecyclerView) view.findViewById(R.id.teamlist);
+        teams = new ArrayList<>();
 
-        listAdapter = new TeamListAdapter();
+        teamsList = (RecyclerView) view.findViewById(R.id.teamlist_list);
+        teamListAdapter = new TeamListAdapter();
+        teamListManager = new LinearLayoutManager(getContext());
+        teamsList.setLayoutManager(teamListManager);
+        teamsList.setAdapter(teamListAdapter);
 
-        teamListLayoutManager = new LinearLayoutManager(getContext());
-        teamsList.setLayoutManager(teamListLayoutManager);
-
-        teamsList.setAdapter(listAdapter);
+        getTeams();
 
         return view;
     }
 
-    public class TeamListAdapter extends RecyclerView.Adapter<TeamListAdapter.ViewHolder> {
-        private List<Team> teams;
+    public void getTeams() {
+        CookieRequest requestTeams = new CookieRequest(Request.Method.POST, "/getTeamListForRegional", preferences, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    teams = new ArrayList<>();
 
-        public TeamListAdapter() {
-            teams = new ArrayList<>();
-            getTeams();
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            RelativeLayout relativeLayout = (RelativeLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.teamlist_list, parent, false);
-            ViewHolder viewHolder = new ViewHolder(relativeLayout);
-            return viewHolder;
-        }
-
-        public void getTeams() {
-            CookieRequest requestTeams = new CookieRequest(Request.Method.POST, "/getTeamListForRegional", preferences, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    try {
-                        JSONArray jsonArray = new JSONArray(response);
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject team = jsonArray.getJSONObject(i);
-                            teams.add(new Team(team.getString("key")));
-                        }
-                        notifyDataSetChanged();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    JSONArray jsonArray = new JSONArray(response);
+                    System.out.println(jsonArray.toString());
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject team = jsonArray.getJSONObject(i);
+                        teams.add(new Team(team.getString("key"), team.getString("team_number"), team.getString("nickname")));
                     }
+
+                    sortTeams();
+
+                    teamListAdapter.setTeams(teams);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
-                }
-            });
-            queue.add(requestTeams);
-        }
-
-        @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            final TextView team = (TextView) holder.relativeLayout.findViewById(R.id.teamlist_team);
-
-            CardView cardView = (CardView) holder.relativeLayout.findViewById(R.id.teamlist_cardview);
-
-            View.OnClickListener dateClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    team.setText("Hi");
-                }
-            };
-
-            cardView.setOnClickListener(dateClickListener);
-            team.setOnClickListener(dateClickListener);
-        }
-
-        @Override
-        public int getItemCount() {
-            return teams.size();
-        }
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            public RelativeLayout relativeLayout;
-
-            public ViewHolder(RelativeLayout relativeLayout) {
-                super(relativeLayout);
-                this.relativeLayout = relativeLayout;
             }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        queue.add(requestTeams);
+    }
 
-        }
-
-        public void addTeam(Team newTeam) {
-            teams.add(newTeam);
-            notifyDataSetChanged();
-        }
+    private void sortTeams() {
+        // Bubble sort for now
+        boolean hasChanged;
+        do {
+            hasChanged = false;
+            for (int i = 0; i < teams.size() - 1; i++) {
+                Team first = teams.get(i);
+                Team last = teams.get(i + 1);
+                if(Integer.parseInt(first.getNumber()) > Integer.parseInt(last.getNumber())) {
+                    teams.set(i, last);
+                    teams.set(i + 1, first);
+                    hasChanged = true;
+                }
+            }
+        } while(hasChanged);
     }
 }
