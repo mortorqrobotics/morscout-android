@@ -40,9 +40,6 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.View
 
         TextView MatchNumber = (TextView) holder.layout.findViewById(R.id.matchlist_matchNumber);
         MatchNumber.setText(currentMatch.getName());
-
-        TextView MatchTime = (TextView) holder.layout.findViewById(R.id.matchlist_matchTime);
-        MatchTime.setText(currentMatch.getTime());
     }
 
     @Override

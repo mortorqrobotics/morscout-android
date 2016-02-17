@@ -25,27 +25,31 @@
         android:gravity="center">
 
         <TextView
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
+            android:layout_width="100dp"
+            android:layout_height="52dp"
             android:id="@+id/matches_matchNumberHead"
-            android:layout_marginBottom="1dp"
-            android:layout_marginLeft="0.5dp"
+            android:layout_marginRight="4dp"
             android:background="@drawable/border_style"
             android:textSize="17sp"
             android:gravity="center"
-            android:text="#"/>
+            android:text="Match #"/>
 
         <TextView
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:id="@+id/matches_matchTimeHead"
-            android:layout_marginBottom="1dp"
-            android:layout_marginLeft="0.5dp"
-            android:background="@drawable/border_style"
-            android:textSize="17sp"
             android:gravity="center"
-            android:text="Time"/>
+            android:layout_marginRight="4dp"
+            android:background="@drawable/redteam_style"
+            android:textSize="17sp"
+            android:text="Red Teams"/>
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:background="@drawable/blueteam_style"
+            android:textSize="17sp"
+            android:text="Blue Teams"/>
 
     </LinearLayout>
 

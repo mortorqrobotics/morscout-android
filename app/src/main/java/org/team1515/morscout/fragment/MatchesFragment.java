@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import org.team1515.morscout.R;
 import org.team1515.morscout.adapter.MatchListAdapter;
 import org.team1515.morscout.entity.Match;
+import org.team1515.morscout.entity.Team;
 import org.team1515.morscout.network.CookieRequest;
 
 import java.text.SimpleDateFormat;
@@ -54,6 +55,7 @@ public class MatchesFragment extends Fragment {
         preferences = getActivity().getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(getContext());
 
+        matchSearch = "";
         searchMatches = (EditText) view.findViewById(R.id.matches_searchbar);
         searchMatches.addTextChangedListener(new TextWatcher() {
 
@@ -73,6 +75,7 @@ public class MatchesFragment extends Fragment {
             public void afterTextChanged(Editable s) {
                 // TODO Auto-generated method stub
                 matchSearch = searchMatches.getText().toString();
+                getMatches();
             }
         });
 
@@ -99,8 +102,14 @@ public class MatchesFragment extends Fragment {
                     JSONArray jsonArray = new JSONArray(response);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject match = jsonArray.getJSONObject(i);
-                        matches.add(new Match(match.getString("key"), match.getString("match_number"), match.getString("time")));
+                        if (!matchSearch.trim().isEmpty() && (match.getString("match_number").toLowerCase().contains(matchSearch))) {
+                            matches.add(new Match(match.getString("key"), "Match " + match.getString("match_number")));
+                        } else if (matchSearch.trim().isEmpty()) {
+                            matches.add(new Match(match.getString("key"), "Match " + match.getString("match_number")));
+                        }
                     }
+
+                    sortMatches();
 
                     matchListAdapter.setMatches(matches);
                 } catch (Exception e) {
@@ -114,5 +123,22 @@ public class MatchesFragment extends Fragment {
             }
         });
         queue.add(requestMatches);
+    }
+
+    private void sortMatches() {
+        // Bubble sort for now
+        boolean hasChanged;
+        do {
+            hasChanged = false;
+            for (int i = 0; i < matches.size() - 1; i++) {
+                Match first = matches.get(i);
+                Match last = matches.get(i + 1);
+                if (Integer.parseInt(first.getName().substring(6)) > Integer.parseInt(last.getName().substring(6))) {
+                    matches.set(i, last);
+                    matches.set(i + 1, first);
+                    hasChanged = true;
+                }
+            }
+        } while (hasChanged);
     }
 }

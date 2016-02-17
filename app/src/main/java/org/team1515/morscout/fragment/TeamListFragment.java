@@ -3,6 +3,7 @@ package org.team1515.morscout.fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -23,6 +24,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.team1515.morscout.R;
+import org.team1515.morscout.activity.MainActivity;
+import org.team1515.morscout.adapter.RecyclerItemClickListener;
 import org.team1515.morscout.adapter.TeamListAdapter;
 import org.team1515.morscout.entity.Team;
 import org.team1515.morscout.network.CookieRequest;
@@ -49,6 +52,7 @@ public class TeamListFragment extends Fragment {
         preferences = getActivity().getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(getContext());
 
+        teamSearch = "";
         searchTeams = (EditText) view.findViewById(R.id.teamlist_searchbar);
         searchTeams.addTextChangedListener(new TextWatcher() {
 
@@ -68,6 +72,7 @@ public class TeamListFragment extends Fragment {
             public void afterTextChanged(Editable s) {
                 // TODO Auto-generated method stub
                 teamSearch = searchTeams.getText().toString();
+                getTeams();
             }
         });
 
@@ -78,6 +83,16 @@ public class TeamListFragment extends Fragment {
         teamListManager = new LinearLayoutManager(getContext());
         teamsList.setLayoutManager(teamListManager);
         teamsList.setAdapter(teamListAdapter);
+
+        teamsList.addOnItemTouchListener(
+                new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        //TODO: switch to personal team page
+                        Toast.makeText(getContext(), teams.get(position).getName(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+        );
 
         getTeams();
 
@@ -94,7 +109,11 @@ public class TeamListFragment extends Fragment {
                     JSONArray jsonArray = new JSONArray(response);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject team = jsonArray.getJSONObject(i);
-                        teams.add(new Team(team.getString("key"), team.getString("team_number"), team.getString("nickname")));
+                        if (!teamSearch.trim().isEmpty() && (team.getString("team_number").toLowerCase().contains(teamSearch) || team.getString("nickname").toLowerCase().contains(teamSearch))) {
+                            teams.add(new Team(team.getString("key"), team.getString("team_number"), team.getString("nickname")));
+                        } else if (teamSearch.trim().isEmpty()) {
+                            teams.add(new Team(team.getString("key"), team.getString("team_number"), team.getString("nickname")));
+                        }
                     }
 
                     sortTeams();
@@ -121,12 +140,12 @@ public class TeamListFragment extends Fragment {
             for (int i = 0; i < teams.size() - 1; i++) {
                 Team first = teams.get(i);
                 Team last = teams.get(i + 1);
-                if(Integer.parseInt(first.getNumber()) > Integer.parseInt(last.getNumber())) {
+                if (Integer.parseInt(first.getNumber()) > Integer.parseInt(last.getNumber())) {
                     teams.set(i, last);
                     teams.set(i + 1, first);
                     hasChanged = true;
                 }
             }
-        } while(hasChanged);
+        } while (hasChanged);
     }
 }
