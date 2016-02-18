@@ -40,6 +40,24 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.View
 
         TextView MatchNumber = (TextView) holder.layout.findViewById(R.id.matchlist_matchNumber);
         MatchNumber.setText(currentMatch.getName());
+
+        TextView blueTeams = (TextView) holder.layout.findViewById(R.id.matchlist_blueTeams);
+        String teams = currentMatch.getBlueAlliance().toString();
+        teams = teams.replaceAll("\"", "");
+        teams = teams.replace("[", "");
+        teams = teams.replace("]", "");
+        teams = teams.replaceAll(",", "\n");
+        teams = teams.replaceAll("frc", "");
+        blueTeams.setText(teams);
+
+        TextView redTeams = (TextView) holder.layout.findViewById(R.id.matchlist_redTeams);
+        teams = currentMatch.getRedAlliance().toString();
+        teams = teams.replaceAll("\"", "");
+        teams = teams.replace("[", "");
+        teams = teams.replace("]", "");
+        teams = teams.replaceAll(",", "\n");
+        teams = teams.replaceAll("frc", "");
+        redTeams.setText(teams);
     }
 
     @Override

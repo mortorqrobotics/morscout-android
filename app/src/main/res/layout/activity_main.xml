@@ -28,7 +28,7 @@
         android:layout_height="match_parent"
         android:id="@+id/main_nav"
         android:layout_gravity="start"
-        android:background="@color/colorAccent"
+        android:background="@color/orange_theme"
         app:menu="@menu/nav_main"
         app:itemTextColor="@color/title" />
 

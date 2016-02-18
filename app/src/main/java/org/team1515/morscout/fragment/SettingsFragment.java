@@ -71,7 +71,7 @@ public class SettingsFragment extends Fragment {
             yearsArray.add(i + "");
         }
 
-        yearsAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_spinner_item, yearsArray);
+        yearsAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, yearsArray);
         yearsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         regionalYears = (Spinner) view.findViewById(R.id.settings_year);
@@ -79,7 +79,7 @@ public class SettingsFragment extends Fragment {
 
         regionalsArray = new ArrayList<>();
 
-        regionalsAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_spinner_item, regionalsArray);
+        regionalsAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, regionalsArray);
         regionalsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         regionalsList = (Spinner) view.findViewById(R.id.settings_regionalsList);

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@color/gray">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -27,7 +27,7 @@
             android:gravity="center"
             android:layout_marginTop="20dp"
             android:layout_height="wrap_content"
-            android:popupBackground="#000000"/>
+            android:popupBackground="@color/background"/>
 
         <Spinner
             android:id="@+id/settings_regionalsList"
@@ -36,7 +36,7 @@
             android:gravity="center"
             android:layout_marginTop="30dp"
             android:layout_height="wrap_content"
-            android:popupBackground="#000000" />
+            android:popupBackground="@color/background" />
 
         <Button
             android:id="@+id/settings_setRegional"
