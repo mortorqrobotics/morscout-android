@@ -31,8 +31,7 @@
             android:layout_width="100dp"
             android:layout_height="52dp"
             android:id="@+id/matches_matchNumberHead"
-            android:layout_marginRight="4dp"
-            android:background="@drawable/border_style"
+            android:background="@drawable/match_border"
             android:textSize="17sp"
             android:gravity="center"
             android:text="Match #"/>
@@ -41,7 +40,6 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginRight="4dp"
             android:background="@drawable/redteam_style"
             android:textSize="17sp"
             android:text="Red Teams"/>

@@ -24,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.team1515.morscout.R;
 import org.team1515.morscout.adapter.MatchListAdapter;
+import org.team1515.morscout.adapter.RecyclerItemClickListener;
 import org.team1515.morscout.entity.Match;
 import org.team1515.morscout.entity.Team;
 import org.team1515.morscout.network.CookieRequest;
@@ -87,6 +88,16 @@ public class MatchesFragment extends Fragment {
         matchLayoutManager = new LinearLayoutManager(getContext());
         matchesList.setLayoutManager(matchLayoutManager);
         matchesList.setAdapter(matchListAdapter);
+
+        matchesList.addOnItemTouchListener(
+                new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        //TODO: switch to match page
+                        Toast.makeText(getContext(), matches.get(position).getName(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+        );
 
         getMatches();
 

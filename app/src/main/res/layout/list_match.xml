@@ -10,8 +10,7 @@
         android:id="@+id/matchlist_matchNumber"
         android:width="100dp"
         android:layout_height="70dp"
-        android:layout_marginRight="4dp"
-        android:background="@drawable/border_style"
+        android:background="@drawable/match_border"
         android:layout_width="wrap_content"/>
 
     <TextView
@@ -19,7 +18,6 @@
         android:id="@+id/matchlist_redTeams"
         android:width="100dp"
         android:layout_height="70dp"
-        android:layout_marginRight="4dp"
         android:background="@drawable/redteam_style"
         android:layout_width="wrap_content"/>
 
