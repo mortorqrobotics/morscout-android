@@ -1,4 +1,4 @@
-package org.team1515.morscout.fragment;
+package org.team1515.morscout.fragment.main;
 
 import android.graphics.Color;
 import android.os.Bundle;

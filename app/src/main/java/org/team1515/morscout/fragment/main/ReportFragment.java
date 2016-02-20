@@ -1,4 +1,4 @@
-package org.team1515.morscout.fragment;
+package org.team1515.morscout.fragment.main;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

@@ -1,7 +1,6 @@
 package org.team1515.morscout.activity;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,7 +9,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -29,12 +27,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
 import org.team1515.morscout.R;
-import org.team1515.morscout.fragment.FeedbackFragment;
-import org.team1515.morscout.fragment.HelpFragment;
-import org.team1515.morscout.fragment.HomeFragment;
-import org.team1515.morscout.fragment.MatchesFragment;
-import org.team1515.morscout.fragment.SettingsFragment;
-import org.team1515.morscout.fragment.TeamListFragment;
+import org.team1515.morscout.fragment.main.FeedbackFragment;
+import org.team1515.morscout.fragment.main.HelpFragment;
+import org.team1515.morscout.fragment.main.HomeFragment;
+import org.team1515.morscout.fragment.main.MatchesFragment;
+import org.team1515.morscout.fragment.main.SettingsFragment;
+import org.team1515.morscout.fragment.main.TeamListFragment;
 import org.team1515.morscout.network.CookieRequest;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
