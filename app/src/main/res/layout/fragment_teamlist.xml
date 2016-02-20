@@ -40,6 +40,7 @@
                 android:layout_height="40dp"
                 android:background="@drawable/team_number_border"
                 android:gravity="center"
+                android:textColor="@color/background"
                 android:text="Team #"
                 android:textSize="17sp" />
 
@@ -49,6 +50,7 @@
                 android:layout_height="40dp"
                 android:background="@drawable/team_name_border"
                 android:gravity="center"
+                android:textColor="@color/background"
                 android:text="Name"
                 android:textSize="17sp" />
 

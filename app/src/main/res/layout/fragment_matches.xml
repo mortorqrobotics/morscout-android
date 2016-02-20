@@ -39,6 +39,7 @@
                 android:layout_height="52dp"
                 android:background="@drawable/match_border"
                 android:gravity="center"
+                android:textColor="@color/background"
                 android:text="Match #"
                 android:textSize="17sp" />
 
