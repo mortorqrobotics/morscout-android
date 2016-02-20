@@ -132,56 +132,63 @@ public class MatchesFragment extends Fragment {
         CookieRequest requestMatches = new CookieRequest(Request.Method.POST, "/getMatchesForCurrentRegional", preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                try {
-                    matches = new ArrayList<>();
-                    JSONArray jsonArray = new JSONArray(response);
-
-                    //Create match list
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject match = jsonArray.getJSONObject(i);
-
-                        JSONObject alliances = match.getJSONObject("alliances");
-
-                        JSONObject blue = alliances.getJSONObject("blue");
-                        JSONObject red = alliances.getJSONObject("red");
-
-                        JSONArray blueAlliance = blue.getJSONArray("teams");
-                        JSONArray redAlliance = red.getJSONArray("teams");
-
-                        if(match.getString("comp_level").equals("qm")) {
-                            if (!matchSearch.trim().isEmpty() && (match.getString("match_number").toLowerCase().contains(matchSearch) || blueAlliance.toString().contains(matchSearch) || redAlliance.toString().contains(matchSearch))) {
-                                matches.add(new Match(match.getString("key"), "Match " + match.getString("match_number"), match.getString("comp_level"), blueAlliance, redAlliance));
-                            } else if (matchSearch.trim().isEmpty()) {
-                                matches.add(new Match(match.getString("key"), "Match " + match.getString("match_number"), match.getString("comp_level"), blueAlliance, redAlliance));
-                            }
-                        }
-                    }
-
-                    if (matches.size() == 0) {
-                        Toast.makeText(getContext(), "No matches with that info have been found.", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    sortMatches();
-
-                    progress.setVisibility(View.GONE);
-                    matchesList.setVisibility(View.VISIBLE);
-
-                    matchListAdapter.setMatches(matches);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    refreshLayout.setRefreshing(false);
-                }
+                preferences.edit().putString("matches", response).apply();
+                createMatches(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+                createMatches(preferences.getString("matches", "[]"));
                 refreshLayout.setRefreshing(false);
             }
         });
         queue.add(requestMatches);
+    }
+
+    public void createMatches(String json) {
+        try {
+            matches = new ArrayList<>();
+            JSONArray jsonArray = new JSONArray(json);
+
+
+            //Create match list
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject match = jsonArray.getJSONObject(i);
+
+                JSONObject alliances = match.getJSONObject("alliances");
+
+                JSONObject blue = alliances.getJSONObject("blue");
+                JSONObject red = alliances.getJSONObject("red");
+
+                JSONArray blueAlliance = blue.getJSONArray("teams");
+                JSONArray redAlliance = red.getJSONArray("teams");
+
+                if(match.getString("comp_level").equals("qm")) {
+                    if (!matchSearch.trim().isEmpty() && (match.getString("match_number").toLowerCase().contains(matchSearch) || blueAlliance.toString().contains(matchSearch) || redAlliance.toString().contains(matchSearch))) {
+                        matches.add(new Match(match.getString("key"), "Match " + match.getString("match_number"), match.getString("comp_level"), blueAlliance, redAlliance));
+                    } else if (matchSearch.trim().isEmpty()) {
+                        matches.add(new Match(match.getString("key"), "Match " + match.getString("match_number"), match.getString("comp_level"), blueAlliance, redAlliance));
+                    }
+                }
+            }
+
+            if (matches.size() == 0) {
+                Toast.makeText(getContext(), "No matches with that info have been found.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            sortMatches();
+
+            progress.setVisibility(View.GONE);
+            matchesList.setVisibility(View.VISIBLE);
+
+            matchListAdapter.setMatches(matches);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            refreshLayout.setRefreshing(false);
+        }
     }
 
     private void sortMatches() {
