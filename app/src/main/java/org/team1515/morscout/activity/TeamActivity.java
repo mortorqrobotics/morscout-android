@@ -1,5 +1,6 @@
 package org.team1515.morscout.activity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -7,12 +8,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+
 import org.team1515.morscout.R;
 
 public class TeamActivity extends AppCompatActivity {
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_team, container, false);
+    SharedPreferences preferences;
+    RequestQueue queue;
 
-        return view;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        preferences = getSharedPreferences(null, 0);
+        queue = Volley.newRequestQueue(this);
     }
+
 }

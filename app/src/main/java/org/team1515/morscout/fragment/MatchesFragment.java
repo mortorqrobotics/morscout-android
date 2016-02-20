@@ -116,6 +116,7 @@ public class MatchesFragment extends Fragment {
         return view;
     }
 
+    int x = 0;
     public void getMatches() {
         progress.setVisibility(View.VISIBLE);
         matchesList.setVisibility(View.GONE);
@@ -123,10 +124,12 @@ public class MatchesFragment extends Fragment {
         CookieRequest requestMatches = new CookieRequest(Request.Method.POST, "/getMatchesForCurrentRegional", preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                System.out.println("Hello" + "\t" + x++);
                 try {
                     matches = new ArrayList<>();
-
                     JSONArray jsonArray = new JSONArray(response);
+
+                    //Create match list
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject match = jsonArray.getJSONObject(i);
 
@@ -138,10 +141,12 @@ public class MatchesFragment extends Fragment {
                         JSONArray blueAlliance = blue.getJSONArray("teams");
                         JSONArray redAlliance = red.getJSONArray("teams");
 
-                        if (!matchSearch.trim().isEmpty() && (match.getString("match_number").toLowerCase().contains(matchSearch) || blueAlliance.toString().contains(matchSearch) || redAlliance.toString().contains(matchSearch))) {
-                            matches.add(new Match(match.getString("key"), "Match " + match.getString("match_number"), match.getString("comp_level"), blueAlliance, redAlliance));
-                        } else if (matchSearch.trim().isEmpty()) {
-                            matches.add(new Match(match.getString("key"), "Match " + match.getString("match_number"), match.getString("comp_level"), blueAlliance, redAlliance));
+                        if(match.getString("comp_level").equals("qm")) {
+                            if (!matchSearch.trim().isEmpty() && (match.getString("match_number").toLowerCase().contains(matchSearch) || blueAlliance.toString().contains(matchSearch) || redAlliance.toString().contains(matchSearch))) {
+                                matches.add(new Match(match.getString("key"), "Match " + match.getString("match_number"), match.getString("comp_level"), blueAlliance, redAlliance));
+                            } else if (matchSearch.trim().isEmpty()) {
+                                matches.add(new Match(match.getString("key"), "Match " + match.getString("match_number"), match.getString("comp_level"), blueAlliance, redAlliance));
+                            }
                         }
                     }
 
@@ -177,7 +182,7 @@ public class MatchesFragment extends Fragment {
             for (int i = 0; i < matches.size() - 1; i++) {
                 Match first = matches.get(i);
                 Match last = matches.get(i + 1);
-                if (matches.get(i).getCompLevel().equalsIgnoreCase("qm") && Integer.parseInt(first.getName().substring(6)) > Integer.parseInt(last.getName().substring(6))) {
+                if (first.getCompLevel().equalsIgnoreCase("qm") && Integer.parseInt(first.getName().substring(6)) > Integer.parseInt(last.getName().substring(6))) {
                     matches.set(i, last);
                     matches.set(i + 1, first);
                     hasChanged = true;
