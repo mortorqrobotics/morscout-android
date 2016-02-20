@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/gray">
 
-    <include layout="@layout/actionbar" />
+    <include layout="@layout/actionbar"></include>
 
     <android.support.design.widget.TabLayout
         android:layout_width="match_parent"

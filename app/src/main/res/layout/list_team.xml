@@ -11,6 +11,7 @@
         android:layout_height="75dp"
         android:background="@drawable/team_number_border"
         android:textSize="17sp"
+        android:textColor="@color/background"
         android:gravity="center" />
 
     <TextView
@@ -19,6 +20,7 @@
         android:id="@+id/teamlist_teamName"
         android:background="@drawable/team_name_border"
         android:textSize="17sp"
+        android:textColor="@color/background"
         android:gravity="center" />
 
 </LinearLayout>
