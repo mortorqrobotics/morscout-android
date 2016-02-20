@@ -129,44 +129,41 @@ public class TeamListFragment extends Fragment {
         CookieRequest requestTeams = new CookieRequest(Request.Method.POST, "/getTeamListForRegional", preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                try {
-                    teams = new ArrayList<>();
-
-                    JSONArray jsonArray = new JSONArray(response);
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject team = jsonArray.getJSONObject(i);
-                        if (!teamSearch.trim().isEmpty() && (team.getString("team_number").toLowerCase().contains(teamSearch) || team.getString("nickname").toLowerCase().contains(teamSearch))) {
-                            teams.add(new Team(team.getString("key"), team.getString("team_number"), team.getString("nickname")));
-                        } else if (teamSearch.trim().isEmpty()) {
-                            teams.add(new Team(team.getString("key"), team.getString("team_number"), team.getString("nickname")));
-                        }
-                    }
-
-                    if (teams.size() == 0) {
-                        Toast.makeText(getContext(), "No teams with that info have been found.", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    sortTeams();
-
-                    progress.setVisibility(View.GONE);
-                    teamsList.setVisibility(View.VISIBLE);
-
-                    teamListAdapter.setTeams(teams);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } finally {
-                    refreshLayout.setRefreshing(false);
-                }
+                preferences.edit().putString("teams", response).apply();
+                createTeams(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+                createTeams(preferences.getString("teams", "[]"));
                 refreshLayout.setRefreshing(false);
             }
         });
         queue.add(requestTeams);
+    }
+
+    public void createTeams(String json) {
+        try {
+            teams = new ArrayList<>();
+
+            JSONArray jsonArray = new JSONArray(json);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject team = jsonArray.getJSONObject(i);
+                teams.add(new Team(team.getString("key"), "Team " + team.getString("team_number"), team.getString("nickname")));
+            }
+
+            sortTeams();
+
+            progress.setVisibility(View.GONE);
+            teamsList.setVisibility(View.VISIBLE);
+
+            teamListAdapter.setTeams(teams);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } finally {
+            refreshLayout.setRefreshing(false);
+        }
     }
 
     private void sortTeams() {
@@ -177,7 +174,7 @@ public class TeamListFragment extends Fragment {
             for (int i = 0; i < teams.size() - 1; i++) {
                 Team first = teams.get(i);
                 Team last = teams.get(i + 1);
-                if (Integer.parseInt(first.getNumber()) > Integer.parseInt(last.getNumber())) {
+                if (Integer.parseInt(first.getNumber().substring(5)) > Integer.parseInt(last.getNumber().substring(5))) {
                     teams.set(i, last);
                     teams.set(i + 1, first);
                     hasChanged = true;

@@ -165,17 +165,8 @@ public class MatchesFragment extends Fragment {
                 JSONArray redAlliance = red.getJSONArray("teams");
 
                 if(match.getString("comp_level").equals("qm")) {
-                    if (!matchSearch.trim().isEmpty() && (match.getString("match_number").toLowerCase().contains(matchSearch) || blueAlliance.toString().contains(matchSearch) || redAlliance.toString().contains(matchSearch))) {
                         matches.add(new Match(match.getString("key"), "Match " + match.getString("match_number"), match.getString("comp_level"), blueAlliance, redAlliance));
-                    } else if (matchSearch.trim().isEmpty()) {
-                        matches.add(new Match(match.getString("key"), "Match " + match.getString("match_number"), match.getString("comp_level"), blueAlliance, redAlliance));
-                    }
                 }
-            }
-
-            if (matches.size() == 0) {
-                Toast.makeText(getContext(), "No matches with that info have been found.", Toast.LENGTH_SHORT).show();
-                return;
             }
 
             sortMatches();

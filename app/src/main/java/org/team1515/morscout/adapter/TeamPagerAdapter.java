@@ -5,6 +5,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import org.team1515.morscout.fragment.main.HomeFragment;
+import org.team1515.morscout.fragment.match.MatchScoutFragment;
+import org.team1515.morscout.fragment.match.TeamScoutFragment;
+import org.team1515.morscout.fragment.team.GalleryFragment;
+import org.team1515.morscout.fragment.team.MatchReportsFragment;
+import org.team1515.morscout.fragment.team.PitReportsFragment;
+import org.team1515.morscout.fragment.team.RegionalResultsFragment;
+import org.team1515.morscout.fragment.team.TeamStatsFragment;
 
 public class TeamPagerAdapter extends FragmentPagerAdapter {
 
@@ -21,12 +28,12 @@ public class TeamPagerAdapter extends FragmentPagerAdapter {
         super(manager);
         this.size = 6;
 
-        scoutFrag = new HomeFragment();
-        pitReportsFrag = new HomeFragment();
-        matchReportsFrag = new HomeFragment();
-        galleryFrag = new HomeFragment();
-        regionalResultsFrag = new HomeFragment();
-        teamStatsFrag = new HomeFragment();
+        scoutFrag = new TeamScoutFragment();
+        pitReportsFrag = new PitReportsFragment();
+        matchReportsFrag = new MatchReportsFragment();
+        galleryFrag = new GalleryFragment();
+        regionalResultsFrag = new RegionalResultsFragment();
+        teamStatsFrag = new TeamStatsFragment();
     }
 
     @Override

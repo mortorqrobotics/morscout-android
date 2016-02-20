@@ -5,6 +5,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import org.team1515.morscout.fragment.main.HomeFragment;
+import org.team1515.morscout.fragment.match.AllMatchesFragment;
+import org.team1515.morscout.fragment.match.TeamScoutFragment;
+import org.team1515.morscout.fragment.match.ViewDataFragment;
 
 public class MatchPagerAdapter extends FragmentPagerAdapter {
 
@@ -18,9 +21,9 @@ public class MatchPagerAdapter extends FragmentPagerAdapter {
         super(manager);
         this.size = 3;
 
-        scoutFrag = new HomeFragment();
-        viewFrag = new HomeFragment();
-        allMatchesFrag = new HomeFragment();
+        scoutFrag = new TeamScoutFragment();
+        viewFrag = new ViewDataFragment();
+        allMatchesFrag = new AllMatchesFragment();
     }
 
     @Override
