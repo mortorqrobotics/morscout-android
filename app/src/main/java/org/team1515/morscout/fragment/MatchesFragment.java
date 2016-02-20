@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -14,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -30,14 +30,10 @@ import org.team1515.morscout.activity.MatchActivity;
 import org.team1515.morscout.adapter.MatchListAdapter;
 import org.team1515.morscout.adapter.RecyclerItemClickListener;
 import org.team1515.morscout.entity.Match;
-import org.team1515.morscout.entity.Team;
 import org.team1515.morscout.network.CookieRequest;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 /**
  * Created by prozwood on 1/25/16.
@@ -56,6 +52,8 @@ public class MatchesFragment extends Fragment {
     RecyclerView matchesList;
     MatchListAdapter matchListAdapter;
     LinearLayoutManager matchLayoutManager;
+
+    SwipeRefreshLayout refreshLayout;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_matches, container, false);
@@ -111,6 +109,16 @@ public class MatchesFragment extends Fragment {
 
         matchesList.setVisibility(View.GONE);
 
+        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.matches_refreshLayout);
+        refreshLayout.setColorSchemeResources(R.color.colorAccent);
+        refreshLayout.setRefreshing(false);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getMatches();
+            }
+        });
+
         getMatches();
 
         return view;
@@ -124,7 +132,6 @@ public class MatchesFragment extends Fragment {
         CookieRequest requestMatches = new CookieRequest(Request.Method.POST, "/getMatchesForCurrentRegional", preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                System.out.println("Hello" + "\t" + x++);
                 try {
                     matches = new ArrayList<>();
                     JSONArray jsonArray = new JSONArray(response);
@@ -163,12 +170,15 @@ public class MatchesFragment extends Fragment {
                     matchListAdapter.setMatches(matches);
                 } catch (Exception e) {
                     e.printStackTrace();
+                } finally {
+                    refreshLayout.setRefreshing(false);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+                refreshLayout.setRefreshing(false);
             }
         });
         queue.add(requestMatches);
@@ -182,7 +192,7 @@ public class MatchesFragment extends Fragment {
             for (int i = 0; i < matches.size() - 1; i++) {
                 Match first = matches.get(i);
                 Match last = matches.get(i + 1);
-                if (first.getCompLevel().equalsIgnoreCase("qm") && Integer.parseInt(first.getName().substring(6)) > Integer.parseInt(last.getName().substring(6))) {
+                if (Integer.parseInt(first.getName().substring(6)) > Integer.parseInt(last.getName().substring(6))) {
                     matches.set(i, last);
                     matches.set(i + 1, first);
                     hasChanged = true;

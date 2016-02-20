@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -51,6 +52,8 @@ public class TeamListFragment extends Fragment {
     RecyclerView teamsList;
     TeamListAdapter teamListAdapter;
     LinearLayoutManager teamListManager;
+
+    SwipeRefreshLayout refreshLayout;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_teamlist, container, false);
@@ -104,6 +107,16 @@ public class TeamListFragment extends Fragment {
 
         teamsList.setVisibility(View.GONE);
 
+        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.teamlist_refreshLayout);
+        refreshLayout.setColorSchemeResources(R.color.colorAccent);
+        refreshLayout.setRefreshing(false);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getTeams();
+            }
+        });
+
         getTeams();
 
         return view;
@@ -142,12 +155,15 @@ public class TeamListFragment extends Fragment {
                     teamListAdapter.setTeams(teams);
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } finally {
+                    refreshLayout.setRefreshing(false);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+                refreshLayout.setRefreshing(false);
             }
         });
         queue.add(requestTeams);
