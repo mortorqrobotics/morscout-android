@@ -1,5 +1,6 @@
 package org.team1515.morscout.fragment;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.team1515.morscout.R;
 import org.team1515.morscout.activity.MainActivity;
+import org.team1515.morscout.activity.TeamActivity;
 import org.team1515.morscout.adapter.RecyclerItemClickListener;
 import org.team1515.morscout.adapter.TeamListAdapter;
 import org.team1515.morscout.entity.Team;
@@ -65,13 +67,11 @@ public class TeamListFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // TODO Auto-generated method stub
 
             }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // TODO Auto-generated method stub
 
             }
 
@@ -95,8 +95,9 @@ public class TeamListFragment extends Fragment {
                 new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        //TODO: switch to personal team page
-                        Toast.makeText(getContext(), teams.get(position).getName(), Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getContext(), TeamActivity.class);
+                        intent.putExtra("teamId", teams.get(position).getId());
+                        startActivity(intent);
                     }
                 })
         );

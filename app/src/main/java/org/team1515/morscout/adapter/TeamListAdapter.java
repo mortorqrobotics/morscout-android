@@ -1,18 +1,13 @@
 package org.team1515.morscout.adapter;
 
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.team1515.morscout.R;
-import org.team1515.morscout.activity.MainActivity;
 import org.team1515.morscout.entity.Team;
-import org.team1515.morscout.fragment.TeamFragment;
 
 import java.util.ArrayList;
 import java.util.List;

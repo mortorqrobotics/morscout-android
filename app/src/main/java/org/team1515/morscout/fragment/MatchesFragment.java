@@ -1,5 +1,6 @@
 package org.team1515.morscout.fragment;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.team1515.morscout.R;
+import org.team1515.morscout.activity.MatchActivity;
 import org.team1515.morscout.adapter.MatchListAdapter;
 import org.team1515.morscout.adapter.RecyclerItemClickListener;
 import org.team1515.morscout.entity.Match;
@@ -100,8 +102,9 @@ public class MatchesFragment extends Fragment {
                 new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        //TODO: switch to match page
-                        Toast.makeText(getContext(), matches.get(position).getName(), Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getActivity(), MatchActivity.class);
+                        intent.putExtra("matchId", matches.get(position).getId());
+                        startActivity(intent);
                     }
                 })
         );
