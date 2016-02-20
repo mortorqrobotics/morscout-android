@@ -1,6 +1,7 @@
 package org.team1515.morscout.fragment;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -37,6 +39,8 @@ public class TeamListFragment extends Fragment {
     private RequestQueue queue;
     private SharedPreferences preferences;
 
+    ProgressBar progress;
+
     EditText searchTeams;
     String teamSearch;
 
@@ -51,6 +55,9 @@ public class TeamListFragment extends Fragment {
 
         preferences = getActivity().getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(getContext());
+
+        progress = (ProgressBar) view.findViewById(R.id.teamList_loading);
+        progress.getIndeterminateDrawable().setColorFilter(Color.rgb(255, 197, 71), android.graphics.PorterDuff.Mode.MULTIPLY);
 
         teamSearch = "";
         searchTeams = (EditText) view.findViewById(R.id.teamlist_searchbar);
@@ -94,12 +101,17 @@ public class TeamListFragment extends Fragment {
                 })
         );
 
+        teamsList.setVisibility(View.GONE);
+
         getTeams();
 
         return view;
     }
 
     public void getTeams() {
+        progress.setVisibility(View.VISIBLE);
+        teamsList.setVisibility(View.GONE);
+
         CookieRequest requestTeams = new CookieRequest(Request.Method.POST, "/getTeamListForRegional", preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -116,7 +128,15 @@ public class TeamListFragment extends Fragment {
                         }
                     }
 
+                    if (teams.size() == 0) {
+                        Toast.makeText(getContext(), "No teams with that info have been found.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     sortTeams();
+
+                    progress.setVisibility(View.GONE);
+                    teamsList.setVisibility(View.VISIBLE);
 
                     teamListAdapter.setTeams(teams);
                 } catch (JSONException e) {

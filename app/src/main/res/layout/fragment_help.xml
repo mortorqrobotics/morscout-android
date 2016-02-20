@@ -9,6 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Help"
+        android:textColor="@color/background"
         android:layout_gravity="center"
         android:textSize="40dp"
         android:layout_margin="5dp"/>
@@ -27,7 +28,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:background="@drawable/border_style"
                 android:text="Q. What is MorScout?\n\nA. MorScout is an FRC scouting application used to record match details and team strengths and weaknesses. This helps us form better strategies with the information collected about teams. MorScout was developed by MorTorq!"
                 android:textSize="20dp" />
@@ -37,7 +39,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:background="@drawable/border_style"
                 android:text="Q. What is the search bar for in the 'all matches' page?\n\nA. The search bar in the 'all matches' page can be used to search for specific team numbers, for example, all the matches in which team 1515 is participating, or it can be used to search for progress levels like 'none', '3 of 6', or 'complete', and it can be used to search for match times."
                 android:textSize="20dp" />

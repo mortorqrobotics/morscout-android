@@ -10,7 +10,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Feedback"
-        android:textSize="40dp" />
+        android:textSize="40dp"
+        android:textColor="@color/background"/>
 
     <EditText
         android:id="@+id/feedback_teamNumber"

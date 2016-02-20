@@ -1,6 +1,7 @@
 package org.team1515.morscout.fragment;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +47,8 @@ public class MatchesFragment extends Fragment {
     EditText searchMatches;
     String matchSearch;
 
+    ProgressBar progress;
+
     List<Match> matches;
 
     RecyclerView matchesList;
@@ -56,6 +60,9 @@ public class MatchesFragment extends Fragment {
 
         preferences = getActivity().getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(getContext());
+
+        progress = (ProgressBar) view.findViewById(R.id.matchList_loading);
+        progress.getIndeterminateDrawable().setColorFilter(Color.rgb(255, 197, 71), android.graphics.PorterDuff.Mode.MULTIPLY);
 
         matchSearch = "";
         searchMatches = (EditText) view.findViewById(R.id.matches_searchbar);
@@ -99,12 +106,17 @@ public class MatchesFragment extends Fragment {
                 })
         );
 
+        matchesList.setVisibility(View.GONE);
+
         getMatches();
 
         return view;
     }
 
     public void getMatches() {
+        progress.setVisibility(View.VISIBLE);
+        matchesList.setVisibility(View.GONE);
+
         CookieRequest requestMatches = new CookieRequest(Request.Method.POST, "/getMatchesForCurrentRegional", preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -130,7 +142,15 @@ public class MatchesFragment extends Fragment {
                         }
                     }
 
+                    if (matches.size() == 0) {
+                        Toast.makeText(getContext(), "No matches with that info have been found.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     sortMatches();
+
+                    progress.setVisibility(View.GONE);
+                    matchesList.setVisibility(View.VISIBLE);
 
                     matchListAdapter.setMatches(matches);
                 } catch (Exception e) {
