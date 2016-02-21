@@ -14,17 +14,6 @@
         android:textColor="@color/background"/>
 
     <EditText
-        android:id="@+id/feedback_teamNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="125dp"
-        android:background="@drawable/text_box"
-        android:hint="Team number"
-        android:textColor="#000000"
-        android:textColorHint="#848484" />
-
-    <EditText
         android:id="@+id/feedback_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

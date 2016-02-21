@@ -31,7 +31,6 @@ public class FeedbackFragment extends Fragment {
     private RequestQueue queue;
     private SharedPreferences preferences;
 
-    EditText teamNumberText;
     EditText feedbackText;
 
     Button submitFeedback;
@@ -44,7 +43,6 @@ public class FeedbackFragment extends Fragment {
         preferences = getActivity().getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(getContext());
 
-        teamNumberText = (EditText) view.findViewById(R.id.feedback_teamNumber);
         feedbackText = (EditText) view.findViewById(R.id.feedback_text);
 
         submitFeedback = (Button) view.findViewById(R.id.feedback_submit);
@@ -69,15 +67,7 @@ public class FeedbackFragment extends Fragment {
     }
 
     public void sendFeedback() {
-
-        String teamNumber = teamNumberText.getText().toString();
         String content = feedbackText.getText().toString();
-
-        if (teamNumber.trim().isEmpty()) {
-            teamNumberText.setText("");
-            teamNumberText.setHintTextColor(Color.RED);
-            isEmpty = true;
-        }
 
         if (content.trim().isEmpty()) {
             feedbackText.setText("");
@@ -91,7 +81,6 @@ public class FeedbackFragment extends Fragment {
         }
 
         Map<String, String> params = new HashMap<>();
-        params.put("teamNumber", teamNumber);
         params.put("content", content);
 
         CookieRequest sendFeedback = new CookieRequest(Request.Method.POST, "/sendFeedback", params, preferences, new Response.Listener<String>() {
@@ -100,7 +89,6 @@ public class FeedbackFragment extends Fragment {
                 try {
                     Toast.makeText(getContext(), response, Toast.LENGTH_SHORT).show();
                     feedbackText.setText("");
-                    teamNumberText.setText("");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -34,7 +34,6 @@ import org.json.JSONObject;
 import org.team1515.morscout.R;
 import org.team1515.morscout.entity.FormItem;
 import org.team1515.morscout.fragment.main.FeedbackFragment;
-import org.team1515.morscout.fragment.main.HelpFragment;
 import org.team1515.morscout.fragment.main.HomeFragment;
 import org.team1515.morscout.fragment.main.MatchesFragment;
 import org.team1515.morscout.fragment.main.SettingsFragment;
@@ -56,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             matchesFrag,
             teamListFrag,
             settingsFrag,
-            helpFrag,
             feedbackFrag;
 
     // Navigation Drawer
@@ -76,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         matchesFrag = new MatchesFragment();
         teamListFrag = new TeamListFragment();
         settingsFrag = new SettingsFragment();
-        helpFrag = new HelpFragment();
         feedbackFrag = new FeedbackFragment();
 
         //Set default fragment
@@ -91,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null) {
+        if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
@@ -124,21 +121,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             JSONArray formItemArray = new JSONArray(response);
 
                             List<FormItem> formItems = new ArrayList<>();
-                            for(int i = 0; i < formItemArray.length(); i++) {
+                            for (int i = 0; i < formItemArray.length(); i++) {
                                 JSONObject formItemObject = formItemArray.getJSONObject(i);
 
                                 JSONArray optionArray = formItemObject.getJSONArray("options");
                                 List<String> options = new ArrayList<>();
-                                for(int j = 0; j < optionArray.length(); j++) {
+                                for (int j = 0; j < optionArray.length(); j++) {
                                     options.add(optionArray.getString(j));
                                 }
 
                                 formItems.add(new FormItem(formItemObject.getString("_id"), formItemObject.getString("name"),
-                                        formItemObject.getString("type"), options));
+                                        formItemObject.getString("type"), options, formItemObject.getInt("min"), formItemObject.getInt("max")));
                             }
 
                             //Store form
-                            preferences.edit().putString("matchForm", new Gson().toJson(formItems, new TypeToken<List<FormItem>>(){}.getType())).apply();
+                            preferences.edit().putString("matchForm", new Gson().toJson(formItems, new TypeToken<List<FormItem>>() {
+                            }.getType())).apply();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -219,12 +217,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 transaction.replace(R.id.main_frame, settingsFrag);
                 break;
             case R.id.nav_item_5:
-                transaction.replace(R.id.main_frame, helpFrag);
-                break;
-            case R.id.nav_item_6:
                 transaction.replace(R.id.main_frame, feedbackFrag);
                 break;
-            case R.id.nav_item_7:
+            case R.id.nav_item_6:
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setMessage("Are you sure you want to logout?");
                 builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {

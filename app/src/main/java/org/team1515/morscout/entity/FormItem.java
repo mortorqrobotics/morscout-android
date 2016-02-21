@@ -7,12 +7,16 @@ public class FormItem extends Entity {
     private String name;
     private String type;
     private List<String> options;
+    private int min;
+    private int max;
 
-    public FormItem(String id, String name, String type, List<String> options) {
+    public FormItem(String id, String name, String type, List<String> options, int min, int max) {
         super(id);
         this.name = name;
         this.type = type;
         this.options = options;
+        this.min = min;
+        this.max = max;
     }
 
     public String getName() {
@@ -26,4 +30,8 @@ public class FormItem extends Entity {
     public List<String> getOptions() {
         return options;
     }
+
+    public int getMin() { return min; }
+
+    public int getMax() { return max; }
 }
