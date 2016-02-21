@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -67,8 +68,11 @@ public class LoginActivity extends AppCompatActivity {
         //If not logged in, create login activity
         setContentView(R.layout.activity_login);
 
+        // Set up action bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        TextView toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "Exo2-Medium.ttf");
+        toolbarTitle.setTypeface(typeface);
     }
 
     public void login(View view) {
@@ -139,7 +143,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void register(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
 }

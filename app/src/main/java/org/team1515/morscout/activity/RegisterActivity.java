@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
@@ -39,8 +40,11 @@ public class RegisterActivity extends AppCompatActivity {
         preferences = getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(this);
 
+        // Set up action bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        TextView toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "Exo2-Medium.ttf");
+        toolbarTitle.setTypeface(typeface);
     }
 
     public void register(View view) {

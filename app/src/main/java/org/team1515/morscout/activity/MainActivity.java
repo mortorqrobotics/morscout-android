@@ -121,7 +121,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onResponse(String response) {
                         try {
-                            System.out.println(response);
                             JSONArray formItemArray = new JSONArray(response);
 
                             List<FormItem> formItems = new ArrayList<>();

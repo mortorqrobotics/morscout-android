@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@color/gray">
 
     <include layout="@layout/actionbar"/>
 
@@ -52,8 +52,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/register_registerButton"
             android:text="@string/register_registerButton"
-            android:onClick="register"
-            android:textColor="#000000"/>
+            android:onClick="register" />
 
     </LinearLayout>
 
