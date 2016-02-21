@@ -101,7 +101,12 @@ public class MatchesFragment extends Fragment {
                     @Override
                     public void onItemClick(View view, int position) {
                         Intent intent = new Intent(getActivity(), MatchActivity.class);
-                        intent.putExtra("matchId", matches.get(position).getId());
+
+                        Match match = matches.get(position);
+                        intent.putExtra("matchId", match.getId());
+                        intent.putExtra("blueAlliance", match.getBlueAlliance());
+                        intent.putExtra("redAlliance", match.getRedAlliance());
+
                         startActivity(intent);
                     }
                 })
@@ -149,23 +154,32 @@ public class MatchesFragment extends Fragment {
     public void createMatches(String json) {
         try {
             matches = new ArrayList<>();
-            JSONArray jsonArray = new JSONArray(json);
+            JSONArray matchArray = new JSONArray(json);
 
 
             //Create match list
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject match = jsonArray.getJSONObject(i);
+            for (int i = 0; i < matchArray.length(); i++) {
+                JSONObject matchObject = matchArray.getJSONObject(i);
 
-                JSONObject alliances = match.getJSONObject("alliances");
+                //Add all qualifying matches
+                if(matchObject.getString("comp_level").equals("qm")) {
 
-                JSONObject blue = alliances.getJSONObject("blue");
-                JSONObject red = alliances.getJSONObject("red");
+                    JSONObject alliancesObject = matchObject.getJSONObject("alliances");
 
-                JSONArray blueAlliance = blue.getJSONArray("teams");
-                JSONArray redAlliance = red.getJSONArray("teams");
+                    JSONArray blueArray = alliancesObject.getJSONObject("blue").getJSONArray("teams");
+                    JSONArray redArray = alliancesObject.getJSONObject("red").getJSONArray("teams");
 
-                if(match.getString("comp_level").equals("qm")) {
-                        matches.add(new Match(match.getString("key"), "Match " + match.getString("match_number"), match.getString("comp_level"), blueAlliance, redAlliance));
+                    String[] blueAlliance = new String[3];
+                    for (int j = 0; j < blueAlliance.length; j++) {
+                        blueAlliance[j] = blueArray.getString(j).replaceAll("frc", "");
+                    }
+
+                    String[] redAlliance = new String[3];
+                    for (int j = 0; j < redAlliance.length; j++) {
+                        redAlliance[j] = redArray.getString(j).replaceAll("frc", "");
+                    }
+
+                    matches.add(new Match(matchObject.getString("key"), "Match " + matchObject.getString("match_number"), matchObject.getString("comp_level"), blueAlliance, redAlliance));
                 }
             }
 

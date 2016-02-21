@@ -4,18 +4,14 @@ import org.json.JSONArray;
 
 import java.util.List;
 
-/**
- * Created by prozwood on 2/9/16.
- */
 public class Match extends Entity {
 
-    String id;
     String number;
     String compLevel;
-    JSONArray blueAlliance;
-    JSONArray redAlliance;
+    String[] blueAlliance;
+    String[] redAlliance;
 
-    public Match(String id, String number, String compLevel, JSONArray blueAlliance, JSONArray redAlliance) {
+    public Match(String id, String number, String compLevel, String[] blueAlliance, String[] redAlliance) {
         super(id);
         this.number = number;
         this.compLevel = compLevel;
@@ -28,15 +24,11 @@ public class Match extends Entity {
         return number;
     }
 
-    public String getCompLevel() {
-        return compLevel;
-    }
-
-    public JSONArray getBlueAlliance() {
+    public String[] getBlueAlliance() {
         return blueAlliance;
     }
 
-    public JSONArray getRedAlliance() {
+    public String[] getRedAlliance() {
         return redAlliance;
     }
 }

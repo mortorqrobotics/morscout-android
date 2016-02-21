@@ -13,9 +13,6 @@ import org.team1515.morscout.entity.Match;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by prozwood on 2/14/16.
- */
 public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.ViewHolder> {
     private List<Match> matches;
 
@@ -48,11 +45,7 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.View
         blueTeams[2] = (TextView) holder.layout.findViewById(R.id.matchlist_blueTeam3);
 
         for(int i = 0; i < 3; i++) {
-            try {
-                blueTeams[i].setText(currentMatch.getBlueAlliance().getString(i).replaceAll("frc", ""));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            blueTeams[i].setText(currentMatch.getBlueAlliance()[i]);
         }
 
         TextView[] redTeams = new TextView[3];
@@ -61,29 +54,8 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.View
         redTeams[2] = (TextView) holder.layout.findViewById(R.id.matchlist_redTeam3);
 
         for(int i = 0; i < 3; i++) {
-            try {
-                redTeams[i].setText(currentMatch.getRedAlliance().getString(i).replaceAll("frc", ""));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            redTeams[i].setText(currentMatch.getRedAlliance()[i]);
         }
-//
-//        String teams = currentMatch.getBlueAlliance().toString();
-//        teams = teams.replaceAll("\"", "");
-//        teams = teams.replace("[", "");
-//        teams = teams.replace("]", "");
-//        teams = teams.replaceAll(",", "\n");
-//        teams = teams.replaceAll("frc", "");
-//        blueTeams.setText(teams);
-//
-//        TextView redTeams = (TextView) holder.layout.findViewById(R.id.matchlist_redTeams);
-//        teams = currentMatch.getRedAlliance().toString();
-//        teams = teams.replaceAll("\"", "");
-//        teams = teams.replace("[", "");
-//        teams = teams.replace("]", "");
-//        teams = teams.replaceAll(",", "\n");
-//        teams = teams.replaceAll("frc", "");
-//        redTeams.setText(teams);
     }
 
     @Override
