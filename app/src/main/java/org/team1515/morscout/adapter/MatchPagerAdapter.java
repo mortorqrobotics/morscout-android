@@ -4,10 +4,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import org.team1515.morscout.fragment.main.HomeFragment;
 import org.team1515.morscout.fragment.match.AllMatchesFragment;
+import org.team1515.morscout.fragment.match.ScoutFragment;
 import org.team1515.morscout.fragment.match.TeamScoutFragment;
-import org.team1515.morscout.fragment.match.ViewDataFragment;
+import org.team1515.morscout.fragment.match.ViewFragment;
 
 public class MatchPagerAdapter extends FragmentPagerAdapter {
 
@@ -22,7 +22,7 @@ public class MatchPagerAdapter extends FragmentPagerAdapter {
         this.size = 3;
 
         scoutFrag = new TeamScoutFragment();
-        viewFrag = new ViewDataFragment();
+        viewFrag = new ViewFragment();
         allMatchesFrag = new AllMatchesFragment();
     }
 
@@ -30,7 +30,7 @@ public class MatchPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return scoutFrag;
+                return new ScoutFragment();
             case 1:
                 return viewFrag;
             case 2:

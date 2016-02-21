@@ -38,7 +38,7 @@ public class TeamListAdapter extends RecyclerView.Adapter<TeamListAdapter.ViewHo
         Team currentTeam = teams.get(position);
 
         TextView teamNumber = (TextView) holder.layout.findViewById(R.id.teamlist_teamNumber);
-        teamNumber.setText(currentTeam.getNumber());
+        teamNumber.setText(Integer.toString(currentTeam.getNumber()));
 
         TextView teamName = (TextView) holder.layout.findViewById(R.id.teamlist_teamName);
         teamName.setText(currentTeam.getName());

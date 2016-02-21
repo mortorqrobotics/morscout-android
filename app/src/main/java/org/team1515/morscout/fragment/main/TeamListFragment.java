@@ -150,7 +150,7 @@ public class TeamListFragment extends Fragment {
             JSONArray jsonArray = new JSONArray(json);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject team = jsonArray.getJSONObject(i);
-                teams.add(new Team(team.getString("key"), "Team " + team.getString("team_number"), team.getString("nickname")));
+                teams.add(new Team(team.getString("key"), team.getInt("team_number"), team.getString("nickname")));
             }
 
             sortTeams();
@@ -174,7 +174,7 @@ public class TeamListFragment extends Fragment {
             for (int i = 0; i < teams.size() - 1; i++) {
                 Team first = teams.get(i);
                 Team last = teams.get(i + 1);
-                if (Integer.parseInt(first.getNumber().substring(5)) > Integer.parseInt(last.getNumber().substring(5))) {
+                if (first.getNumber() > last.getNumber()) {
                     teams.set(i, last);
                     teams.set(i + 1, first);
                     hasChanged = true;

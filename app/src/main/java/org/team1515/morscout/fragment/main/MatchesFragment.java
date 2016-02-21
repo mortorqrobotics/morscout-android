@@ -22,6 +22,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,9 +36,6 @@ import org.team1515.morscout.network.CookieRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by prozwood on 1/25/16.
- */
 public class MatchesFragment extends Fragment {
     private RequestQueue queue;
     private SharedPreferences preferences;
@@ -101,12 +99,7 @@ public class MatchesFragment extends Fragment {
                     @Override
                     public void onItemClick(View view, int position) {
                         Intent intent = new Intent(getActivity(), MatchActivity.class);
-
-                        Match match = matches.get(position);
-                        intent.putExtra("matchId", match.getId());
-                        intent.putExtra("blueAlliance", match.getBlueAlliance());
-                        intent.putExtra("redAlliance", match.getRedAlliance());
-
+                        intent.putExtra("match", new Gson().toJson(matches.get(position), Match.class));
                         startActivity(intent);
                     }
                 })
@@ -138,20 +131,20 @@ public class MatchesFragment extends Fragment {
             @Override
             public void onResponse(String response) {
                 preferences.edit().putString("matches", response).apply();
-                createMatches(response);
+                initMatches(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
-                createMatches(preferences.getString("matches", "[]"));
+                initMatches(preferences.getString("matches", "[]"));
                 refreshLayout.setRefreshing(false);
             }
         });
         queue.add(requestMatches);
     }
 
-    public void createMatches(String json) {
+    public void initMatches(String json) {
         try {
             matches = new ArrayList<>();
             JSONArray matchArray = new JSONArray(json);
@@ -179,7 +172,7 @@ public class MatchesFragment extends Fragment {
                         redAlliance[j] = redArray.getString(j).replaceAll("frc", "");
                     }
 
-                    matches.add(new Match(matchObject.getString("key"), "Match " + matchObject.getString("match_number"), matchObject.getString("comp_level"), blueAlliance, redAlliance));
+                    matches.add(new Match(matchObject.getString("key"), matchObject.getInt("match_number"), matchObject.getString("comp_level"), blueAlliance, redAlliance));
                 }
             }
 
@@ -204,7 +197,7 @@ public class MatchesFragment extends Fragment {
             for (int i = 0; i < matches.size() - 1; i++) {
                 Match first = matches.get(i);
                 Match last = matches.get(i + 1);
-                if (Integer.parseInt(first.getName().substring(6)) > Integer.parseInt(last.getName().substring(6))) {
+                if (first.getNumber() > last.getNumber()) {
                     matches.set(i, last);
                     matches.set(i + 1, first);
                     hasChanged = true;

@@ -2,9 +2,6 @@ package org.team1515.morscout.fragment.match;
 
 import android.support.v4.app.Fragment;
 
-/**
- * Created by mortorq on 2/20/16.
- */
-public class ViewDataFragment extends Fragment {
+public class ViewFragment extends Fragment {
     //TODO: request "/getMatchReports"
 }

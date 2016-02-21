@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.json.JSONException;
 import org.team1515.morscout.R;
 import org.team1515.morscout.entity.Match;
 
@@ -37,7 +36,7 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.View
         Match currentMatch = matches.get(position);
 
         TextView MatchNumber = (TextView) holder.layout.findViewById(R.id.matchlist_matchNumber);
-        MatchNumber.setText(currentMatch.getName());
+        MatchNumber.setText("Match " + currentMatch.getNumber());
 
         TextView[] blueTeams = new TextView[3];
         blueTeams[0] = (TextView) holder.layout.findViewById(R.id.matchlist_blueTeam1);

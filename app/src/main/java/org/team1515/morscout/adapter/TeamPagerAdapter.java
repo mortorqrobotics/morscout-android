@@ -4,8 +4,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import org.team1515.morscout.fragment.main.HomeFragment;
-import org.team1515.morscout.fragment.match.MatchScoutFragment;
 import org.team1515.morscout.fragment.match.TeamScoutFragment;
 import org.team1515.morscout.fragment.team.GalleryFragment;
 import org.team1515.morscout.fragment.team.MatchReportsFragment;

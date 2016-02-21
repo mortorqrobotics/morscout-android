@@ -25,8 +25,14 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.team1515.morscout.R;
+import org.team1515.morscout.entity.FormItem;
 import org.team1515.morscout.fragment.main.FeedbackFragment;
 import org.team1515.morscout.fragment.main.HelpFragment;
 import org.team1515.morscout.fragment.main.HomeFragment;
@@ -34,6 +40,11 @@ import org.team1515.morscout.fragment.main.MatchesFragment;
 import org.team1515.morscout.fragment.main.SettingsFragment;
 import org.team1515.morscout.fragment.main.TeamListFragment;
 import org.team1515.morscout.network.CookieRequest;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -94,6 +105,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Listen for navigation events
         NavigationView navigationView = (NavigationView) findViewById(R.id.main_nav);
         navigationView.setNavigationItemSelectedListener(this);
+
+        getScoutForm("match");
+    }
+
+    private void getScoutForm(String context) {
+        Map<String, String> params = new HashMap<>(1);
+        params.put("context", context);
+
+        CookieRequest formRequest = new CookieRequest(Request.Method.POST,
+                "/getScoutForm",
+                params,
+                preferences,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            System.out.println(response);
+                            JSONArray formItemArray = new JSONArray(response);
+
+                            List<FormItem> formItems = new ArrayList<>();
+                            for(int i = 0; i < formItemArray.length(); i++) {
+                                JSONObject formItemObject = formItemArray.getJSONObject(i);
+
+                                JSONArray optionArray = formItemObject.getJSONArray("options");
+                                List<String> options = new ArrayList<>();
+                                for(int j = 0; j < optionArray.length(); j++) {
+                                    options.add(optionArray.getString(j));
+                                }
+
+                                formItems.add(new FormItem(formItemObject.getString("_id"), formItemObject.getString("name"),
+                                        formItemObject.getString("type"), options));
+                            }
+
+                            //Store form
+                            preferences.edit().putString("matchForm", new Gson().toJson(formItems, new TypeToken<List<FormItem>>(){}.getType())).apply();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                }
+        );
+        queue.add(formRequest);
     }
 
     public boolean onKeyUp(int keyCode, KeyEvent event) {

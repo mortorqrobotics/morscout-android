@@ -6,12 +6,12 @@ import java.util.List;
 
 public class Match extends Entity {
 
-    String number;
+    int number;
     String compLevel;
     String[] blueAlliance;
     String[] redAlliance;
 
-    public Match(String id, String number, String compLevel, String[] blueAlliance, String[] redAlliance) {
+    public Match(String id, int number, String compLevel, String[] blueAlliance, String[] redAlliance) {
         super(id);
         this.number = number;
         this.compLevel = compLevel;
@@ -19,8 +19,7 @@ public class Match extends Entity {
         this.redAlliance = redAlliance;
     }
 
-    @Override
-    public String getName() {
+    public int getNumber() {
         return number;
     }
 
