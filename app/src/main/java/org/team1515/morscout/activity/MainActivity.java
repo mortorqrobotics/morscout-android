@@ -130,8 +130,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     options.add(optionArray.getString(j));
                                 }
 
-                                formItems.add(new FormItem(formItemObject.getString("_id"), formItemObject.getString("name"),
-                                        formItemObject.getString("type"), options, formItemObject.getInt("min"), formItemObject.getInt("max")));
+                                String id = formItemObject.getString("_id");
+                                String name = formItemObject.getString("name");
+                                String type = formItemObject.getString("type");
+
+                                if(formItemObject.getString("type").equals("number")) {
+                                    formItems.add(new FormItem(id, name, type, options, formItemObject.getInt("min"), formItemObject.getInt("max")));
+                                } else {
+                                    formItems.add(new FormItem(id, name, type, options));
+                                }
+
                             }
 
                             //Store form

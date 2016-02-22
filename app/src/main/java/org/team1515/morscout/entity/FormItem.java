@@ -19,6 +19,10 @@ public class FormItem extends Entity {
         this.max = max;
     }
 
+    public FormItem(String id, String name, String type, List<String> options) {
+        this(id, name, type, options, 0, 0);
+    }
+
     public String getName() {
         return name;
     }
