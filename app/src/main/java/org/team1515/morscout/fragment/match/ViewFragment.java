@@ -14,6 +14,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.team1515.morscout.R;
 import org.team1515.morscout.network.CookieRequest;
 
@@ -36,7 +38,15 @@ public class ViewFragment extends Fragment {
         CookieRequest requestMatchReports = new CookieRequest(Request.Method.POST, "/getMatchReports", preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                System.out.println(response);
+                try {
+                    JSONObject reports = new JSONObject(response);
+                    JSONArray yourTeam = reports.getJSONArray("yourTeam");
+                    JSONArray otherTeams = reports.getJSONArray("otherTeams");
+                    System.out.println(yourTeam.toString());
+                    System.out.println(otherTeams.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }, new Response.ErrorListener() {
             @Override

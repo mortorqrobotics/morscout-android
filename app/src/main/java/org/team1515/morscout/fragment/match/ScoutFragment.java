@@ -20,29 +20,46 @@ import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.team1515.morscout.R;
 import org.team1515.morscout.entity.FormItem;
+import org.team1515.morscout.network.CookieRequest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ScoutFragment extends Fragment {
+    private RequestQueue queue;
     private SharedPreferences preferences;
 
     List<FormItem> formItems;
 
-    String[] alphabet = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","o","q","r","s","t","u","v","w","x","y","z"};
+    Button submit;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_matchscout, container, false);
 
         preferences = getActivity().getSharedPreferences(null, 0);
+        queue = Volley.newRequestQueue(getContext());
+
+        submit = (Button) view.findViewById(R.id.matchscout_submit);
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitForm();
+            }
+        });
 
         createForm((LinearLayout) view.findViewById(R.id.matchscout_form));
 
@@ -80,12 +97,31 @@ public class ScoutFragment extends Fragment {
 
                     //Stores the current value in the textbox
                     final int value[] = {0};
-                    final int min = 0;
-                    final int max = 10;
+                    final int min = formItem.getMin();
+                    final int max = formItem.getMax();
 
                     // Editable text box
                     final EditText editText = new EditText(view.getContext());
                     editText.setText("" + value[0]);
+                    editText.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                            if (editText.getText().toString().isEmpty()) {
+                                value[0] = 0;
+                                editText.setText("" + value[0]);
+                            }
+                        }
+                    });
 
                     // Decrement button
                     Button decrementButton = new Button(view.getContext());
@@ -133,5 +169,23 @@ public class ScoutFragment extends Fragment {
                 view.addView(item);
             }
         }
+    }
+
+    public void submitForm() {
+        Map<String, String> params = new HashMap<>();
+        params.put("context", "match");
+
+        CookieRequest submitionRequest = new CookieRequest(Request.Method.POST, "/getRegionalsForTeam", params, preferences, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                System.out.println(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        queue.add(submitionRequest);
     }
 }

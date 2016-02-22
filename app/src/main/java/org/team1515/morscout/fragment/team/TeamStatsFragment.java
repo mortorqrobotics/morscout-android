@@ -46,7 +46,7 @@ public class TeamStatsFragment extends Fragment {
         CookieRequest requestTeamReports = new CookieRequest(Request.Method.POST, "/getTeamPrevEventStats", params, preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                System.out.println(response);
+                System.out.println("team stats: " + response);
             }
         }, new Response.ErrorListener() {
             @Override

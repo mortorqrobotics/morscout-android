@@ -42,7 +42,7 @@ public class GalleryFragment extends Fragment {
         CookieRequest requestGallery = new CookieRequest(Request.Method.POST, "/getGallery", preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                System.out.println(response);
+                System.out.println("gallery" + response);
             }
         }, new Response.ErrorListener() {
             @Override

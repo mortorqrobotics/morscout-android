@@ -42,7 +42,7 @@ public class TeamScoutFragment extends Fragment {
         CookieRequest requestForm = new CookieRequest(Request.Method.POST, "/getScoutForm", params, preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                System.out.print(response);
+                System.out.print("scout form: " + response);
             }
         }, new Response.ErrorListener() {
             @Override

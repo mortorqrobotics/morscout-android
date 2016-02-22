@@ -46,7 +46,7 @@ public class PitReportsFragment extends Fragment {
         CookieRequest requestTeamReports = new CookieRequest(Request.Method.POST, "/getTeamReports", params, preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                System.out.println(response);
+                System.out.println("team reports: " + response);
             }
         }, new Response.ErrorListener() {
             @Override
