@@ -3,6 +3,7 @@ package org.team1515.morscout.fragment.match;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,6 +19,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,9 +32,13 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.team1515.morscout.R;
 import org.team1515.morscout.entity.FormItem;
 import org.team1515.morscout.network.CookieRequest;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,13 +93,17 @@ public class ScoutFragment extends Fragment {
                     ((CheckBox) item).setText(formItem.getName());
                     break;
                 case "radio":
-                    item = new RadioButton(view.getContext());
-                    ((RadioButton) item).setText(formItem.getName());
+                    item = new RadioGroup(view.getContext());
+                    for (int i = 0; i < formItem.getOptions().size(); i++) {
+                        RadioButton button = new RadioButton(view.getContext());
+                        button.setText(formItem.getOptions().get(i));
+                        ((RadioGroup)item).addView(button);
+                    }
                     break;
                 case "number":
-                    LinearLayout boxGroup = new LinearLayout(view.getContext());
-                    boxGroup.setOrientation(LinearLayout.HORIZONTAL);
-                    boxGroup.setGravity(Gravity.CENTER);
+                    item = new LinearLayout(view.getContext());
+                    ((LinearLayout) item).setOrientation(LinearLayout.HORIZONTAL);
+                    ((LinearLayout) item).setGravity(Gravity.CENTER);
 
                     //Stores the current value in the textbox
                     final int value[] = {0};
@@ -147,10 +157,9 @@ public class ScoutFragment extends Fragment {
                         }
                     });
 
-                    boxGroup.addView(decrementButton);
-                    boxGroup.addView(editText);
-                    boxGroup.addView(incrementButton);
-                    view.addView(boxGroup);
+                    ((LinearLayout) item).addView(decrementButton);
+                    ((LinearLayout) item).addView(editText);
+                    ((LinearLayout) item).addView(incrementButton);
                     break;
                 case "dropdown":
                     List<String> choices = new ArrayList<>();
@@ -165,6 +174,7 @@ public class ScoutFragment extends Fragment {
             }
 
             if (item != null) {
+                item.setTag(formItem.getName());
                 item.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                 view.addView(item);
             }
@@ -172,10 +182,42 @@ public class ScoutFragment extends Fragment {
     }
 
     public void submitForm() {
-        Map<String, String> params = new HashMap<>();
-        params.put("context", "match");
+        JSONArray data = new JSONArray();
 
-        CookieRequest submitionRequest = new CookieRequest(Request.Method.POST, "/getRegionalsForTeam", params, preferences, new Response.Listener<String>() {
+        LinearLayout form = (LinearLayout) getView().findViewById(R.id.matchscout_form);
+        for(int i = 0; i < form.getChildCount(); i++) {
+            View item = form.getChildAt(i);
+
+            JSONObject dataObject = new JSONObject();
+            try {
+                dataObject.put("name", item.getTag().toString());
+
+                if(item instanceof EditText) { // Text
+                    dataObject.put("value", ((EditText) item).getText().toString());
+                } else if (item instanceof CheckBox) {// Check
+                    dataObject.put("value", ((CheckBox) item).isChecked());
+                } else if (item instanceof RadioGroup) { // Radio
+                    dataObject.put("value", ((RadioGroup) item).getCheckedRadioButtonId());
+                } else if (item instanceof LinearLayout) { // Number
+//                    dataObject.put("value", ((LinearLayout) item).getText().toString());
+                } else if (item instanceof Spinner) { // Dropdown
+                    dataObject.put("value", ((Spinner) item).getSelectedItemPosition());
+                } else {
+                    //Something screwy
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+
+        Map<String, String> params = new HashMap<>();
+        params.put("data", "");
+        params.put("team", "");
+        params.put("context", "match");
+        params.put("match", "");
+
+        CookieRequest submissionRequest = new CookieRequest(Request.Method.POST, "/getRegionalsForTeam", params, preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 System.out.println(response);
@@ -186,6 +228,6 @@ public class ScoutFragment extends Fragment {
                 Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
             }
         });
-        queue.add(submitionRequest);
+        queue.add(submissionRequest);
     }
 }

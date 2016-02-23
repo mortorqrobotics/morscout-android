@@ -9,7 +9,7 @@
     <color name="background">#000</color>
     <color name="title">#000</color>
     <color name="blueAlliance">#99007AFF</color>
-    <color name="blueAllianceSelected">#55007AFF</color>
+    <color name="blueAllianceSelected">#007AFF</color>
     <color name="redAlliance">#8CFF0000</color>
-    <color name="redAllianceSelected">#59FF0000</color>
+    <color name="redAllianceSelected">#FF0000</color>
 </resources>
