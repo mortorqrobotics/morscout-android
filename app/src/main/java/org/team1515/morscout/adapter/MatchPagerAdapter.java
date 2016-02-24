@@ -1,40 +1,46 @@
 package org.team1515.morscout.adapter;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import org.team1515.morscout.fragment.match.AllMatchesFragment;
 import org.team1515.morscout.fragment.match.ScoutFragment;
-import org.team1515.morscout.fragment.match.TeamScoutFragment;
 import org.team1515.morscout.fragment.match.ViewFragment;
 
 public class MatchPagerAdapter extends FragmentPagerAdapter {
 
     private int size;
-
-    private Fragment scoutFrag,
-            viewFrag,
-            allMatchesFrag;
+    private int team;
+    private int match;
 
     public MatchPagerAdapter(FragmentManager manager) {
         super(manager);
         this.size = 3;
-
-        scoutFrag = new TeamScoutFragment();
-        viewFrag = new ViewFragment();
-        allMatchesFrag = new AllMatchesFragment();
+        team = 0;
+        match = 0;
     }
 
     @Override
     public Fragment getItem(int position) {
+
+        Fragment fragment;
+
         switch (position) {
             case 0:
-                return new ScoutFragment();
+                fragment = new ScoutFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt("team", team);
+                bundle.putInt("match", match);
+                fragment.setArguments(bundle);
+                return fragment;
             case 1:
-                return viewFrag;
+                fragment = new ViewFragment();
+                return fragment;
             case 2:
-                return allMatchesFrag;
+                fragment = new AllMatchesFragment();
+                return fragment;
             default:
                 return null;
         }
@@ -57,5 +63,13 @@ public class MatchPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return size;
+    }
+
+    public void setTeam(int team) {
+        this.team = team;
+    }
+
+    public void setMatch(int match) {
+        this.match = match;
     }
 }

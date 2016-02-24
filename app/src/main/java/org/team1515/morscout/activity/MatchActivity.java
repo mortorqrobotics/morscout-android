@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,6 +25,7 @@ import org.json.JSONObject;
 import org.team1515.morscout.R;
 import org.team1515.morscout.adapter.MatchPagerAdapter;
 import org.team1515.morscout.entity.Match;
+import org.team1515.morscout.fragment.match.ScoutFragment;
 import org.team1515.morscout.network.CookieRequest;
 
 import java.util.HashMap;
@@ -42,7 +44,7 @@ public class MatchActivity extends AppCompatActivity {
 
     Match match;
 
-    int currentTeam;
+    private int currentTeam;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,6 +89,8 @@ public class MatchActivity extends AppCompatActivity {
                 currentTeam = Integer.parseInt(((TextView) view).getText().toString());
 
                 pagerAdapter = new MatchPagerAdapter(getSupportFragmentManager());
+                pagerAdapter.setTeam(currentTeam);
+                pagerAdapter.setMatch(match.getNumber());
                 viewPager.setAdapter(pagerAdapter);
 
                 tabLayout.setVisibility(View.VISIBLE);
@@ -110,6 +114,9 @@ public class MatchActivity extends AppCompatActivity {
                 currentTeam = Integer.parseInt(((TextView) view).getText().toString());
 
                 pagerAdapter = new MatchPagerAdapter(getSupportFragmentManager());
+                pagerAdapter.setTeam(currentTeam);
+                pagerAdapter.setMatch(match.getNumber());
+
                 viewPager.setAdapter(pagerAdapter);
 
                 tabLayout.setVisibility(View.VISIBLE);
@@ -125,6 +132,7 @@ public class MatchActivity extends AppCompatActivity {
         blueTeamViews[2] = (TextView) findViewById(R.id.match_blueTeam3);
 
         String[] blueAlliance = match.getBlueAlliance();
+
         for (int i = 0; i < 3; i++) {
             blueTeamViews[i].setText(blueAlliance[i]);
             blueTeamViews[i].setOnClickListener(blueTeamClick);
@@ -147,7 +155,6 @@ public class MatchActivity extends AppCompatActivity {
         params.put("match", String.valueOf(match.getNumber()));
         params.put("team", String.valueOf(teamNumber));
 
-
         CookieRequest reportsRequest = new CookieRequest(Request.Method.POST,
                 "/getMatchReports",
                 params,
@@ -167,7 +174,7 @@ public class MatchActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        Toast.makeText(viewPager.getContext(), "An error has occurred, please try again later.", Toast.LENGTH_SHORT).show();
                     }
                 }
         );

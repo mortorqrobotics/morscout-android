@@ -190,34 +190,53 @@ public class ScoutFragment extends Fragment {
 
             JSONObject dataObject = new JSONObject();
             try {
-                dataObject.put("name", item.getTag().toString());
-
                 if(item instanceof EditText) { // Text
+                    dataObject.put("name", item.getTag().toString());
                     dataObject.put("value", ((EditText) item).getText().toString());
                 } else if (item instanceof CheckBox) {// Check
+                    dataObject.put("name", item.getTag().toString());
                     dataObject.put("value", ((CheckBox) item).isChecked());
+                } else if (item instanceof TextView) {
+                    dataObject.put("name", item.getTag().toString());
                 } else if (item instanceof RadioGroup) { // Radio
-                    dataObject.put("value", ((RadioGroup) item).getCheckedRadioButtonId());
+                    dataObject.put("name", item.getTag().toString());
+                    RadioButton selectedButton = (RadioButton) ((RadioGroup) item).getChildAt(((RadioGroup) item).indexOfChild(item.findViewById(((RadioGroup) item).getCheckedRadioButtonId())));
+                    if(selectedButton != null) {
+                        dataObject.put("value", selectedButton.getText().toString());
+                    } else {
+                        dataObject.put("value", "");
+                    }
                 } else if (item instanceof LinearLayout) { // Number
-//                    dataObject.put("value", ((LinearLayout) item).getText().toString());
+                    for (int j = 0; j < ((LinearLayout) item).getChildCount(); j++) {
+                        if (((LinearLayout) item).getChildAt(j) instanceof EditText) {
+                            dataObject.put("name", item.getTag().toString());
+                            dataObject.put("value", ((EditText) ((LinearLayout) item).getChildAt(j)).getText().toString());
+                        }
+                    }
                 } else if (item instanceof Spinner) { // Dropdown
-                    dataObject.put("value", ((Spinner) item).getSelectedItemPosition());
+                    dataObject.put("name", item.getTag().toString());
+                    dataObject.put("value", ((Spinner) item).getSelectedItem().toString());
                 } else {
                     //Something screwy
                 }
+
+                data.put(dataObject);
             } catch (JSONException e) {
                 e.printStackTrace();
                 return;
             }
         }
 
-        Map<String, String> params = new HashMap<>();
-        params.put("data", "");
-        params.put("team", "");
-        params.put("context", "match");
-        params.put("match", "");
+        System.out.println(data.toString());
 
-        CookieRequest submissionRequest = new CookieRequest(Request.Method.POST, "/getRegionalsForTeam", params, preferences, new Response.Listener<String>() {
+        Map<String, String> params = new HashMap<>();
+        params.put("data", data.toString());
+        params.put("team", String.valueOf(getArguments().getInt("team")));
+        params.put("context", "match");
+        params.put("match", String.valueOf(getArguments().getInt("match")));
+        System.out.println(getArguments().getInt("match") + "\t" + getArguments().getInt("team"));
+
+        CookieRequest submissionRequest = new CookieRequest(Request.Method.POST, "/submitReport", params, preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 System.out.println(response);
@@ -225,6 +244,7 @@ public class ScoutFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
                 Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
             }
         });
