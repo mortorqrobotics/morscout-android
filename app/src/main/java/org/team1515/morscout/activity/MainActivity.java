@@ -104,9 +104,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         getScoutForm("match");
+        getScoutForm("pit");
     }
 
-    private void getScoutForm(String context) {
+    private void getScoutForm(final String context) {
         Map<String, String> params = new HashMap<>(1);
         params.put("context", context);
 
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             }
 
                             //Store form
-                            preferences.edit().putString("matchForm", new Gson().toJson(formItems, new TypeToken<List<FormItem>>() {
+                            preferences.edit().putString(context + "Form", new Gson().toJson(formItems, new TypeToken<List<FormItem>>() {
                             }.getType())).apply();
                         } catch (JSONException e) {
                             e.printStackTrace();

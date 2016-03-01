@@ -4,11 +4,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import org.team1515.morscout.fragment.match.TeamScoutFragment;
 import org.team1515.morscout.fragment.team.GalleryFragment;
 import org.team1515.morscout.fragment.team.MatchReportsFragment;
 import org.team1515.morscout.fragment.team.PitReportsFragment;
 import org.team1515.morscout.fragment.team.RegionalResultsFragment;
+import org.team1515.morscout.fragment.team.TeamScoutFragment;
 import org.team1515.morscout.fragment.team.TeamStatsFragment;
 
 public class TeamPagerAdapter extends FragmentPagerAdapter {
