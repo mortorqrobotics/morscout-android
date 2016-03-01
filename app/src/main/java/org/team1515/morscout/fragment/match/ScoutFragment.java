@@ -227,21 +227,27 @@ public class ScoutFragment extends Fragment {
             }
         }
 
-        System.out.println(data.toString());
+//        System.out.println(data.toString());
 
         Map<String, String> params = new HashMap<>();
         params.put("data", data.toString());
         params.put("team", String.valueOf(getArguments().getInt("team")));
         params.put("context", "match");
         params.put("match", String.valueOf(getArguments().getInt("match")));
-        System.out.println(getArguments().getInt("match") + "\t" + getArguments().getInt("team"));
+//        System.out.println(getArguments().getInt("match") + "\t" + getArguments().getInt("team"));
 
-        CookieRequest submissionRequest = new CookieRequest(Request.Method.POST, "/submitReport", params, preferences, new Response.Listener<String>() {
+        CookieRequest submissionRequest = new CookieRequest(Request.Method.POST,
+                "/submitReport",
+                params,
+                "application/json",
+                preferences,
+                new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 System.out.println(response);
             }
-        }, new Response.ErrorListener() {
+        },
+                new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();

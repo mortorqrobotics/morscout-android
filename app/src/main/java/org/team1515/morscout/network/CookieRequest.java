@@ -12,6 +12,7 @@ import com.android.volley.toolbox.StringRequest;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -23,18 +24,22 @@ public class CookieRequest extends StringRequest {
     private static final String host = "http://52.88.51.106:8080";
 
     private final Map<String, String> params;
-    private SharedPreferences preferences;
+    private final SharedPreferences preferences;
+    private final String mimeType;
 
-    public CookieRequest(int method, String path, SharedPreferences preferences, Listener<String> listener, ErrorListener errorListener) {
+    public CookieRequest(int method, String path, Map<String, String> params, String mimeType, SharedPreferences preferences, Listener<String> listener, ErrorListener errorListener) {
         super(method, host + path, listener, errorListener);
-        this.params = null;
+        this.params = params;
+        this.mimeType = mimeType;
         this.preferences = preferences;
     }
 
     public CookieRequest(int method, String path, Map<String, String> params, SharedPreferences preferences, Listener<String> listener, ErrorListener errorListener) {
-        super(method, host + path, listener, errorListener);
-        this.params = params;
-        this.preferences = preferences;
+        this(method, path, params, null, preferences, listener, errorListener);
+    }
+
+    public CookieRequest(int method, String path, SharedPreferences preferences, Listener<String> listener, ErrorListener errorListener) {
+        this(method, path, null, null, preferences, listener, errorListener);
     }
 
     @Override
@@ -78,6 +83,10 @@ public class CookieRequest extends StringRequest {
                 builder.append(headers.get(COOKIE_KEY));
             }
             headers.put(COOKIE_KEY, builder.toString());
+
+            if(mimeType != null) {
+                headers.put("Content-Type", mimeType);
+            }
         }
 
         return headers;
