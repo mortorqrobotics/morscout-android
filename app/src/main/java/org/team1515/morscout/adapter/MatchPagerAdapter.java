@@ -4,12 +4,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import org.team1515.morscout.fragment.match.AllMatchesFragment;
 import org.team1515.morscout.fragment.match.ScoutFragment;
 import org.team1515.morscout.fragment.match.ViewFragment;
 
-public class MatchPagerAdapter extends FragmentPagerAdapter {
+public class MatchPagerAdapter extends FragmentStatePagerAdapter {
 
     private int size;
     private int team;
@@ -24,7 +25,6 @@ public class MatchPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-
         Fragment fragment;
 
         switch (position) {
@@ -34,16 +34,17 @@ public class MatchPagerAdapter extends FragmentPagerAdapter {
                 bundle.putInt("team", team);
                 bundle.putInt("match", match);
                 fragment.setArguments(bundle);
-                return fragment;
+                break;
             case 1:
                 fragment = new ViewFragment();
-                return fragment;
+                break;
             case 2:
                 fragment = new AllMatchesFragment();
-                return fragment;
+                break;
             default:
-                return null;
+                fragment = null;
         }
+        return fragment;
     }
 
     @Override

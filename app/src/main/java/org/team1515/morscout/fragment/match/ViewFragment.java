@@ -42,8 +42,6 @@ public class ViewFragment extends Fragment {
                     JSONObject reports = new JSONObject(response);
                     JSONArray yourTeam = reports.getJSONArray("yourTeam");
                     JSONArray otherTeams = reports.getJSONArray("otherTeams");
-                    System.out.println(yourTeam.toString());
-                    System.out.println(otherTeams.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

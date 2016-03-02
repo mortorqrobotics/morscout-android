@@ -1,11 +1,8 @@
 package org.team1515.morscout.fragment.main;
 
-import android.app.DownloadManager;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -23,10 +19,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.team1515.morscout.R;
-import org.team1515.morscout.activity.MainActivity;
 import org.team1515.morscout.network.CookieRequest;
 
 import java.util.ArrayList;
@@ -34,9 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by prozwood on 1/25/16.
- */
 public class SettingsFragment extends Fragment {
     private RequestQueue queue;
     private SharedPreferences preferences;

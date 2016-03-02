@@ -64,6 +64,7 @@ public class CookieRequest extends StringRequest {
         return params;
     }
 
+
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
         Map<String, String> headers = super.getHeaders();
@@ -84,9 +85,10 @@ public class CookieRequest extends StringRequest {
             }
             headers.put(COOKIE_KEY, builder.toString());
 
-            if(mimeType != null) {
-                headers.put("Content-Type", mimeType);
-            }
+        }
+
+        if(mimeType != null) {
+            headers.put("Content-Type", mimeType);
         }
 
         return headers;

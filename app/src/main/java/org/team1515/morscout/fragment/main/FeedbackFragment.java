@@ -1,6 +1,5 @@
 package org.team1515.morscout.fragment.main;
 
-import android.app.DownloadManager;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -24,9 +23,6 @@ import org.team1515.morscout.network.CookieRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by prozwood on 1/25/16.
- */
 public class FeedbackFragment extends Fragment {
     private RequestQueue queue;
     private SharedPreferences preferences;

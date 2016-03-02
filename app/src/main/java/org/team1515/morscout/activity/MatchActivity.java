@@ -88,9 +88,9 @@ public class MatchActivity extends AppCompatActivity {
 
                 currentTeam = Integer.parseInt(((TextView) view).getText().toString());
 
-                pagerAdapter = new MatchPagerAdapter(getSupportFragmentManager());
                 pagerAdapter.setTeam(currentTeam);
                 pagerAdapter.setMatch(match.getNumber());
+
                 viewPager.setAdapter(pagerAdapter);
 
                 tabLayout.setVisibility(View.VISIBLE);
@@ -113,7 +113,6 @@ public class MatchActivity extends AppCompatActivity {
 
                 currentTeam = Integer.parseInt(((TextView) view).getText().toString());
 
-                pagerAdapter = new MatchPagerAdapter(getSupportFragmentManager());
                 pagerAdapter.setTeam(currentTeam);
                 pagerAdapter.setMatch(match.getNumber());
 

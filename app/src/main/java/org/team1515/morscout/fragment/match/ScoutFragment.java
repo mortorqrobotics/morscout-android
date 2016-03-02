@@ -227,24 +227,42 @@ public class ScoutFragment extends Fragment {
             }
         }
 
-//        System.out.println(data.toString());
-
         Map<String, String> params = new HashMap<>();
-        params.put("data", data.toString());
+
+        //TODO: Fix this mess
+        //Because sending json over http is weird, this code must continue the weird trend
+        for(int i = 0; i < data.length(); i++) {
+            try {
+                JSONObject dataObj = data.getJSONObject(i);
+                if(dataObj.has("name")) {
+                    params.put("data[" + i + "][name]", dataObj.getString("name"));
+                }
+                if(dataObj.has("value")) {
+                    params.put("data[" + i + "][value]", dataObj.getString("value"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return;
+            }
+
+        }
+        System.out.println(getArguments().getInt("team"));
         params.put("team", String.valueOf(getArguments().getInt("team")));
         params.put("context", "match");
         params.put("match", String.valueOf(getArguments().getInt("match")));
-//        System.out.println(getArguments().getInt("match") + "\t" + getArguments().getInt("team"));
 
         CookieRequest submissionRequest = new CookieRequest(Request.Method.POST,
                 "/submitReport",
                 params,
-                "application/json",
                 preferences,
                 new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                System.out.println(response);
+                if(response.equals("success")) {
+                    Toast.makeText(getContext(), "Report Submitted.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Error submitting report. Make sure you have filled out every item.", Toast.LENGTH_SHORT).show();
+                }
             }
         },
                 new Response.ErrorListener() {
