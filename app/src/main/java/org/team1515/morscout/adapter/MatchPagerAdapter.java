@@ -30,10 +30,6 @@ public class MatchPagerAdapter extends FragmentStatePagerAdapter {
         switch (position) {
             case 0:
                 fragment = new ScoutFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("team", team);
-                bundle.putInt("match", match);
-                fragment.setArguments(bundle);
                 break;
             case 1:
                 fragment = new ViewFragment();
@@ -44,6 +40,14 @@ public class MatchPagerAdapter extends FragmentStatePagerAdapter {
             default:
                 fragment = null;
         }
+
+        if(fragment!= null) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("team", team);
+            bundle.putInt("match", match);
+            fragment.setArguments(bundle);
+        }
+
         return fragment;
     }
 

@@ -38,7 +38,7 @@ public class AllMatchesFragment extends Fragment {
     public void getTeamReports() {
         Map<String, String> params = new HashMap<>();
         params.put("teamNumber", "1515");
-        params.put("context", "match");
+        params.put("reportContext", "match");
 
         CookieRequest requestTeamReports = new CookieRequest(Request.Method.POST, "/getTeamReports", params, preferences, new Response.Listener<String>() {
             @Override

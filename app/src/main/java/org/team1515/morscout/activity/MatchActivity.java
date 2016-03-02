@@ -148,36 +148,4 @@ public class MatchActivity extends AppCompatActivity {
             redTeamViews[i].setOnClickListener(redTeamClick);
         }
     }
-
-    public void getReports(String teamNumber) {
-        Map<String, String> params = new HashMap<>();
-        params.put("match", String.valueOf(match.getNumber()));
-        params.put("team", String.valueOf(teamNumber));
-
-        CookieRequest reportsRequest = new CookieRequest(Request.Method.POST,
-                "/getMatchReports",
-                params,
-                preferences,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject matchObject = new JSONObject(response);
-                            JSONArray yourTeamReports = matchObject.getJSONArray("yourTeam");
-                            JSONArray otherTeamReports = matchObject.getJSONArray("otherTeams");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(viewPager.getContext(), "An error has occurred, please try again later.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-        queue.add(reportsRequest);
-    }
-
 }
