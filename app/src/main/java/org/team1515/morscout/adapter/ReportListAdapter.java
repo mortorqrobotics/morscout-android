@@ -1,9 +1,16 @@
 package org.team1515.morscout.adapter;
 
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 import org.team1515.morscout.R;
@@ -39,7 +46,11 @@ public class ReportListAdapter extends RecyclerView.Adapter<ReportListAdapter.Vi
         for(FormItem formItem : report) {
             if(formItem.getValue() != null) {
                 TextView items = (TextView) holder.layout.findViewById(R.id.reportlist_items);
-                items.setText(items.getText().toString() + "\n" + formItem.getName() + "\t" + formItem.getValue());
+                String mystring = items.getText().toString() + "\n" + formItem.getName() + ": " + formItem.getValue();
+                SpannableString content = new SpannableString(mystring);
+                content.setSpan(new UnderlineSpan(), 0, mystring.length(), 0);
+                items.setText(content);
+                items.setBackgroundResource(R.drawable.black_border);
             } else {
                 TextView title = (TextView) holder.layout.findViewById(R.id.reportlist_items);
                 title.setText(title.getText().toString() + "\n" + formItem.getName());
