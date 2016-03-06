@@ -2,15 +2,20 @@ package org.team1515.morscout.fragment.match;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -20,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,104 +84,156 @@ public class ScoutFragment extends Fragment {
 
         for (FormItem formItem : formItems) {
             View item = null;
-            switch (formItem.getType()) {
-                case "label":
-                    item = new TextView(view.getContext());
-                    ((TextView) item).setTextSize(20);
-                    ((TextView) item).setText(formItem.getName());
-                    break;
-                case "text":
-                    item = new EditText(view.getContext());
-                    ((EditText) item).setHint(formItem.getName());
-                    break;
-                case "checkbox":
-                    item = new CheckBox(view.getContext());
-                    ((CheckBox) item).setText(formItem.getName());
-                    break;
-                case "radio":
-                    item = new RadioGroup(view.getContext());
-                    for (int i = 0; i < formItem.getOptions().size(); i++) {
-                        RadioButton button = new RadioButton(view.getContext());
-                        button.setText(formItem.getOptions().get(i));
-                        ((RadioGroup)item).addView(button);
-                    }
-                    break;
-                case "number":
-                    item = new LinearLayout(view.getContext());
-                    ((LinearLayout) item).setOrientation(LinearLayout.HORIZONTAL);
-                    ((LinearLayout) item).setGravity(Gravity.CENTER);
+            if(formItem.getType().equals("label")) {
+                item = new TextView(view.getContext());
+                ((TextView) item).setText(formItem.getName());
+                ((TextView) item).setTextSize(20);
+                ((TextView) item).setPaintFlags(((TextView) item).getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                ((TextView) item).setGravity(Gravity.CENTER);
+                ((TextView) item).setTextColor(item.getResources().getColor(R.color.black));
+            } else {
+                item = new RelativeLayout(view.getContext());
+                ((RelativeLayout) item).setGravity(Gravity.CENTER);
 
-                    //Stores the current value in the textbox
-                    final int value[] = {0};
-                    final int min = formItem.getMin();
-                    final int max = formItem.getMax();
+                RelativeLayout.LayoutParams leftParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                leftParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                RelativeLayout.LayoutParams rightParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                rightParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                RelativeLayout.LayoutParams centerParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                centerParams.addRule(RelativeLayout.CENTER_IN_PARENT);
 
-                    // Editable text box
-                    final EditText editText = new EditText(view.getContext());
-                    editText.setText("" + value[0]);
-                    editText.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                switch (formItem.getType()) {
+                    case "text":
+                        EditText textbox = new EditText(view.getContext());
+                        textbox.setHint(formItem.getName());
+                        textbox.setSingleLine(false);
+                        textbox.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+                        textbox.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+                        textbox.setLines(3);
+                        textbox.setGravity(Gravity.TOP);
+                        textbox.setPadding(4, 4, 4, 4);
+                        textbox.setBackgroundResource((R.drawable.edittext_border));
+                        textbox.setLayoutParams(centerParams);
+                        ((RelativeLayout) item).addView(textbox);
+                        break;
+                    case "checkbox":
+                        CheckBox checkBox = new CheckBox(view.getContext());
+                        checkBox.setText(formItem.getName());
+                        checkBox.setLayoutParams(centerParams);
+                        break;
+                    case "radio":
+                        LinearLayout container = new LinearLayout(view.getContext());
+                        container.setOrientation(LinearLayout.VERTICAL);
+                        container.setLayoutParams(centerParams);
 
+                        TextView title = new TextView(view.getContext());
+                        title.setText(formItem.getName());
+                        title.setTextSize(18);
+                        title.setTextColor(item.getResources().getColor(R.color.black));
+
+                        RadioGroup radioGroup = new RadioGroup(view.getContext());
+                        for (int i = 0; i < formItem.getOptions().size(); i++) {
+                            RadioButton button = new RadioButton(view.getContext());
+                            button.setText(formItem.getOptions().get(i));
+                            radioGroup.addView(button);
                         }
 
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        container.addView(title);
+                        container.addView(radioGroup);
 
-                        }
+                        ((RelativeLayout) item).addView(container);
+                        break;
+                    case "number":
+                        title = new TextView(view.getContext());
+                        title.setText(formItem.getName() + ": ");
+                        title.setTextSize(18);
+                        title.setTextColor(item.getResources().getColor(R.color.black));
+                        title.setLayoutParams(leftParams);
+                        title.setGravity(Gravity.CENTER);
 
-                        @Override
-                        public void afterTextChanged(Editable s) {
-                            if (editText.getText().toString().isEmpty()) {
-                                value[0] = 0;
-                                editText.setText("" + value[0]);
+                        container = new LinearLayout(view.getContext());
+                        container.setOrientation(LinearLayout.HORIZONTAL);
+                        container.setLayoutParams(rightParams);
+                        container.setGravity(Gravity.CENTER);
+
+                        //Stores the current value in the textbox
+                        final int value[] = {0};
+                        final int min = formItem.getMin();
+                        final int max = formItem.getMax();
+
+                        // Editable text box
+                        final TextView numberView = new TextView(view.getContext());
+                        numberView.setText("" + value[0]);
+
+                        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                        // Decrement button
+                        Button decrementButton = new Button(view.getContext());
+                        decrementButton.setLayoutParams(buttonParams);
+                        decrementButton.setText("-");
+                        decrementButton.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                if (value[0] > min) {
+                                    value[0]--;
+                                    numberView.setText("" + value[0]);
+                                }
                             }
-                        }
-                    });
+                        });
 
-                    // Decrement button
-                    Button decrementButton = new Button(view.getContext());
-                    decrementButton.setText("-");
-                    decrementButton.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            if (value[0] > min) {
-                                value[0]--;
-                                editText.setText("" + value[0]);
+                        // Increment button
+                        Button incrementButton = new Button(view.getContext());
+                        incrementButton.setLayoutParams(buttonParams);
+                        decrementButton.setPadding(5, 5, 5, 5);
+                        incrementButton.setText("+");
+                        incrementButton.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                if (value[0] < max) {
+                                    value[0]++;
+                                    numberView.setText("" + value[0]);
+                                }
                             }
+                        });
+
+                        container.addView(decrementButton);
+                        container.addView(numberView);
+                        container.addView(incrementButton);
+
+                        ((RelativeLayout) item).addView(title);
+                        ((RelativeLayout) item).addView(container);
+                        break;
+                    case "dropdown":
+                        title = new TextView(view.getContext());
+                        title.setText(formItem.getName() + ": ");
+                        title.setTextSize(18);
+                        title.setTextColor(item.getResources().getColor(R.color.black));
+                        title.setLayoutParams(leftParams);
+
+                        List<String> choices = new ArrayList<>();
+                        for (int i = 0; i < formItem.getOptions().size(); i++) {
+                            choices.add(formItem.getOptions().get(i));
                         }
-                    });
+                        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_spinner_dropdown_item, choices);
 
-                    // Increment button
-                    Button incrementButton = new Button(view.getContext());
-                    incrementButton.setText("+");
-                    incrementButton.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            if (value[0] < max) {
-                                value[0]++;
-                                editText.setText("" + value[0]);
-                            }
-                        }
-                    });
+                        Spinner spinner = new Spinner(view.getContext());
+                        spinner.setAdapter(spinnerArrayAdapter);
+                        spinner.setLayoutParams(rightParams);
 
-                    ((LinearLayout) item).addView(decrementButton);
-                    ((LinearLayout) item).addView(editText);
-                    ((LinearLayout) item).addView(incrementButton);
-                    break;
-                case "dropdown":
-                    List<String> choices = new ArrayList<>();
-                    for (int i = 0; i < formItem.getOptions().size(); i++) {
-                        choices.add(formItem.getOptions().get(i));
-                    }
-                    ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_spinner_dropdown_item, choices);
-
-                    item = new Spinner(view.getContext());
-                    ((Spinner) item).setAdapter(spinnerArrayAdapter);
-                    break;
+                        ((RelativeLayout) item).addView(title);
+                        ((RelativeLayout) item).addView(spinner);
+                        break;
+                }
             }
 
+
             if (item != null) {
-                item.setTag(formItem.getName());
-                item.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                Resources resources = item.getContext().getResources();
+                params.bottomMargin = (int) TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        8,
+                        resources.getDisplayMetrics()
+                );
+                item.setLayoutParams(params);
                 view.addView(item);
             }
         }

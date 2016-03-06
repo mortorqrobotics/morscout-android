@@ -92,20 +92,17 @@ public class ReportListAdapter extends RecyclerView.Adapter<ReportListAdapter.Vi
 
             if (item != null) {
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                Resources r = item.getContext().getResources();
+                Resources resources = item.getContext().getResources();
                 int margin = (int) TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP,
                         2,
-                        r.getDisplayMetrics()
+                        resources.getDisplayMetrics()
                 );
                 params.setMargins(0, margin, 0, margin);
                 item.setLayoutParams(params);
                 holder.layout.addView(item);
             }
         }
-
-        //Style report
-//        holder.layout.setBackgroundResource(R.drawable.black_border);
     }
 
     @Override
