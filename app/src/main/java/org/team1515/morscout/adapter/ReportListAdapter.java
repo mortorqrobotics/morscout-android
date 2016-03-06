@@ -1,16 +1,17 @@
 package org.team1515.morscout.adapter;
 
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
+
+import android.content.res.Resources;
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.SpannableString;
-import android.text.style.UnderlineSpan;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.team1515.morscout.R;
@@ -42,20 +43,69 @@ public class ReportListAdapter extends RecyclerView.Adapter<ReportListAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
         List<FormItem> report = reports.get(position);
 
+        TextView title = (TextView) holder.layout.findViewById(R.id.reportlist_title);
+        String titleText = "Report " + (position + 1);
+        title.setText(titleText);
+
         //All of this is for testing purposes
         for(FormItem formItem : report) {
-            if(formItem.getValue() != null) {
-                TextView items = (TextView) holder.layout.findViewById(R.id.reportlist_items);
-                String mystring = items.getText().toString() + "\n" + formItem.getName() + ": " + formItem.getValue();
-                SpannableString content = new SpannableString(mystring);
-                content.setSpan(new UnderlineSpan(), 0, mystring.length(), 0);
-                items.setText(content);
-                items.setBackgroundResource(R.drawable.black_border);
+            View item = null;
+
+            //Check for titles
+            if(formItem.getValue() == null) {
+                item = new TextView(holder.layout.getContext());
+                ((TextView) item).setText(formItem.getName());
+                ((TextView) item).setTextSize(19);
+                ((TextView) item).setPaintFlags(((TextView) item).getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                ((TextView) item).setGravity(Gravity.CENTER);
+                ((TextView) item).setTextColor(item.getResources().getColor(R.color.black));
             } else {
-                TextView title = (TextView) holder.layout.findViewById(R.id.reportlist_items);
-                title.setText(title.getText().toString() + "\n" + formItem.getName());
+                item = new RelativeLayout(holder.layout.getContext());
+
+                DisplayMetrics displayMetrics = item.getContext().getResources().getDisplayMetrics();
+                float screenWidth = displayMetrics.widthPixels;
+
+                TextView key = new TextView(item.getContext());
+                RelativeLayout.LayoutParams keyParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                keyParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                key.setLayoutParams(keyParams);
+                key.setWidth((int) (screenWidth * 3 / 8));
+                String keyString = formItem.getName() + ": ";
+                key.setText(keyString);
+                key.setTextSize(17);
+                ((TextView) key).setTextColor(item.getResources().getColor(R.color.black));
+                key.setGravity(Gravity.START);
+
+                TextView value = new TextView(item.getContext());
+                RelativeLayout.LayoutParams valueParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                valueParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                value.setLayoutParams(valueParams);
+                value.setWidth((int) (screenWidth * 3 / 8));
+                value.setText(formItem.getValue());
+                value.setTextSize(17);
+                ((TextView) value).setTextColor(item.getResources().getColor(R.color.black));
+                value.setGravity(Gravity.START);
+
+                ((RelativeLayout) item).addView(key);
+                ((RelativeLayout) item).addView(value);
+            }
+
+            if (item != null) {
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                Resources r = item.getContext().getResources();
+                int margin = (int) TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        2,
+                        r.getDisplayMetrics()
+                );
+                params.setMargins(0, margin, 0, margin);
+                item.setLayoutParams(params);
+                holder.layout.addView(item);
             }
         }
+
+        //Style report
+//        holder.layout.setBackgroundResource(R.drawable.black_border);
     }
 
     @Override

@@ -10,7 +10,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Your Team Reports"
-        android:textSize="18sp" />
+        android:textSize="26sp"
+        android:layout_marginBottom="5dp"
+        android:textColor="@color/black"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/matchscout_yourTeamReportsList"
