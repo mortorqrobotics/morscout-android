@@ -3,10 +3,8 @@ package org.team1515.morscout.adapter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import org.team1515.morscout.fragment.match.AllMatchesFragment;
 import org.team1515.morscout.fragment.match.ScoutFragment;
 import org.team1515.morscout.fragment.match.ViewFragment;
 
@@ -18,7 +16,7 @@ public class MatchPagerAdapter extends FragmentStatePagerAdapter {
 
     public MatchPagerAdapter(FragmentManager manager) {
         super(manager);
-        this.size = 3;
+        this.size = 2;
         team = 0;
         match = 0;
     }
@@ -33,9 +31,6 @@ public class MatchPagerAdapter extends FragmentStatePagerAdapter {
                 break;
             case 1:
                 fragment = new ViewFragment();
-                break;
-            case 2:
-                fragment = new AllMatchesFragment();
                 break;
             default:
                 fragment = null;
@@ -57,10 +52,7 @@ public class MatchPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return "Scout";
             case 1:
-                return "View";
-            case 2:
-                return "All Matches";
-            default:
+                return "View";            default:
                 return "";
         }
     }

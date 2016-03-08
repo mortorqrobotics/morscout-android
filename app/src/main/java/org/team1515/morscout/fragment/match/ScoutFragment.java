@@ -97,8 +97,10 @@ public class ScoutFragment extends Fragment {
 
                 RelativeLayout.LayoutParams leftParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 leftParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                leftParams.addRule(RelativeLayout.CENTER_VERTICAL);
                 RelativeLayout.LayoutParams rightParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 rightParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                rightParams.addRule(RelativeLayout.CENTER_VERTICAL);
                 RelativeLayout.LayoutParams centerParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 centerParams.addRule(RelativeLayout.CENTER_IN_PARENT);
 
@@ -163,9 +165,11 @@ public class ScoutFragment extends Fragment {
 
                         // Editable text box
                         final TextView numberView = new TextView(view.getContext());
+                        numberView.setTextSize(18);
                         numberView.setText("" + value[0]);
 
-                        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(150, 150);
+                        buttonParams.setMargins(10, 0, 10, 0);
 
                         // Decrement button
                         Button decrementButton = new Button(view.getContext());
@@ -183,7 +187,6 @@ public class ScoutFragment extends Fragment {
                         // Increment button
                         Button incrementButton = new Button(view.getContext());
                         incrementButton.setLayoutParams(buttonParams);
-                        decrementButton.setPadding(5, 5, 5, 5);
                         incrementButton.setText("+");
                         incrementButton.setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
@@ -244,45 +247,49 @@ public class ScoutFragment extends Fragment {
 
         LinearLayout form = (LinearLayout) getView().findViewById(R.id.matchscout_form);
         for(int i = 0; i < form.getChildCount(); i++) {
-            View item = form.getChildAt(i);
-
             JSONObject dataObject = new JSONObject();
-            try {
-                if(item instanceof EditText) { // Text
-                    dataObject.put("name", item.getTag().toString());
-                    dataObject.put("value", ((EditText) item).getText().toString());
-                } else if (item instanceof CheckBox) {// Check
-                    dataObject.put("name", item.getTag().toString());
-                    dataObject.put("value", ((CheckBox) item).isChecked());
-                } else if (item instanceof TextView) {
-                    dataObject.put("name", item.getTag().toString());
-                } else if (item instanceof RadioGroup) { // Radio
-                    dataObject.put("name", item.getTag().toString());
-                    RadioButton selectedButton = (RadioButton) ((RadioGroup) item).getChildAt(((RadioGroup) item).indexOfChild(item.findViewById(((RadioGroup) item).getCheckedRadioButtonId())));
-                    if(selectedButton != null) {
-                        dataObject.put("value", selectedButton.getText().toString());
-                    } else {
-                        dataObject.put("value", "");
-                    }
-                } else if (item instanceof LinearLayout) { // Number
-                    for (int j = 0; j < ((LinearLayout) item).getChildCount(); j++) {
-                        if (((LinearLayout) item).getChildAt(j) instanceof EditText) {
-                            dataObject.put("name", item.getTag().toString());
-                            dataObject.put("value", ((EditText) ((LinearLayout) item).getChildAt(j)).getText().toString());
-                        }
-                    }
-                } else if (item instanceof Spinner) { // Dropdown
-                    dataObject.put("name", item.getTag().toString());
-                    dataObject.put("value", ((Spinner) item).getSelectedItem().toString());
-                } else {
-                    //Something screwy
-                }
 
-                data.put(dataObject);
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return;
-            }
+            View item = form.getChildAt(i);
+            if(item instanceof RelativeLayout) {
+                for(int j = 0; j < ((RelativeLayout) item).getChildCount(); j++) {
+                    View view = ((RelativeLayout) item).getChildAt(j);
+                    try {
+                        if(view instanceof EditText) { // Text
+                            dataObject.put("name", view.getTag().toString());
+                            dataObject.put("value", ((EditText) view).getText().toString());
+                        } else if (view instanceof CheckBox) {// Check
+                            dataObject.put("name", view.getTag().toString());
+                            dataObject.put("value", ((CheckBox) view).isChecked());
+                        } else if (view instanceof RadioGroup) { // Radio
+                            dataObject.put("name", view.getTag().toString());
+                            RadioButton selectedButton = (RadioButton) ((RadioGroup) view).getChildAt(((RadioGroup) view).indexOfChild(view.findViewById(((RadioGroup) view).getCheckedRadioButtonId())));
+                            if(selectedButton != null) {
+                                dataObject.put("value", selectedButton.getText().toString());
+                            } else {
+                                dataObject.put("value", "");
+                            }
+                        } else if (view instanceof LinearLayout) { // Number
+                            for (int k = 0; k < ((LinearLayout) view).getChildCount(); k++) {
+                                if (((LinearLayout) view).getChildAt(k) instanceof EditText) {
+                                    dataObject.put("name", view.getTag().toString());
+                                    dataObject.put("value", ((EditText) ((LinearLayout) view).getChildAt(k)).getText().toString());
+                                }
+                            }
+                        } else if (view instanceof Spinner) { // Dropdown
+                            dataObject.put("name", view.getTag().toString());
+                            dataObject.put("value", ((Spinner) view).getSelectedItem().toString());
+                        } else {
+                            //Something screwy
+                        }
+
+                        data.put(dataObject);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                }
+            } else if (item instanceof TextView) {
+                dataObject.put("name", item.getTag().toString());
         }
 
         Map<String, String> params = new HashMap<>();
