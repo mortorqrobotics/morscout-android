@@ -80,9 +80,20 @@ public class TeamListFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
-                teamSearch = searchTeams.getText().toString();
-                getTeams();
+                teamSearch = s.toString().toLowerCase();
+
+                if(!teamSearch.trim().isEmpty()) {
+                    List<Team> searchedTeams = new ArrayList<>();
+                    for (Team team : teams) {
+                        if (team.getName().toLowerCase().contains(teamSearch) || Integer.toString(team.getNumber()).contains(teamSearch)) {
+                            searchedTeams.add(team);
+                        }
+                    }
+                    teamListAdapter.setTeams(searchedTeams);
+                } else {
+                    teamListAdapter.setTeams(teams);
+                }
+                teamListAdapter.notifyDataSetChanged();
             }
         });
 

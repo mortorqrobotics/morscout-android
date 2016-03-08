@@ -31,6 +31,7 @@ import org.team1515.morscout.activity.MatchActivity;
 import org.team1515.morscout.adapter.MatchListAdapter;
 import org.team1515.morscout.adapter.RecyclerItemClickListener;
 import org.team1515.morscout.entity.Match;
+import org.team1515.morscout.entity.Team;
 import org.team1515.morscout.network.CookieRequest;
 
 import java.util.ArrayList;
@@ -80,9 +81,40 @@ public class MatchesFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
-                matchSearch = searchMatches.getText().toString();
-                getMatches();
+                matchSearch = s.toString().toLowerCase();
+
+                if (!matchSearch.trim().isEmpty()) {
+                    List<Match> searchedMatches = new ArrayList<>();
+                    for (Match match : matches) {
+                        boolean isAdded = false;
+                        if (Integer.toString(match.getNumber()).contains(matchSearch)) {
+                            searchedMatches.add(match);
+                            isAdded = true;
+                        }
+                        if(!isAdded) {
+                            for (String team : match.getBlueAlliance()) {
+                                if (team.contains(matchSearch)) {
+                                    searchedMatches.add(match);
+                                    isAdded = true;
+                                    break;
+                                }
+                            }
+
+                            if(!isAdded) {
+                                for (String team : match.getRedAlliance()) {
+                                    if (team.contains(matchSearch)) {
+                                        searchedMatches.add(match);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    matchListAdapter.setMatches(searchedMatches);
+                } else {
+                    matchListAdapter.setMatches(matches);
+                }
+                matchListAdapter.notifyDataSetChanged();
             }
         });
 
@@ -123,6 +155,7 @@ public class MatchesFragment extends Fragment {
     }
 
     int x = 0;
+
     public void getMatches() {
         progress.setVisibility(View.VISIBLE);
         matchesList.setVisibility(View.GONE);
@@ -155,7 +188,7 @@ public class MatchesFragment extends Fragment {
                 JSONObject matchObject = matchArray.getJSONObject(i);
 
                 //Add all qualifying matches
-                if(matchObject.getString("comp_level").equals("qm")) {
+                if (matchObject.getString("comp_level").equals("qm")) {
 
                     JSONObject alliancesObject = matchObject.getJSONObject("alliances");
 
