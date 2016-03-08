@@ -90,6 +90,7 @@ public class MatchActivity extends AppCompatActivity {
 
                 pagerAdapter.setTeam(currentTeam);
                 pagerAdapter.setMatch(match.getNumber());
+                pagerAdapter.setRegional(match.getId());
 
                 viewPager.setAdapter(pagerAdapter);
 

@@ -1,9 +1,5 @@
 package org.team1515.morscout.entity;
 
-import org.json.JSONArray;
-
-import java.util.List;
-
 public class Match extends Entity {
 
     int number;
@@ -12,7 +8,7 @@ public class Match extends Entity {
     String[] redAlliance;
 
     public Match(String id, int number, String compLevel, String[] blueAlliance, String[] redAlliance) {
-        super(id);
+        super(id.split("_")[0]);
         this.number = number;
         this.compLevel = compLevel;
         this.blueAlliance = blueAlliance;

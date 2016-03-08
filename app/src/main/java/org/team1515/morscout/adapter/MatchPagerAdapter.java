@@ -13,6 +13,7 @@ public class MatchPagerAdapter extends FragmentStatePagerAdapter {
     private int size;
     private int team;
     private int match;
+    private String regional;
 
     public MatchPagerAdapter(FragmentManager manager) {
         super(manager);
@@ -36,10 +37,11 @@ public class MatchPagerAdapter extends FragmentStatePagerAdapter {
                 fragment = null;
         }
 
-        if(fragment!= null) {
+        if (fragment != null) {
             Bundle bundle = new Bundle();
             bundle.putInt("team", team);
             bundle.putInt("match", match);
+            bundle.putString("regional", regional);
             fragment.setArguments(bundle);
         }
 
@@ -52,7 +54,8 @@ public class MatchPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return "Scout";
             case 1:
-                return "View";            default:
+                return "View";
+            default:
                 return "";
         }
     }
@@ -68,5 +71,9 @@ public class MatchPagerAdapter extends FragmentStatePagerAdapter {
 
     public void setMatch(int match) {
         this.match = match;
+    }
+
+    public void setRegional(String regional) {
+        this.regional = regional;
     }
 }

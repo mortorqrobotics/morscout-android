@@ -78,19 +78,21 @@ public class ScoutFragment extends Fragment {
         return view;
     }
 
+    //TODO: Fix this mess of a function
     private void createForm(LinearLayout view) {
         formItems = new Gson().fromJson(preferences.getString("matchForm", ""), new TypeToken<List<FormItem>>() {
         }.getType());
 
         for (FormItem formItem : formItems) {
             View item = null;
-            if(formItem.getType().equals("label")) {
+            if (formItem.getType().equals("label")) {
                 item = new TextView(view.getContext());
                 ((TextView) item).setText(formItem.getName());
                 ((TextView) item).setTextSize(20);
                 ((TextView) item).setPaintFlags(((TextView) item).getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                 ((TextView) item).setGravity(Gravity.CENTER);
                 ((TextView) item).setTextColor(item.getResources().getColor(R.color.black));
+                item.setTag(formItem.getName());
             } else {
                 item = new RelativeLayout(view.getContext());
                 ((RelativeLayout) item).setGravity(Gravity.CENTER);
@@ -116,17 +118,24 @@ public class ScoutFragment extends Fragment {
                         textbox.setPadding(4, 4, 4, 4);
                         textbox.setBackgroundResource((R.drawable.edittext_border));
                         textbox.setLayoutParams(centerParams);
+                        textbox.setTag(formItem.getName());
+
                         ((RelativeLayout) item).addView(textbox);
                         break;
                     case "checkbox":
                         CheckBox checkBox = new CheckBox(view.getContext());
                         checkBox.setText(formItem.getName());
                         checkBox.setLayoutParams(centerParams);
+                        checkBox.setTag(formItem.getName());
+                        checkBox.setTextSize(18);
+
+                        ((RelativeLayout) item).addView(checkBox);
                         break;
                     case "radio":
                         LinearLayout container = new LinearLayout(view.getContext());
                         container.setOrientation(LinearLayout.VERTICAL);
                         container.setLayoutParams(centerParams);
+                        container.setTag("radio");
 
                         TextView title = new TextView(view.getContext());
                         title.setText(formItem.getName());
@@ -139,6 +148,7 @@ public class ScoutFragment extends Fragment {
                             button.setText(formItem.getOptions().get(i));
                             radioGroup.addView(button);
                         }
+                        radioGroup.setTag(formItem.getName());
 
                         container.addView(title);
                         container.addView(radioGroup);
@@ -157,6 +167,7 @@ public class ScoutFragment extends Fragment {
                         container.setOrientation(LinearLayout.HORIZONTAL);
                         container.setLayoutParams(rightParams);
                         container.setGravity(Gravity.CENTER);
+                        container.setTag("number");
 
                         //Stores the current value in the textbox
                         final int value[] = {0};
@@ -167,6 +178,7 @@ public class ScoutFragment extends Fragment {
                         final TextView numberView = new TextView(view.getContext());
                         numberView.setTextSize(18);
                         numberView.setText("" + value[0]);
+                        numberView.setTag(formItem.getName());
 
                         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(150, 150);
                         buttonParams.setMargins(10, 0, 10, 0);
@@ -220,6 +232,7 @@ public class ScoutFragment extends Fragment {
                         Spinner spinner = new Spinner(view.getContext());
                         spinner.setAdapter(spinnerArrayAdapter);
                         spinner.setLayoutParams(rightParams);
+                        spinner.setTag(formItem.getName());
 
                         ((RelativeLayout) item).addView(title);
                         ((RelativeLayout) item).addView(spinner);
@@ -246,63 +259,71 @@ public class ScoutFragment extends Fragment {
         JSONArray data = new JSONArray();
 
         LinearLayout form = (LinearLayout) getView().findViewById(R.id.matchscout_form);
-        for(int i = 0; i < form.getChildCount(); i++) {
+
+        for (int i = 0; i < form.getChildCount(); i++) {
             JSONObject dataObject = new JSONObject();
 
-            View item = form.getChildAt(i);
-            if(item instanceof RelativeLayout) {
-                for(int j = 0; j < ((RelativeLayout) item).getChildCount(); j++) {
-                    View view = ((RelativeLayout) item).getChildAt(j);
-                    try {
-                        if(view instanceof EditText) { // Text
-                            dataObject.put("name", view.getTag().toString());
-                            dataObject.put("value", ((EditText) view).getText().toString());
-                        } else if (view instanceof CheckBox) {// Check
-                            dataObject.put("name", view.getTag().toString());
-                            dataObject.put("value", ((CheckBox) view).isChecked());
-                        } else if (view instanceof RadioGroup) { // Radio
-                            dataObject.put("name", view.getTag().toString());
-                            RadioButton selectedButton = (RadioButton) ((RadioGroup) view).getChildAt(((RadioGroup) view).indexOfChild(view.findViewById(((RadioGroup) view).getCheckedRadioButtonId())));
-                            if(selectedButton != null) {
-                                dataObject.put("value", selectedButton.getText().toString());
-                            } else {
-                                dataObject.put("value", "");
-                            }
-                        } else if (view instanceof LinearLayout) { // Number
+            try {
+                View item = form.getChildAt(i);
+
+                // Check for non-labels
+                if (item instanceof RelativeLayout) {
+                    View view = ((RelativeLayout) item).getChildAt(((RelativeLayout) item).getChildCount() - 1);
+                    if (view instanceof EditText) { // Text
+                        dataObject.put("name", view.getTag().toString());
+                        dataObject.put("value", ((EditText) view).getText().toString());
+                    } else if (view instanceof CheckBox) { // Check
+                        dataObject.put("name", view.getTag().toString());
+                        dataObject.put("value", ((CheckBox) view).isChecked());
+                    } else if (view instanceof LinearLayout) { // Number/radio
+                        if (view.getTag().equals("radio")) {
                             for (int k = 0; k < ((LinearLayout) view).getChildCount(); k++) {
-                                if (((LinearLayout) view).getChildAt(k) instanceof EditText) {
-                                    dataObject.put("name", view.getTag().toString());
-                                    dataObject.put("value", ((EditText) ((LinearLayout) view).getChildAt(k)).getText().toString());
+                                if (((LinearLayout) view).getChildAt(k) instanceof RadioGroup) {
+                                    RadioGroup radioGroup = (RadioGroup) ((LinearLayout) view).getChildAt(k);
+                                    dataObject.put("name", radioGroup.getTag());
+                                    System.out.println(radioGroup.getTag());
+                                    RadioButton selectedButton = (RadioButton) radioGroup.getChildAt(radioGroup.indexOfChild(radioGroup.findViewById((radioGroup.getCheckedRadioButtonId()))));
+                                    if (selectedButton != null) {
+                                        dataObject.put("value", selectedButton.getText().toString());
+                                    } else {
+                                        dataObject.put("value", "");
+                                    }
                                 }
                             }
-                        } else if (view instanceof Spinner) { // Dropdown
-                            dataObject.put("name", view.getTag().toString());
-                            dataObject.put("value", ((Spinner) view).getSelectedItem().toString());
-                        } else {
-                            //Something screwy
+                        } else if (view.getTag().equals("number")) {
+                            if (((LinearLayout) view).getChildAt(1) instanceof TextView) {
+                                dataObject.put("name", ((LinearLayout) view).getChildAt(1).getTag());
+                                dataObject.put("value", ((TextView) ((LinearLayout) view).getChildAt(1)).getText().toString());
+                            }
                         }
-
-                        data.put(dataObject);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        return;
+                    } else if (view instanceof Spinner) { // Dropdown
+                        dataObject.put("name", view.getTag().toString());
+                        dataObject.put("value", ((Spinner) view).getSelectedItem().toString());
                     }
+                } else if (item instanceof TextView) {
+                    dataObject.put("name", item.getTag().toString());
                 }
-            } else if (item instanceof TextView) {
-                dataObject.put("name", item.getTag().toString());
+
+                data.put(dataObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return;
+            }
         }
+
+        System.out.println(data.toString());
 
         Map<String, String> params = new HashMap<>();
 
         //TODO: Fix this mess
         //Because sending json over http is weird, this code must continue the weird trend
-        for(int i = 0; i < data.length(); i++) {
+        for (int i = 0; i < data.length(); i++) {
             try {
                 JSONObject dataObj = data.getJSONObject(i);
-                if(dataObj.has("name")) {
+                if (dataObj.has("name")) {
                     params.put("data[" + i + "][name]", dataObj.getString("name"));
                 }
-                if(dataObj.has("value")) {
+                if (dataObj.has("value")) {
                     params.put("data[" + i + "][value]", dataObj.getString("value"));
                 }
             } catch (JSONException e) {
@@ -311,32 +332,32 @@ public class ScoutFragment extends Fragment {
             }
 
         }
-        System.out.println(getArguments().getInt("team"));
         params.put("team", String.valueOf(getArguments().getInt("team")));
         params.put("context", "match");
         params.put("match", String.valueOf(getArguments().getInt("match")));
+        params.put("regional", getArguments().getString("regional"));
 
         CookieRequest submissionRequest = new CookieRequest(Request.Method.POST,
                 "/submitReport",
                 params,
                 preferences,
                 new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                if(response.equals("success")) {
-                    Toast.makeText(getContext(), "Report Submitted.", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "Error submitting report. Make sure you have filled out every item.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        },
+                    @Override
+                    public void onResponse(String response) {
+                        if (response.equals("success")) {
+                            Toast.makeText(getContext(), "Report Submitted.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), "Error submitting report. Make sure you have filled out every item.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
                 new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-                Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                        Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+                    }
+                });
         queue.add(submissionRequest);
     }
 }
