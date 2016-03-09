@@ -28,6 +28,9 @@ public class TeamActivity extends AppCompatActivity {
     ViewPager viewPager;
     TabLayout tabLayout;
 
+    int team;
+    String regional;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +38,9 @@ public class TeamActivity extends AppCompatActivity {
 
         preferences = getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(this);
+
+        team = getIntent().getIntExtra("team", 0);
+        regional = getIntent().getStringExtra("regional");
 
         // Set up action bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -44,6 +50,7 @@ public class TeamActivity extends AppCompatActivity {
 
         //Create fragment viewpager
         pagerAdapter = new TeamPagerAdapter(getSupportFragmentManager());
+        pagerAdapter.setTeam(team);
         viewPager = (ViewPager) findViewById(R.id.team_pager);
         viewPager.setAdapter(pagerAdapter);
 

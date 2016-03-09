@@ -10,26 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.team1515.morscout.R;
 import org.team1515.morscout.adapter.MatchPagerAdapter;
 import org.team1515.morscout.entity.Match;
-import org.team1515.morscout.fragment.match.ScoutFragment;
-import org.team1515.morscout.network.CookieRequest;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class MatchActivity extends AppCompatActivity {
     SharedPreferences preferences;
@@ -116,6 +104,7 @@ public class MatchActivity extends AppCompatActivity {
 
                 pagerAdapter.setTeam(currentTeam);
                 pagerAdapter.setMatch(match.getNumber());
+                pagerAdapter.setRegional(match.getId());
 
                 viewPager.setAdapter(pagerAdapter);
 

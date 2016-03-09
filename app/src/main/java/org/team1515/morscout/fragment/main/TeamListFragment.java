@@ -110,7 +110,7 @@ public class TeamListFragment extends Fragment {
                     @Override
                     public void onItemClick(View view, int position) {
                         Intent intent = new Intent(getContext(), TeamActivity.class);
-                        intent.putExtra("teamId", teams.get(position).getId());
+                        intent.putExtra("team", teams.get(position).getNumber());
                         startActivity(intent);
                     }
                 })

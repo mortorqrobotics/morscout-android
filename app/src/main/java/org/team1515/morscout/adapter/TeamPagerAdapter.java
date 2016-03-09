@@ -1,5 +1,6 @@
 package org.team1515.morscout.adapter;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -11,27 +12,35 @@ public class TeamPagerAdapter extends FragmentPagerAdapter {
 
     private int size;
 
-    private Fragment scoutFrag,
-            pitReportsFrag;
+    private int team;
 
     public TeamPagerAdapter(FragmentManager manager) {
         super(manager);
         this.size = 2;
-
-        scoutFrag = new TeamScoutFragment();
-        pitReportsFrag = new PitReportsFragment();
     }
 
     @Override
     public Fragment getItem(int position) {
+        Fragment fragment;
+
         switch (position) {
             case 0:
-                return scoutFrag;
+                fragment = new TeamScoutFragment();
+                break;
             case 1:
-                return pitReportsFrag;
+                fragment = new PitReportsFragment();
+                break;
             default:
-                return null;
+                fragment = null;
         }
+
+        if(fragment != null) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("team", team);
+            fragment.setArguments(bundle);
+        }
+
+        return fragment;
     }
 
     @Override
@@ -49,5 +58,9 @@ public class TeamPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return size;
+    }
+
+    public void setTeam(int team) {
+        this.team = team;
     }
 }

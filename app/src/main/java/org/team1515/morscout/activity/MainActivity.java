@@ -105,6 +105,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         getScoutForm("match");
         getScoutForm("pit");
+        getRegionalInfo();
+    }
+
+    private void getRegionalInfo() {
+        CookieRequest regionalRequest = new CookieRequest(Request.Method.POST,
+                "/getCurrentRegionalInfo",
+                preferences,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject regionalObj = new JSONObject(response);
+                            preferences.edit().putString("regional", regionalObj.getString("key")).apply();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }
+        );
+        queue.add(regionalRequest);
     }
 
     private void getScoutForm(final String context) {
@@ -144,8 +170,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             }
 
                             //Store form
-                            preferences.edit().putString(context + "Form", new Gson().toJson(formItems, new TypeToken<List<FormItem>>() {
-                            }.getType())).apply();
+                            preferences.edit().putString(context + "Form", new Gson().toJson(formItems, new TypeToken<List<FormItem>>() { }.getType())).apply();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

@@ -281,7 +281,6 @@ public class ScoutFragment extends Fragment {
                                 if (((LinearLayout) view).getChildAt(k) instanceof RadioGroup) {
                                     RadioGroup radioGroup = (RadioGroup) ((LinearLayout) view).getChildAt(k);
                                     dataObject.put("name", radioGroup.getTag());
-                                    System.out.println(radioGroup.getTag());
                                     RadioButton selectedButton = (RadioButton) radioGroup.getChildAt(radioGroup.indexOfChild(radioGroup.findViewById((radioGroup.getCheckedRadioButtonId()))));
                                     if (selectedButton != null) {
                                         dataObject.put("value", selectedButton.getText().toString());
