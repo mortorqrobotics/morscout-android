@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         matchesFrag = new MatchesFragment();
         teamListFrag = new TeamListFragment();
         settingsFrag = new SettingsFragment();
-        feedbackFrag = new FeedbackFragment();
+//        feedbackFrag = new FeedbackFragment();
 
         //Set default fragment
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -329,10 +329,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_item_4:
                 transaction.replace(R.id.main_frame, settingsFrag);
                 break;
+//            case R.id.nav_item_5:
+//                transaction.replace(R.id.main_frame, feedbackFrag);
+//                break;
             case R.id.nav_item_5:
-                transaction.replace(R.id.main_frame, feedbackFrag);
-                break;
-            case R.id.nav_item_6:
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setMessage("Are you sure you want to logout?");
                 builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
