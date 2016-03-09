@@ -118,8 +118,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                System.out.println("Started receiver");
-
                 // Send match reports
                 final List<Map<String, String>> matchReports = new Gson().
                         fromJson(preferences.getString("matchReports", ""),
@@ -129,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (matchReports != null) {
 
                     for (final Map<String, String> params : matchReports) {
-                        System.out.println("sending report");
                         CookieRequest matchReportRequest = new CookieRequest(Request.Method.POST,
                                 "/submitReport",
                                 params,
@@ -139,9 +136,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     public void onResponse(String response) {
                                         if (response.equals("success")) {
                                             matchReports.remove(params);
-                                            System.out.println("Send match report!");
-                                        } else {
-                                            System.out.println(response);
                                         }
                                     }
                                 },
@@ -173,7 +167,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     public void onResponse(String response) {
                                         if (response.equals("success")) {
                                             pitReports.remove(params);
-                                            System.out.println("sent pit report!");
                                         }
                                     }
                                 },

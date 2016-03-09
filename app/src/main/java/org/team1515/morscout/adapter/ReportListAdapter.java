@@ -47,7 +47,9 @@ public class ReportListAdapter extends RecyclerView.Adapter<ReportListAdapter.Vi
         String titleText = "Report " + (position + 1);
         title.setText(titleText);
 
-        //All of this is for testing purposes
+        //Refresh layout from previous items
+        holder.layout.removeViews(1, holder.layout.getChildCount() - 1);
+
         for(FormItem formItem : report) {
             View item = null;
 
