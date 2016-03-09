@@ -85,5 +85,6 @@ public class MatchPagerAdapter extends FragmentStatePagerAdapter {
 
     public void setSize(int size) {
         this.size = size;
+        notifyDataSetChanged();
     }
 }

@@ -50,13 +50,13 @@ public class StrategyFragment extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        TextView strategyText = (TextView) getActivity().findViewById(R.id.strategy_text);
                         try {
                             JSONObject strategyObj = new JSONObject(response);
 
-                            TextView strategyText = (TextView) getActivity().findViewById(R.id.strategy_text);
                             strategyText.setText(strategyObj.getString("strategy"));
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            strategyText.setText("No strategies yet");
                         }
 
                     }

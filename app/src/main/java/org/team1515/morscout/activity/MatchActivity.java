@@ -97,6 +97,7 @@ public class MatchActivity extends AppCompatActivity {
                 pagerAdapter.setRegional(match.getId());
 
                 viewPager.setAdapter(pagerAdapter);
+                tabLayout.setTabsFromPagerAdapter(pagerAdapter);
 
                 tabLayout.setVisibility(View.VISIBLE);
                 viewPager.setVisibility(View.VISIBLE);
@@ -123,6 +124,7 @@ public class MatchActivity extends AppCompatActivity {
                 pagerAdapter.setRegional(match.getId());
 
                 viewPager.setAdapter(pagerAdapter);
+                tabLayout.setTabsFromPagerAdapter(pagerAdapter);
 
                 tabLayout.setVisibility(View.VISIBLE);
                 viewPager.setVisibility(View.VISIBLE);
@@ -141,7 +143,8 @@ public class MatchActivity extends AppCompatActivity {
             blueTeamViews[i].setText(blueAlliance[i]);
             blueTeamViews[i].setOnClickListener(blueTeamClick);
             if(blueAlliance[i].equals(preferences.getString("teamNumber", ""))) {
-                pagerAdapter.setSize(2);
+                pagerAdapter.setSize(3);
+                tabLayout.setTabsFromPagerAdapter(pagerAdapter);
             }
         }
 
@@ -155,7 +158,8 @@ public class MatchActivity extends AppCompatActivity {
             redTeamViews[i].setText(redAlliance[i]);
             redTeamViews[i].setOnClickListener(redTeamClick);
             if(redAlliance[i].equals(preferences.getString("teamNumber", ""))) {
-                pagerAdapter.setSize(2);
+                pagerAdapter.setSize(3);
+                tabLayout.setTabsFromPagerAdapter(pagerAdapter);
             }
         }
     }
