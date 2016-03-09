@@ -82,7 +82,6 @@ public class TeamActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        System.out.println(response);
                         try {
                             JSONObject teamObj = new JSONObject(response);
                             String name = "Team " + team + " - " + teamObj.getString("nickname");

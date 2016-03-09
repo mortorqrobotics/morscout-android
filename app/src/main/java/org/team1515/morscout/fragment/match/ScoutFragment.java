@@ -1,15 +1,11 @@
 package org.team1515.morscout.fragment.match;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,10 +15,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -44,7 +38,6 @@ import org.json.JSONObject;
 import org.team1515.morscout.R;
 import org.team1515.morscout.entity.FormItem;
 import org.team1515.morscout.network.CookieRequest;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;

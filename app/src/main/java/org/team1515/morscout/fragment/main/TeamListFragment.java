@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -23,6 +24,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -82,7 +84,7 @@ public class TeamListFragment extends Fragment {
             public void afterTextChanged(Editable s) {
                 teamSearch = s.toString().toLowerCase();
 
-                if(!teamSearch.trim().isEmpty()) {
+                if (!teamSearch.trim().isEmpty()) {
                     List<Team> searchedTeams = new ArrayList<>();
                     for (Team team : teams) {
                         if (team.getName().toLowerCase().contains(teamSearch) || Integer.toString(team.getNumber()).contains(teamSearch)) {
@@ -110,7 +112,8 @@ public class TeamListFragment extends Fragment {
                     @Override
                     public void onItemClick(View view, int position) {
                         Intent intent = new Intent(getContext(), TeamActivity.class);
-                        intent.putExtra("team", teams.get(position).getNumber());
+                        int teamNumber = Integer.parseInt(((TextView) view.findViewById(R.id.teamlist_teamNumber)).getText().toString());
+                        intent.putExtra("team", teamNumber);
                         startActivity(intent);
                     }
                 })

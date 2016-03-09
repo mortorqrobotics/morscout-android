@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import org.team1515.morscout.fragment.match.ScoutFragment;
+import org.team1515.morscout.fragment.match.StrategyFragment;
 import org.team1515.morscout.fragment.match.ViewFragment;
 
 public class MatchPagerAdapter extends FragmentStatePagerAdapter {
@@ -33,6 +34,9 @@ public class MatchPagerAdapter extends FragmentStatePagerAdapter {
             case 1:
                 fragment = new ViewFragment();
                 break;
+            case 2:
+                fragment = new StrategyFragment();
+                break;
             default:
                 fragment = null;
         }
@@ -55,6 +59,8 @@ public class MatchPagerAdapter extends FragmentStatePagerAdapter {
                 return "Scout";
             case 1:
                 return "View";
+            case 2:
+                return "Strategy";
             default:
                 return "";
         }
@@ -75,5 +81,9 @@ public class MatchPagerAdapter extends FragmentStatePagerAdapter {
 
     public void setRegional(String regional) {
         this.regional = regional;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 }

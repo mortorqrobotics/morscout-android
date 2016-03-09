@@ -58,6 +58,12 @@ public class MatchActivity extends AppCompatActivity {
         Typeface typeface = Typeface.createFromAsset(getAssets(), "Exo2-Medium.ttf");
         toolbarTitle.setTypeface(typeface);
 
+        match = new Gson().fromJson(getIntent().getStringExtra("match"), Match.class);
+
+        // Create match title
+        TextView title = (TextView) findViewById(R.id.match_title);
+        title.setText("Match " + match.getNumber());
+
         // Create fragment viewpager
         viewPager = (ViewPager) findViewById(R.id.match_pager);
         pagerAdapter = new MatchPagerAdapter(getSupportFragmentManager());
@@ -123,7 +129,6 @@ public class MatchActivity extends AppCompatActivity {
             }
         };
 
-        match = new Gson().fromJson(getIntent().getStringExtra("match"), Match.class);
 
         blueTeamViews = new TextView[3];
         blueTeamViews[0] = (TextView) findViewById(R.id.match_blueTeam1);
@@ -135,6 +140,9 @@ public class MatchActivity extends AppCompatActivity {
         for (int i = 0; i < 3; i++) {
             blueTeamViews[i].setText(blueAlliance[i]);
             blueTeamViews[i].setOnClickListener(blueTeamClick);
+            if(blueAlliance[i].equals(preferences.getString("teamNumber", ""))) {
+                pagerAdapter.setSize(2);
+            }
         }
 
         redTeamViews = new TextView[3];
@@ -146,6 +154,9 @@ public class MatchActivity extends AppCompatActivity {
         for (int i = 0; i < 3; i++) {
             redTeamViews[i].setText(redAlliance[i]);
             redTeamViews[i].setOnClickListener(redTeamClick);
+            if(redAlliance[i].equals(preferences.getString("teamNumber", ""))) {
+                pagerAdapter.setSize(2);
+            }
         }
     }
 }

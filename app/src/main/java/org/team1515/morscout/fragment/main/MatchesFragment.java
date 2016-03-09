@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -33,6 +34,7 @@ import org.team1515.morscout.adapter.RecyclerItemClickListener;
 import org.team1515.morscout.entity.Match;
 import org.team1515.morscout.entity.Team;
 import org.team1515.morscout.network.CookieRequest;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,8 +133,16 @@ public class MatchesFragment extends Fragment {
                     @Override
                     public void onItemClick(View view, int position) {
                         Intent intent = new Intent(getActivity(), MatchActivity.class);
-                        intent.putExtra("match", new Gson().toJson(matches.get(position), Match.class));
-                        startActivity(intent);
+//                        intent.putExtra("match", new Gson().toJson(matches.get(position)));
+                        int matchNum = Integer.parseInt(((TextView) view.findViewById(R.id.matchlist_matchNumber)).getText().toString().split(" ")[1]);
+                        for(int i = 0; i < matches.size(); i++) {
+                            if(matches.get(i).getNumber() == matchNum) {
+                                intent.putExtra("match", new Gson().toJson(matches.get(i)));
+                                startActivity(intent);
+                                break;
+                            }
+                        }
+
                     }
                 })
         );
