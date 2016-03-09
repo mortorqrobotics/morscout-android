@@ -1,8 +1,11 @@
 package org.team1515.morscout.activity;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
@@ -10,6 +13,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -18,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -106,6 +111,84 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getScoutForm("match");
         getScoutForm("pit");
         getRegionalInfo();
+        registerReceiver();
+    }
+
+    private void registerReceiver() {
+        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                System.out.println("Started receiver");
+
+                // Send match reports
+                final List<Map<String, String>> matchReports = new Gson().
+                        fromJson(preferences.getString("matchReports", ""),
+                                new TypeToken<List<Map<String, String>>>() {
+                                }.getType());
+
+                if (matchReports != null) {
+
+                    for (final Map<String, String> params : matchReports) {
+                        System.out.println("sending report");
+                        CookieRequest matchReportRequest = new CookieRequest(Request.Method.POST,
+                                "/submitReport",
+                                params,
+                                preferences,
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        if (response.equals("success")) {
+                                            matchReports.remove(params);
+                                            System.out.println("Send match report!");
+                                        } else {
+                                            System.out.println(response);
+                                        }
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        error.printStackTrace();
+                                    }
+                                }
+                        );
+                        queue.add(matchReportRequest);
+                    }
+                }
+
+                // Send pit reports
+                final List<Map<String, String>> pitReports = new Gson().
+                        fromJson(preferences.getString("pitReports", ""),
+                                new TypeToken<List<Map<String, String>>>() {
+                                }.getType());
+
+                if (pitReports != null) {
+                    for (final Map<String, String> params : pitReports) {
+                        CookieRequest pitReportRequest = new CookieRequest(Request.Method.POST,
+                                "/submitReport",
+                                params,
+                                preferences,
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        if (response.equals("success")) {
+                                            pitReports.remove(params);
+                                            System.out.println("sent pit report!");
+                                        }
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        error.printStackTrace();
+                                    }
+                                }
+                        );
+                        queue.add(pitReportRequest);
+                    }
+                }
+            }
+        }, new IntentFilter("connection"));
     }
 
     private void getRegionalInfo() {

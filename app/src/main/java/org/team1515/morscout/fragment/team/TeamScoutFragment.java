@@ -301,7 +301,7 @@ public class TeamScoutFragment extends Fragment {
             }
         }
 
-        Map<String, String> params = new HashMap<>();
+        final Map<String, String> params = new HashMap<>();
 
         //TODO: Fix this mess
         //Because sending json over http is weird, this code must continue the weird trend
@@ -341,8 +341,20 @@ public class TeamScoutFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
                 Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+
+                //Add report to queue
+                List<Map<String, String>> pitReports = new Gson().
+                        fromJson(preferences.getString("pitReports", ""),
+                                new TypeToken<List<Map<String, String>>>() {
+                                }.getType());
+                if(pitReports == null) {
+                    pitReports = new ArrayList<>();
+                }
+                if(!pitReports.contains(params)) {
+                    pitReports.add(params);
+                    preferences.edit().putString("pitReports", new Gson().toJson(pitReports)).apply();
+                }
             }
         });
         queue.add(submissionRequest);

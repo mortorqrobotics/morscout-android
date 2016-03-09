@@ -312,7 +312,7 @@ public class ScoutFragment extends Fragment {
 
         System.out.println(data.toString());
 
-        Map<String, String> params = new HashMap<>();
+        final Map<String, String> params = new HashMap<>();
 
         //TODO: Fix this mess
         //Because sending json over http is weird, this code must continue the weird trend
@@ -354,7 +354,20 @@ public class ScoutFragment extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
-                        Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "MorScout could not connect to the server. Your report will be submitted as soon as a connection is available.", Toast.LENGTH_SHORT).show();
+
+                        //Add report to queue
+                        List<Map<String, String>> matchReports = new Gson().
+                                fromJson(preferences.getString("matchReports", ""),
+                                        new TypeToken<List<Map<String, String>>>() {
+                                        }.getType());
+                        if(matchReports == null) {
+                            matchReports = new ArrayList<>();
+                        }
+                        if(!matchReports.contains(params)) {
+                            matchReports.add(params);
+                            preferences.edit().putString("matchReports", new Gson().toJson(matchReports)).apply();
+                        }
                     }
                 });
         queue.add(submissionRequest);

@@ -127,7 +127,7 @@ public class PitReportsFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "MorScout could not connect to the server. Your report will be submitted as soon as a connection is available.", Toast.LENGTH_SHORT).show();
             }
         });
         queue.add(requestTeamReports);
