@@ -5,9 +5,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import org.team1515.morscout.fragment.match.ScoutFragment;
+import org.team1515.morscout.fragment.ScoutFragment;
+import org.team1515.morscout.fragment.ViewReportFragment;
 import org.team1515.morscout.fragment.match.StrategyFragment;
-import org.team1515.morscout.fragment.match.ViewFragment;
 
 public class MatchPagerAdapter extends FragmentStatePagerAdapter {
 
@@ -26,13 +26,14 @@ public class MatchPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Fragment fragment;
+        Bundle bundle = new Bundle();
 
         switch (position) {
             case 0:
                 fragment = new ScoutFragment();
                 break;
             case 1:
-                fragment = new ViewFragment();
+                fragment = new ViewReportFragment();
                 break;
             case 2:
                 fragment = new StrategyFragment();
@@ -42,7 +43,7 @@ public class MatchPagerAdapter extends FragmentStatePagerAdapter {
         }
 
         if (fragment != null) {
-            Bundle bundle = new Bundle();
+            bundle.putString("context", "match");
             bundle.putInt("team", team);
             bundle.putInt("match", match);
             bundle.putString("regional", regional);

@@ -1,4 +1,4 @@
-package org.team1515.morscout.fragment.match;
+package org.team1515.morscout.fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -30,34 +29,44 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ViewFragment extends Fragment {
+public class ViewReportFragment extends Fragment {
     private RequestQueue queue;
     private SharedPreferences preferences;
 
-    RecyclerView yourReportList;
-    LinearLayoutManager yourReportManager;
-    ReportListAdapter yourReportAdapter;
+    private String context;
+    private String requestPath;
 
-    RecyclerView otherReportList;
-    LinearLayoutManager otherReportManager;
-    ReportListAdapter otherReportAdapter;
+    private RecyclerView yourReportList;
+    private LinearLayoutManager yourReportManager;
+    private ReportListAdapter yourReportAdapter;
 
-    List<List<FormItem>> yourReports;
-    List<List<FormItem>> otherReports;
+    private RecyclerView otherReportList;
+    private LinearLayoutManager otherReportManager;
+    private ReportListAdapter otherReportAdapter;
+
+    private List<List<FormItem>> yourReports;
+    private List<List<FormItem>> otherReports;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_viewmatchscout, container, false);
+        View view = inflater.inflate(R.layout.fragment_viewreport, container, false);
+
+        context = getArguments().getString("context");
+        if (context.equals("match")) {
+            requestPath = "/getMatchReports";
+        } else {
+            requestPath = "/getTeamReports";
+        }
 
         preferences = getActivity().getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(getContext());
 
-        yourReportList = (RecyclerView) view.findViewById(R.id.matchscout_yourTeamReportsList);
+        yourReportList = (RecyclerView) view.findViewById(R.id.viewreport_yourTeamReportsList);
         yourReportManager = new LinearLayoutManager(getContext());
         yourReportAdapter = new ReportListAdapter();
         yourReportList.setLayoutManager(yourReportManager);
         yourReportList.setAdapter(yourReportAdapter);
 
-        otherReportList = (RecyclerView) view.findViewById(R.id.matchscout_otherTeamsReportsList);
+        otherReportList = (RecyclerView) view.findViewById(R.id.viewreport_otherTeamsReportsList);
         otherReportManager = new LinearLayoutManager(getContext());
         otherReportAdapter = new ReportListAdapter();
         otherReportList.setLayoutManager(otherReportManager);
@@ -70,11 +79,16 @@ public class ViewFragment extends Fragment {
 
     public void getReports() {
         Map<String, String> params = new HashMap<>();
-        params.put("team", String.valueOf(getArguments().getInt("team")));
-        params.put("match", String.valueOf(getArguments().getInt("match")));
+        if (context.equals("match")) {
+            params.put("team", String.valueOf(getArguments().getInt("team")));
+            params.put("match", String.valueOf(getArguments().getInt("match")));
+        } else {
+            params.put("teamNumber", String.valueOf(getArguments().getInt("team")));
+            params.put("reportContext", "pit");
+        }
 
-        CookieRequest reportsRequest = new CookieRequest(Request.Method.POST,
-                "/getMatchReports",
+        CookieRequest requestTeamReports = new CookieRequest(Request.Method.POST,
+                requestPath,
                 params,
                 preferences,
                 new Response.Listener<String>() {
@@ -88,15 +102,15 @@ public class ViewFragment extends Fragment {
                             yourReports = new ArrayList<>();
                             otherReports = new ArrayList<>();
 
-                            for(int i = 0; i < yourTeamArray.length(); i++) {
+                            for (int i = 0; i < yourTeamArray.length(); i++) {
                                 JSONArray formArray = yourTeamArray.getJSONObject(i).getJSONArray("data");
 
                                 List<FormItem> formItems = new ArrayList<>();
-                                for(int j = 0; j < formArray.length(); j++) {
+                                for (int j = 0; j < formArray.length(); j++) {
                                     JSONObject itemObj = formArray.getJSONObject(j);
 
                                     FormItem item;
-                                    if(itemObj.has("value")) {
+                                    if (itemObj.has("value")) {
                                         item = new FormItem(itemObj.getString("name"), itemObj.getString("value"));
                                     } else {
                                         item = new FormItem(itemObj.getString("name"));
@@ -106,15 +120,15 @@ public class ViewFragment extends Fragment {
                                 yourReports.add(formItems);
                             }
 
-                            for(int i = 0; i < otherTeamsArray.length(); i++) {
+                            for (int i = 0; i < otherTeamsArray.length(); i++) {
                                 JSONArray formArray = otherTeamsArray.getJSONObject(i).getJSONArray("data");
 
                                 List<FormItem> formItems = new ArrayList<>();
-                                for(int j = 0; j < formArray.length(); j++) {
+                                for (int j = 0; j < formArray.length(); j++) {
                                     JSONObject itemObj = formArray.getJSONObject(j);
 
                                     FormItem item;
-                                    if(itemObj.has("value")) {
+                                    if (itemObj.has("value")) {
                                         item = new FormItem(itemObj.getString("name"), itemObj.getString("value"));
                                     } else {
                                         item = new FormItem(itemObj.getString("name"));
@@ -133,12 +147,10 @@ public class ViewFragment extends Fragment {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                        Toast.makeText(getContext(), "An error has occurred, please try again later.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "MorScout could not connect to the server. Your report will be submitted as soon as a connection is available.", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
-        queue.add(reportsRequest);
+        queue.add(requestTeamReports);
     }
-
 }

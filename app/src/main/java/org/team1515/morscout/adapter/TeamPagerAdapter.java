@@ -5,8 +5,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import org.team1515.morscout.fragment.team.PitReportsFragment;
-import org.team1515.morscout.fragment.team.TeamScoutFragment;
+import org.team1515.morscout.fragment.ScoutFragment;
+import org.team1515.morscout.fragment.ViewReportFragment;
 
 public class TeamPagerAdapter extends FragmentPagerAdapter {
 
@@ -22,20 +22,22 @@ public class TeamPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Fragment fragment;
+        Bundle bundle = new Bundle();
 
         switch (position) {
             case 0:
-                fragment = new TeamScoutFragment();
+
+                fragment = new ScoutFragment();
                 break;
             case 1:
-                fragment = new PitReportsFragment();
+                fragment = new ViewReportFragment();
                 break;
             default:
                 fragment = null;
         }
 
         if(fragment != null) {
-            Bundle bundle = new Bundle();
+            bundle.putString("context", "pit");
             bundle.putInt("team", team);
             fragment.setArguments(bundle);
         }

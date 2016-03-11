@@ -1,4 +1,4 @@
-package org.team1515.morscout.fragment.team;
+package org.team1515.morscout.fragment;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -44,21 +44,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TeamScoutFragment extends Fragment {
+public class ScoutFragment extends Fragment {
     private RequestQueue queue;
     private SharedPreferences preferences;
 
-    List<FormItem> formItems;
+    private String context;
+    private List<FormItem> formItems;
 
-    Button submit;
+    private Button submit;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_teamscout, container, false);
+        View view = inflater.inflate(R.layout.fragment_scout, container, false);
 
         preferences = getActivity().getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(getContext());
 
-        submit = (Button) view.findViewById(R.id.teamscout_submit);
+        context = getArguments().getString("context");
+
+        // Init submit button
+        submit = (Button) view.findViewById(R.id.scout_submit);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,17 +70,18 @@ public class TeamScoutFragment extends Fragment {
             }
         });
 
-        createForm((LinearLayout) view.findViewById(R.id.teamscout_form));
+        // Programmatically create scout form
+        createForm((LinearLayout) view.findViewById(R.id.scout_formLayout));
 
         return view;
     }
 
     //TODO: Fix this mess of a function
     private void createForm(LinearLayout view) {
-        formItems = new Gson().fromJson(preferences.getString("pitForm", ""), new TypeToken<List<FormItem>>() {
+        formItems = new Gson().fromJson(preferences.getString(context + "Form", ""), new TypeToken<List<FormItem>>() {
         }.getType());
         for (FormItem formItem : formItems) {
-            View item = null;
+            View item;
             if (formItem.getType().equals("label")) {
                 item = new TextView(view.getContext());
                 ((TextView) item).setText(formItem.getName());
@@ -249,7 +254,7 @@ public class TeamScoutFragment extends Fragment {
     public void submitForm() {
         JSONArray data = new JSONArray();
 
-        LinearLayout form = (LinearLayout) getView().findViewById(R.id.teamscout_form);
+        LinearLayout form = (LinearLayout) getView().findViewById(R.id.scout_formLayout);
 
         for (int i = 0; i < form.getChildCount(); i++) {
             JSONObject dataObject = new JSONObject();
@@ -322,11 +327,10 @@ public class TeamScoutFragment extends Fragment {
         }
 
         params.put("team", String.valueOf(getArguments().getInt("team")));
-        params.put("context", "pit");
+        params.put("context", context);
         params.put("regional", preferences.getString("regional", ""));
-
-        for(String param : params.keySet()) {
-            System.out.println(param + "\t" + params.get(param));
+        if(context.equals("match")) {
+            params.put("match", String.valueOf(getArguments().getInt("match")));
         }
 
         CookieRequest submissionRequest = new CookieRequest(Request.Method.POST, "/submitReport", params, preferences, new Response.Listener<String>() {

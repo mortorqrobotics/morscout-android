@@ -3,20 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/gray">
 
     <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/matchscout_layout">
+            android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/matchscout_form"
+                android:id="@+id/scout_formLayout"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -26,7 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:id="@+id/matchscout_submit"
+                android:id="@+id/scout_submit"
                 android:text="Submit" />
 
         </LinearLayout>

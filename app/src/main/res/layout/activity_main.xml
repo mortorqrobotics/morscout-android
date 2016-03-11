@@ -4,7 +4,7 @@
     android:id="@+id/main_drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/gray"
     style="@style/AppTheme">
 
     <!-- Main -->
@@ -15,6 +15,7 @@
 
         <include layout="@layout/actionbar" />
 
+        <!-- The MainFrame -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
