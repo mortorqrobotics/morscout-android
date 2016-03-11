@@ -43,6 +43,7 @@ public class JoinTeamActivity extends AppCompatActivity {
         Map<String, String> params = new HashMap<>();
         params.put("team_id", teamID.getText().toString());
         CookieRequest joinTeamRequest = new CookieRequest(Request.Method.POST,
+                "http://www.morteam.com",
                 "/f/joinTeam",
                 params,
                 preferences,

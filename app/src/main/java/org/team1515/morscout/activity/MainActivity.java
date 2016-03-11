@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getScoutForm("match");
         getScoutForm("pit");
         getRegionalInfo();
+        getUserInfo();
         registerReceiver();
     }
 
@@ -210,6 +211,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
         );
         queue.add(regionalRequest);
+    }
+
+    private void getUserInfo() {
+        CookieRequest userRequest = new CookieRequest(Request.Method.POST,
+                "/getInfo",
+                preferences,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject userObj = new JSONObject(response);
+                            preferences.edit()
+                                    .putInt("team", userObj.getJSONObject("team").getInt("number")).apply();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }
+        );
+        queue.add(userRequest);
     }
 
     private void getScoutForm(final String context) {

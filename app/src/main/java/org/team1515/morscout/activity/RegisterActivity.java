@@ -10,6 +10,7 @@ import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -48,16 +49,20 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void register(View view) {
-        TextView firstNameView = (TextView) findViewById(R.id.register_firstName);
-        TextView lastNameView = (TextView) findViewById(R.id.register_lastName);
-        TextView teamCodeView = (TextView) findViewById(R.id.register_teamCode);
-        TextView passwordView = (TextView) findViewById(R.id.register_password);
-        TextView passwordConfirmView = (TextView) findViewById(R.id.register_passwordConfirm);
+        EditText firstNameView = (EditText) findViewById(R.id.register_firstName);
+        EditText lastNameView = (EditText) findViewById(R.id.register_lastName);
+        EditText usernameView = (EditText) findViewById(R.id.register_username);
+        EditText passwordView = (EditText) findViewById(R.id.register_password);
+        EditText passwordConfirmView = (EditText) findViewById(R.id.register_passwordConfirm);
+        EditText emailView = (EditText) findViewById(R.id.register_email);
+        EditText phoneView = (EditText) findViewById(R.id.register_phone);
         String firstName = firstNameView.getText().toString();
         String lastName = lastNameView.getText().toString();
-        String teamCode = teamCodeView.getText().toString();
+        String username = usernameView.getText().toString();
         String password = passwordView.getText().toString();
         String passwordConfirm = passwordConfirmView.getText().toString();
+        String email = emailView.getText().toString();
+        String phone = phoneView.getText().toString();
 
         if (firstName.trim().isEmpty()) {
             firstNameView.setText("");
@@ -69,10 +74,9 @@ public class RegisterActivity extends AppCompatActivity {
             lastNameView.setHintTextColor(Color.RED);
             isEmpty = true;
         }
-        if (teamCode.trim().isEmpty()) {
-            teamCodeView.setText("");
-            teamCodeView.setHintTextColor(Color.RED);
-            isEmpty = true;
+        if (username.trim().isEmpty()) {
+            usernameView.setText("");
+            usernameView.setHintTextColor(Color.RED);
         }
         if (password.trim().isEmpty()) {
             passwordView.setText("");
@@ -84,6 +88,16 @@ public class RegisterActivity extends AppCompatActivity {
             passwordConfirmView.setHintTextColor(Color.RED);
             isEmpty = true;
         }
+        if (email.trim().isEmpty()) {
+            emailView.setText("");
+            emailView.setHintTextColor(Color.RED);
+            isEmpty = true;
+        }
+        if (phone.trim().isEmpty()) {
+            phoneView.setText("");
+            phoneView.setHintTextColor(Color.RED);
+            isEmpty = true;
+        }
 
         if (isEmpty) {
             isEmpty = false;
@@ -91,30 +105,35 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         Map<String, String> params = new HashMap<>();
-        params.put("firstName", firstName);
-        params.put("lastName", lastName);
-        params.put("teamCode", teamCode);
+        params.put("firstname", firstName);
+        params.put("lastname", lastName);
+        params.put("username", username);
         params.put("password", password);
-        params.put("passwordConfirm", passwordConfirm);
+        params.put("password_confirm", passwordConfirm);
+        params.put("email", email);
+        params.put("phone", phone);
 
         CookieRequest registerRequest = new CookieRequest(Request.Method.POST,
-                "/signup",
+                "http://www.morteam.com",
+                "/f/createUser",
                 params,
                 preferences,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        System.out.println(response);
                         if(response.equals("success")) {
                             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                             startActivity(intent);
-                            try {
-                                finalize();
-                            } catch (Throwable throwable) {
-                                throwable.printStackTrace();
-                            }
+                            finish();
+                        } else if (response.equals("exists")) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                            builder.setTitle("One or more of the inputted items already exists.");
+                            builder.setPositiveButton("Okay", null);
+                            builder.create().show();
                         } else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                            builder.setTitle("One or more of the inputted information is incorrect");
+                            builder.setTitle("One or more of the inputted items is invalid.");
                             builder.setPositiveButton("Okay", null);
                             builder.create().show();
                         }
@@ -126,9 +145,5 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
         queue.add(registerRequest);
-
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-        finish();
     }
 }

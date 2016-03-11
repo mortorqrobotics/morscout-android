@@ -48,14 +48,14 @@ public class LoginActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
 
         boolean loggedIn = true;
-        for(String data : userData) {
-            if(!preferences.contains(data)) {
+        for (String data : userData) {
+            if (!preferences.contains(data) || !preferences.getBoolean("isOnTeam", false)) {
                 loggedIn = false;
                 break;
             }
         }
 
-        if(loggedIn) {
+        if (loggedIn) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
@@ -78,12 +78,12 @@ public class LoginActivity extends AppCompatActivity {
         String username = usernameView.getText().toString();
         String password = passwordView.getText().toString();
 
-        if(username.trim().isEmpty()) {
+        if (username.trim().isEmpty()) {
             usernameView.setText("");
             usernameView.setHintTextColor(Color.RED);
             isEmpty = true;
         }
-        if(password.trim().isEmpty()) {
+        if (password.trim().isEmpty()) {
             passwordView.setText("");
             passwordView.setHintTextColor(Color.RED);
             isEmpty = true;
@@ -106,14 +106,13 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        System.out.println(response);
                         try {
                             JSONObject userObject = new JSONObject(response);
 
                             //Put user data in local storage and intent
                             Intent intent = new Intent();
                             SharedPreferences.Editor editor = preferences.edit();
-                            for(String data : userData) {
+                            for (String data : userData) {
                                 editor.putString(data, userObject.getString(data));
                                 intent.putExtra(data, userObject.getString(data));
                             }
@@ -121,26 +120,18 @@ public class LoginActivity extends AppCompatActivity {
 
                             if (userObject.getJSONArray("teams").length() != 0) {
                                 preferences.edit().
-                                        putBoolean("isOnTeam", true)
-                                        .putString("position", userObject.getJSONObject("current_team").getString("position"))
-                                        .putString("team", userObject.getString("current_team"))
-                                        .apply();
+                                        putBoolean("isOnTeam", true).apply();
 
                                 intent.setClass(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
                             } else {
                                 preferences.edit().putBoolean("isOnTeam", false).apply();
 
                                 intent.setClass(LoginActivity.this, JoinTeamActivity.class);
-                                startActivity(intent);
-                                finish();
-
                             }
 
                             startActivity(intent);
                             finish();
-                        } catch(JSONException e) {
+                        } catch (JSONException e) {
                             e.printStackTrace();
                             AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                             builder.setTitle("Login Error");
