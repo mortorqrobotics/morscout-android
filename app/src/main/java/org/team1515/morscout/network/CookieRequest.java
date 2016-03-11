@@ -21,25 +21,29 @@ public class CookieRequest extends StringRequest {
     public static final String COOKIE_KEY = "Cookie";
     public static final String SESSION_COOKIE = "connect.sid";
 
-    private static final String host = "http://50.112.132.78";
+    private static final String host = "http://www.scout.morteam.com";
 
     private final Map<String, String> params;
     private final SharedPreferences preferences;
     private final String mimeType;
 
-    public CookieRequest(int method, String path, Map<String, String> params, String mimeType, SharedPreferences preferences, Listener<String> listener, ErrorListener errorListener) {
+    public CookieRequest(int method, String host, String path, Map<String, String> params, String mimeType, SharedPreferences preferences, Listener<String> listener, ErrorListener errorListener) {
         super(method, host + path, listener, errorListener);
         this.params = params;
         this.mimeType = mimeType;
         this.preferences = preferences;
     }
 
+    public CookieRequest(int method, String host, String path, Map<String, String> params, SharedPreferences preferences, Listener<String> listener, ErrorListener errorListener) {
+        this(method, host, path, params, null, preferences, listener, errorListener);
+    }
+
     public CookieRequest(int method, String path, Map<String, String> params, SharedPreferences preferences, Listener<String> listener, ErrorListener errorListener) {
-        this(method, path, params, null, preferences, listener, errorListener);
+        this(method, host, path, params, null, preferences, listener, errorListener);
     }
 
     public CookieRequest(int method, String path, SharedPreferences preferences, Listener<String> listener, ErrorListener errorListener) {
-        this(method, path, null, null, preferences, listener, errorListener);
+        this(method, host, path, null, null, preferences, listener, errorListener);
     }
 
     @Override

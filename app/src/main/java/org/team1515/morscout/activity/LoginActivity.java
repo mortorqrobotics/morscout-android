@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.team1515.morscout.R;
@@ -34,12 +35,8 @@ public class LoginActivity extends AppCompatActivity {
     public static final String[] userData = {
             "_id",
             "username",
-            "firstName",
-            "lastName",
-            "teamCode",
-            "teamNumber",
-            "teamName",
-            "admin"
+            "firstname",
+            "lastname",
     };
 
     @Override
@@ -102,17 +99,19 @@ public class LoginActivity extends AppCompatActivity {
         params.put("password", password);
 
         CookieRequest loginRequest = new CookieRequest(Request.Method.POST,
-                "/login",
+                "http://www.morteam.com",
+                "/f/login",
                 params,
                 preferences,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        System.out.println(response);
                         try {
                             JSONObject userObject = new JSONObject(response);
 
                             //Put user data in local storage and intent
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            Intent intent = new Intent();
                             SharedPreferences.Editor editor = preferences.edit();
                             for(String data : userData) {
                                 editor.putString(data, userObject.getString(data));
@@ -120,9 +119,29 @@ public class LoginActivity extends AppCompatActivity {
                             }
                             editor.apply();
 
+                            if (userObject.getJSONArray("teams").length() != 0) {
+                                preferences.edit().
+                                        putBoolean("isOnTeam", true)
+                                        .putString("position", userObject.getJSONObject("current_team").getString("position"))
+                                        .putString("team", userObject.getString("current_team"))
+                                        .apply();
+
+                                intent.setClass(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                preferences.edit().putBoolean("isOnTeam", false).apply();
+
+                                intent.setClass(LoginActivity.this, JoinTeamActivity.class);
+                                startActivity(intent);
+                                finish();
+
+                            }
+
                             startActivity(intent);
                             finish();
                         } catch(JSONException e) {
+                            e.printStackTrace();
                             AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                             builder.setTitle("Login Error");
                             builder.setMessage("You entered an incorrect username or password.");
