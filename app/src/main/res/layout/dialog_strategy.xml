@@ -4,9 +4,12 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/setStrategy"
-        android:text="Do this"/>
+        android:id="@+id/strategy_input"
+        android:gravity="top|start"
+        android:maxLines="3"
+        android:inputType="textCapSentences"
+        android:hint="Strategy"/>
 
 </LinearLayout>

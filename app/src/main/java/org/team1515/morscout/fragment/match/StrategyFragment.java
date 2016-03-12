@@ -5,14 +5,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -32,8 +31,6 @@ public class StrategyFragment extends Fragment {
 
     private SharedPreferences preferences;
     private RequestQueue queue;
-
-    String strategy;
 
     TextView strategyText;
     Button submitStrategy;
@@ -91,15 +88,21 @@ public class StrategyFragment extends Fragment {
     }
 
     public void setStrategy() {
+        final View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_strategy, null);
         strategyBuilder = new AlertDialog.Builder(getContext());
-        strategyBuilder.setView(R.layout.set_strategy);
-        strategyBuilder.setPositiveButton();
+        strategyBuilder.setView(dialogView);
         strategyBuilder.setPositiveButton("Set", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                EditText strategyBox = (EditText) dialogView.findViewById(R.id.strategy_input);
+                String strategy = strategyBox.getText().toString();
+                if(strategy.trim().isEmpty()) {
+                    return;
+                }
+
                 Map<String, String> params = new HashMap<>();
                 params.put("match", String.valueOf(getArguments().getInt("match")));
-                params.put("strategy", "Do this");
+                params.put("strategy", strategy.trim());
 
                 CookieRequest submitStrategy = new CookieRequest(Request.Method.POST,
                         "/setMatchStrategy",
@@ -108,14 +111,11 @@ public class StrategyFragment extends Fragment {
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
-                                try {
-                                    JSONObject strategyObj = new JSONObject(response);
-
-                                    strategyText.setText(strategyObj.getString("strategy"));
-                                } catch (JSONException e) {
-                                    strategyText.setText("No strategies yet");
+                                if(response.equals("success")) {
+                                    getStrategy();
+                                } else {
+                                    Toast.makeText(getContext(), "Failed to set strategy.", Toast.LENGTH_SHORT).show();
                                 }
-
                             }
                         },
                         new Response.ErrorListener() {
@@ -130,5 +130,6 @@ public class StrategyFragment extends Fragment {
             }
         });
         strategyBuilder.setNegativeButton("Cancel", null);
+        strategyBuilder.create().show();
     }
 }
