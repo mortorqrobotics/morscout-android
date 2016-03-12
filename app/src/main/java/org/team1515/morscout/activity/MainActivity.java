@@ -59,8 +59,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Fragment homeFrag,
             matchesFrag,
             teamListFrag,
-            settingsFrag,
-            feedbackFrag;
+            settingsFrag;
 
     // Navigation Drawer
     private DrawerLayout drawerLayout;
@@ -223,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         try {
                             JSONObject userObj = new JSONObject(response);
                             preferences.edit()
-                                    .putInt("team", userObj.getJSONObject("team").getInt("number")).apply();
+                                    .putString("teamNumber", userObj.getJSONObject("team").getString("number")).apply();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

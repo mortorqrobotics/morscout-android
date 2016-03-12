@@ -21,4 +21,11 @@
         android:textSize="18sp"
         android:id="@+id/strategy_text"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/submit_strategy"
+        android:layout_gravity="center"
+        android:text="Set Strategy"/>
+
 </LinearLayout>
