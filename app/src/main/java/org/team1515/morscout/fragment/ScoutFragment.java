@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -94,10 +95,13 @@ public class ScoutFragment extends Fragment {
                 item = new RelativeLayout(view.getContext());
                 ((RelativeLayout) item).setGravity(Gravity.CENTER);
 
-                RelativeLayout.LayoutParams leftParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                DisplayMetrics displayMetrics = item.getContext().getResources().getDisplayMetrics();
+                float screenWidth = displayMetrics.widthPixels;
+
+                RelativeLayout.LayoutParams leftParams = new RelativeLayout.LayoutParams((int) (screenWidth * 3 / 8), ViewGroup.LayoutParams.WRAP_CONTENT);
                 leftParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 leftParams.addRule(RelativeLayout.CENTER_VERTICAL);
-                RelativeLayout.LayoutParams rightParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                RelativeLayout.LayoutParams rightParams = new RelativeLayout.LayoutParams((int) (screenWidth * 3 / 8), ViewGroup.LayoutParams.WRAP_CONTENT);
                 rightParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 rightParams.addRule(RelativeLayout.CENTER_VERTICAL);
                 RelativeLayout.LayoutParams centerParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -177,7 +181,7 @@ public class ScoutFragment extends Fragment {
                         numberView.setText("" + value[0]);
                         numberView.setTag(formItem.getName());
 
-                        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(150, 150);
+                        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(125, 125);
                         buttonParams.setMargins(10, 0, 10, 0);
 
                         // Decrement button
