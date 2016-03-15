@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import org.team1515.morscout.fragment.ScoutFragment;
 import org.team1515.morscout.fragment.ViewReportFragment;
+import org.team1515.morscout.fragment.team.InfoFragment;
 
 public class TeamPagerAdapter extends FragmentPagerAdapter {
 
@@ -16,7 +17,7 @@ public class TeamPagerAdapter extends FragmentPagerAdapter {
 
     public TeamPagerAdapter(FragmentManager manager) {
         super(manager);
-        this.size = 2;
+        this.size = 3;
     }
 
     @Override
@@ -32,6 +33,8 @@ public class TeamPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 fragment = new ViewReportFragment();
                 break;
+            case 2:
+                fragment = new InfoFragment();
             default:
                 fragment = null;
         }
@@ -52,6 +55,8 @@ public class TeamPagerAdapter extends FragmentPagerAdapter {
                 return "Scout";
             case 1:
                 return "Pit Reports";
+            case 2:
+                return "Info";
             default:
                 return "";
         }
