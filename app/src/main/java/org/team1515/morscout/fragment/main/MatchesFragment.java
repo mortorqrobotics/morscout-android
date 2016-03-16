@@ -32,9 +32,7 @@ import org.team1515.morscout.activity.MatchActivity;
 import org.team1515.morscout.adapter.MatchListAdapter;
 import org.team1515.morscout.adapter.RecyclerItemClickListener;
 import org.team1515.morscout.entity.Match;
-import org.team1515.morscout.entity.Team;
 import org.team1515.morscout.network.CookieRequest;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;

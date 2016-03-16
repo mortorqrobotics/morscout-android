@@ -22,7 +22,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -38,7 +37,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.team1515.morscout.R;
 import org.team1515.morscout.entity.FormItem;
-import org.team1515.morscout.fragment.main.FeedbackFragment;
 import org.team1515.morscout.fragment.main.HomeFragment;
 import org.team1515.morscout.fragment.main.MatchesFragment;
 import org.team1515.morscout.fragment.main.SettingsFragment;

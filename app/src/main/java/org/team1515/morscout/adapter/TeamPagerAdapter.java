@@ -35,6 +35,7 @@ public class TeamPagerAdapter extends FragmentPagerAdapter {
                 break;
             case 2:
                 fragment = new InfoFragment();
+                break;
             default:
                 fragment = null;
         }

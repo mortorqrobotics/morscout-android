@@ -1,15 +1,10 @@
 package org.team1515.morscout.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,15 +14,10 @@ import android.widget.TextView;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.team1515.morscout.R;
 import org.team1515.morscout.adapter.MatchPagerAdapter;
-import org.team1515.morscout.entity.FormItem;
 import org.team1515.morscout.entity.Match;
-
-import java.util.List;
-import java.util.Map;
 
 public class MatchActivity extends AppCompatActivity {
     SharedPreferences preferences;
