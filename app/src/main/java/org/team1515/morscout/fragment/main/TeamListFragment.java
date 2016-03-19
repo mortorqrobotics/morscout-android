@@ -23,6 +23,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,7 +36,9 @@ import org.team1515.morscout.entity.Team;
 import org.team1515.morscout.network.CookieRequest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TeamListFragment extends Fragment {
     private RequestQueue queue;
@@ -109,8 +112,7 @@ public class TeamListFragment extends Fragment {
                     @Override
                     public void onItemClick(View view, int position) {
                         Intent intent = new Intent(getContext(), TeamActivity.class);
-                        int teamNumber = Integer.parseInt(((TextView) view.findViewById(R.id.teamlist_teamNumber)).getText().toString());
-                        intent.putExtra("team", teamNumber);
+                        intent.putExtra("team", new Gson().toJson(teams.get(position)));
                         startActivity(intent);
                     }
                 })
@@ -161,7 +163,7 @@ public class TeamListFragment extends Fragment {
             JSONArray jsonArray = new JSONArray(json);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject team = jsonArray.getJSONObject(i);
-                teams.add(new Team(team.getString("key"), team.getInt("team_number"), team.getString("nickname")));
+                teams.add(new Team(team.getString("key"), team.getInt("team_number"), team.getString("nickname"), team.getString("website"), team.getString("locality"), team.getString("name")));
             }
 
             sortTeams();

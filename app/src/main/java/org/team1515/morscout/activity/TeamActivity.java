@@ -14,11 +14,13 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.team1515.morscout.R;
 import org.team1515.morscout.adapter.TeamPagerAdapter;
+import org.team1515.morscout.entity.Team;
 import org.team1515.morscout.network.CookieRequest;
 
 import java.util.HashMap;
@@ -32,7 +34,7 @@ public class TeamActivity extends AppCompatActivity {
     ViewPager viewPager;
     TabLayout tabLayout;
 
-    int team;
+    Team team;
     String regional;
 
     @Override
@@ -43,7 +45,7 @@ public class TeamActivity extends AppCompatActivity {
         preferences = getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(this);
 
-        team = getIntent().getIntExtra("team", 0);
+        team = new Gson().fromJson(getIntent().getStringExtra("team"), Team.class);
         regional = getIntent().getStringExtra("regional");
 
         // Set up action bar
@@ -63,40 +65,7 @@ public class TeamActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
-        getTeamInfo();
+        TextView nameView = (TextView) findViewById(R.id.team_name);
+        nameView.setText("Team " + team.getNumber() + " - " + team.getName());
     }
-
-    private void getTeamInfo() {
-        Map<String, String> params = new HashMap<>();
-        params.put("teamNumber", String.valueOf(team));
-
-        CookieRequest teamRequest = new CookieRequest(Request.Method.POST,
-                "/getTeamInfo",
-                params,
-                preferences,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject teamObj = new JSONObject(response);
-                            String name = "Team " + team + " - " + teamObj.getString("nickname");
-
-                            TextView nameView = (TextView) findViewById(R.id.team_name);
-                            nameView.setText(name);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                    }
-                }
-        );
-        queue.add(teamRequest);
-    }
-
 }

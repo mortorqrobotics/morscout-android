@@ -181,7 +181,7 @@ public class ScoutFragment extends Fragment {
                         numberView.setText("" + value[0]);
                         numberView.setTag(formItem.getName());
 
-                        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(125, 125);
+                        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(140, 140);
                         buttonParams.setMargins(10, 0, 10, 0);
 
                         // Decrement button
