@@ -43,6 +43,8 @@ public class RegisterActivity extends AppCompatActivity {
         TextView toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         Typeface typeface = Typeface.createFromAsset(getAssets(), "Exo2-Medium.ttf");
         toolbarTitle.setTypeface(typeface);
+
+        toolbar.setVisibility(View.GONE);
     }
 
     public void register(View view) {
