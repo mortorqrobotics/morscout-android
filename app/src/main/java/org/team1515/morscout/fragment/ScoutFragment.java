@@ -162,7 +162,6 @@ public class ScoutFragment extends Fragment {
                         title.setTextSize(18);
                         title.setTextColor(item.getResources().getColor(R.color.black));
                         title.setLayoutParams(leftParams);
-                        title.setGravity(Gravity.CENTER);
 
                         container = new LinearLayout(view.getContext());
                         container.setOrientation(LinearLayout.HORIZONTAL);
@@ -175,10 +174,11 @@ public class ScoutFragment extends Fragment {
                         final int min = formItem.getMin();
                         final int max = formItem.getMax();
 
-                        // Editable text box
+                        // Number textview
                         final TextView numberView = new TextView(view.getContext());
                         numberView.setTextSize(18);
                         numberView.setText("" + value[0]);
+                        numberView.setTextSize(20);
                         numberView.setTag(formItem.getName());
 
                         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(140, 140);
