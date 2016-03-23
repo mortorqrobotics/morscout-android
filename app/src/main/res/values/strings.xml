@@ -25,7 +25,8 @@
     <string name="nav_item_2">All Matches</string>
     <string name="nav_item_3">Team List</string>
     <string name="nav_item_4">Settings</string>
-    <string name="nav_item_5">Log Out</string>
+    <string name="nav_item_5">Profile</string>
+    <string name="nav_item_6">Log Out</string>
 
     <!-- Home -->
     <string name="home_title">MorScout</string>

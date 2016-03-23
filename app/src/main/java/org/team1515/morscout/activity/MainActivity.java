@@ -39,6 +39,7 @@ import org.team1515.morscout.R;
 import org.team1515.morscout.entity.FormItem;
 import org.team1515.morscout.fragment.main.HomeFragment;
 import org.team1515.morscout.fragment.main.MatchesFragment;
+import org.team1515.morscout.fragment.main.ProfileFragment;
 import org.team1515.morscout.fragment.main.SettingsFragment;
 import org.team1515.morscout.fragment.main.TeamListFragment;
 import org.team1515.morscout.network.CookieRequest;
@@ -57,7 +58,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Fragment homeFrag,
             matchesFrag,
             teamListFrag,
-            settingsFrag;
+            settingsFrag,
+            profileFrag;
 
     // Navigation Drawer
     private DrawerLayout drawerLayout;
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         matchesFrag = new MatchesFragment();
         teamListFrag = new TeamListFragment();
         settingsFrag = new SettingsFragment();
-//        feedbackFrag = new FeedbackFragment();
+        profileFrag = new ProfileFragment();
 
         //Set default fragment
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -220,7 +222,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         try {
                             JSONObject userObj = new JSONObject(response);
                             preferences.edit()
-                                    .putString("teamNumber", userObj.getJSONObject("team").getString("number")).apply();
+                                    .putString("useId", userObj.getJSONObject("user").getString("_id"))
+                                    .putString("teamNumber", userObj.getJSONObject("team").getString("number"))
+                                    .apply();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -354,10 +358,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_item_4:
                 transaction.replace(R.id.main_frame, settingsFrag);
                 break;
-//            case R.id.nav_item_5:
-//                transaction.replace(R.id.main_frame, feedbackFrag);
-//                break;
             case R.id.nav_item_5:
+                transaction.replace(R.id.main_frame, profileFrag);
+                break;
+            case R.id.nav_item_6:
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setMessage("Are you sure you want to logout?");
                 builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
