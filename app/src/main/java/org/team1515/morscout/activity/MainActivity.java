@@ -222,7 +222,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         try {
                             JSONObject userObj = new JSONObject(response);
                             preferences.edit()
-                                    .putString("useId", userObj.getJSONObject("user").getString("_id"))
+                                    .putString("userId", userObj.getJSONObject("user").getString("_id"))
+                                    .putString("picPath", userObj.getJSONObject("user").getString("profpicpath"))
                                     .putString("teamNumber", userObj.getJSONObject("team").getString("number"))
                                     .apply();
                         } catch (JSONException e) {
