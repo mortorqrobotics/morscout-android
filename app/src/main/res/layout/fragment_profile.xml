@@ -10,8 +10,8 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_marginRight="5dp"
             android:scaleType="centerCrop"
             android:id="@+id/profile_picture"/>
