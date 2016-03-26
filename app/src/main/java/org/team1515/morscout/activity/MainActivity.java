@@ -225,6 +225,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     .putString("userId", userObj.getJSONObject("user").getString("_id"))
                                     .putString("picPath", userObj.getJSONObject("user").getString("profpicpath"))
                                     .putString("teamNumber", userObj.getJSONObject("team").getString("number"))
+                                    .putString("regionalCode", userObj.getJSONObject("team").getString("currentRegional"))
                                     .apply();
                         } catch (JSONException e) {
                             e.printStackTrace();
