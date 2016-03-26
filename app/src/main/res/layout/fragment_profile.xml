@@ -9,9 +9,10 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.android.volley.toolbox.NetworkImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginRight="5dp"
             android:scaleType="centerCrop"
             android:id="@+id/profile_picture"/>
 
@@ -126,6 +127,26 @@
 
 
     </LinearLayout>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/profile_captain"
+        android:visibility="gone"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Assignments"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/profile_assignments"/>
+
 
 
 </LinearLayout>
