@@ -7,18 +7,20 @@ public class Team extends Entity {
     String url;
     String location;
     String sponsors;
+    int progress;
 
-    public Team(String id, int number, String name, String url, String location, String sponsors) {
+    public Team(String id, int number, String name, String url, String location, String sponsors, int progress) {
         super(id);
         this.number = number;
         this.name = name;
         this.url = url;
         this.location = location;
         this.sponsors = sponsors;
+        this.progress = progress;
     }
 
-    public Team(String id, int number, String name) {
-        this(id, number, name, null, null, null);
+    public Team(String id, int number, String name, int progress) {
+        this(id, number, name, null, null, null, progress);
     }
 
     public int getNumber() {
@@ -40,4 +42,6 @@ public class Team extends Entity {
     public String getSponsors() {
         return sponsors;
     }
+
+    public int getProgress() { return progress; }
 }

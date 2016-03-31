@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/teamlist_teamNumber"
-        android:layout_width="100dp"
+        android:layout_width="75dp"
         android:layout_height="75dp"
         android:background="@drawable/border_style"
         android:textSize="17sp"
@@ -15,9 +15,18 @@
         android:gravity="center" />
 
     <TextView
-        android:layout_width="200dp"
+        android:layout_width="150dp"
         android:layout_height="75dp"
         android:id="@+id/teamlist_teamName"
+        android:background="@drawable/border_style"
+        android:textSize="17sp"
+        android:textColor="@color/background"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/teamlist_scoutProgress"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:background="@drawable/border_style"
         android:textSize="17sp"
         android:textColor="@color/background"

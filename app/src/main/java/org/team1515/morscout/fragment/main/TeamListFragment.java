@@ -57,6 +57,8 @@ public class TeamListFragment extends Fragment {
 
     SwipeRefreshLayout refreshLayout;
 
+    JSONObject pitProgress;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_teamlist, container, false);
 
@@ -130,9 +132,29 @@ public class TeamListFragment extends Fragment {
             }
         });
 
-        getTeams();
+        getProgress();
 
         return view;
+    }
+
+    public void getProgress() {
+        CookieRequest requestProgress = new CookieRequest(Request.Method.POST, "/getProgressForPit", preferences, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    pitProgress = new JSONObject(response);
+                    getTeams();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        queue.add(requestProgress);
     }
 
     public void getTeams() {
@@ -153,6 +175,7 @@ public class TeamListFragment extends Fragment {
                 refreshLayout.setRefreshing(false);
             }
         });
+
         queue.add(requestTeams);
     }
 
@@ -163,7 +186,7 @@ public class TeamListFragment extends Fragment {
             JSONArray jsonArray = new JSONArray(json);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject team = jsonArray.getJSONObject(i);
-                teams.add(new Team(team.getString("key"), team.getInt("team_number"), team.getString("nickname"), team.getString("website"), team.getString("locality"), team.getString("name")));
+                teams.add(new Team(team.getString("key"), team.getInt("team_number"), team.getString("nickname"), team.getString("website"), team.getString("locality"), team.getString("name"), pitProgress.getInt(team.getString("team_number"))));
             }
 
             sortTeams();
