@@ -26,6 +26,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.team1515.morscout.R;
 import org.team1515.morscout.activity.MatchActivity;
@@ -53,6 +54,8 @@ public class MatchesFragment extends Fragment {
     LinearLayoutManager matchLayoutManager;
 
     SwipeRefreshLayout refreshLayout;
+
+    JSONObject matchProgress;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_matches, container, false);
@@ -157,12 +160,32 @@ public class MatchesFragment extends Fragment {
             }
         });
 
-        getMatches();
+        getProgress();
 
         return view;
     }
 
     int x = 0;
+
+    public void getProgress() {
+        CookieRequest requestProgress = new CookieRequest(Request.Method.POST, "/getProgressForMatches", preferences, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    matchProgress = new JSONObject(response);
+                    getMatches();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        queue.add(requestProgress);
+    }
 
     public void getMatches() {
         progress.setVisibility(View.VISIBLE);
@@ -213,7 +236,7 @@ public class MatchesFragment extends Fragment {
                         redAlliance[j] = redArray.getString(j).replaceAll("frc", "");
                     }
 
-                    matches.add(new Match(matchObject.getString("key"), matchObject.getInt("match_number"), matchObject.getString("comp_level"), blueAlliance, redAlliance));
+                    matches.add(new Match(matchObject.getString("key"), matchObject.getInt("match_number"), matchObject.getString("comp_level"), blueAlliance, redAlliance, matchProgress.getInt(matchObject.getString("match_number"))));
                 }
             }
 

@@ -55,6 +55,9 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.View
         for(int i = 0; i < 3; i++) {
             redTeams[i].setText(currentMatch.getRedAlliance()[i]);
         }
+
+        TextView matchScoutProgress = (TextView) holder.layout.findViewById(R.id.matchlist_scoutProgress);
+        matchScoutProgress.setText(Integer.toString(currentMatch.getProgress()));
     }
 
     @Override
