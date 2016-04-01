@@ -135,7 +135,7 @@ public class TeamListFragment extends Fragment {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getTeams();
+                getProgress();
             }
         });
 

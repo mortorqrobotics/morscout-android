@@ -36,7 +36,9 @@ import org.team1515.morscout.entity.Match;
 import org.team1515.morscout.network.CookieRequest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MatchesFragment extends Fragment {
     private RequestQueue queue;
@@ -168,10 +170,14 @@ public class MatchesFragment extends Fragment {
     int x = 0;
 
     public void getProgress() {
-        CookieRequest requestProgress = new CookieRequest(Request.Method.POST, "/getProgressForMatches", preferences, new Response.Listener<String>() {
+        Map<String, String> params = new HashMap<>();
+        params.put("matchesLength", "90");
+
+        CookieRequest requestProgress = new CookieRequest(Request.Method.POST, "/getProgressForMatches", params, preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
+                    System.out.println(response);
                     matchProgress = new JSONObject(response);
                     getMatches();
                 } catch (JSONException e) {

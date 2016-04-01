@@ -57,7 +57,11 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.View
         }
 
         TextView matchScoutProgress = (TextView) holder.layout.findViewById(R.id.matchlist_scoutProgress);
-        matchScoutProgress.setText(Integer.toString(currentMatch.getProgress()));
+        if (currentMatch.getProgress() == 6) {
+            matchScoutProgress.setText("Complete");
+        } else {
+            matchScoutProgress.setText("(" + Integer.toString(currentMatch.getProgress()) + "/6)");
+        }
     }
 
     @Override
