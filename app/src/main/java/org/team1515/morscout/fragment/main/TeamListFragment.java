@@ -114,7 +114,14 @@ public class TeamListFragment extends Fragment {
                     @Override
                     public void onItemClick(View view, int position) {
                         Intent intent = new Intent(getContext(), TeamActivity.class);
-                        intent.putExtra("team", new Gson().toJson(teams.get(position)));
+                        TextView teamNumView = (TextView) view.findViewById(R.id.teamlist_teamNumber);
+                        int teamNum = Integer.parseInt((teamNumView.getText().toString()));
+                        for(Team team : teams) {
+                            if(team.getNumber() == teamNum) {
+                                intent.putExtra("team", new Gson().toJson(team));
+                                break;
+                            }
+                        }
                         startActivity(intent);
                     }
                 })
@@ -151,6 +158,7 @@ public class TeamListFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
                 Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
             }
         });
