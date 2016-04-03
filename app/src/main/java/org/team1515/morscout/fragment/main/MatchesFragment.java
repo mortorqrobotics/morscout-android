@@ -201,6 +201,7 @@ public class MatchesFragment extends Fragment {
         CookieRequest requestMatches = new CookieRequest(Request.Method.POST, "/getMatchesForCurrentRegional", preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                System.out.println(response);
                 preferences.edit().putString("matches", response).apply();
                 initMatches(response);
             }
@@ -244,7 +245,7 @@ public class MatchesFragment extends Fragment {
                         redAlliance[j] = redArray.getString(j).replaceAll("frc", "");
                     }
 
-                    matches.add(new Match(matchObject.getString("key"), matchObject.getInt("match_number"), matchObject.getString("comp_level"), blueAlliance, redAlliance, matchProgress.getInt(matchObject.getString("match_number"))));
+                    matches.add(new Match(matchObject.getString("key"), matchObject.getInt("match_number"), matchObject.getString("comp_level"), blueAlliance, redAlliance, matchProgress.getInt(matchObject.getString("match_number")), matchObject.getInt("time")));
                 }
             }
 

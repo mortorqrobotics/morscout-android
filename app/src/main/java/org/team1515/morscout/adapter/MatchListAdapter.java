@@ -9,11 +9,15 @@ import android.widget.TextView;
 import org.team1515.morscout.R;
 import org.team1515.morscout.entity.Match;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.ViewHolder> {
     private List<Match> matches;
+
+    DateFormat dateFormat = new SimpleDateFormat("h:mm a");
 
     public MatchListAdapter() {
         this.matches = new ArrayList<>();
@@ -58,10 +62,13 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.View
 
         TextView matchScoutProgress = (TextView) holder.layout.findViewById(R.id.matchlist_scoutProgress);
         if (currentMatch.getProgress() == 6) {
-            matchScoutProgress.setText("Complete");
+            matchScoutProgress.setText("(Complete)");
         } else {
             matchScoutProgress.setText("(" + Integer.toString(currentMatch.getProgress()) + "/6)");
         }
+
+        TextView matchTimeView = (TextView) holder.layout.findViewById(R.id.matchlist_matchTime);
+        matchTimeView.setText(dateFormat.format(currentMatch.getTime()));
     }
 
     @Override
