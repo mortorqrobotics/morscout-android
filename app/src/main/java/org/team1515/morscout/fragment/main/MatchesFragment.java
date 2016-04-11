@@ -245,7 +245,9 @@ public class MatchesFragment extends Fragment {
                         redAlliance[j] = redArray.getString(j).replaceAll("frc", "");
                     }
 
-                    matches.add(new Match(matchObject.getString("key"), matchObject.getInt("match_number"), matchObject.getString("comp_level"), blueAlliance, redAlliance, matchProgress.getInt(matchObject.getString("match_number")), matchObject.getInt("time")));
+                    System.out.println(matchObject.getLong("time"));
+
+                    matches.add(new Match(matchObject.getString("key"), matchObject.getInt("match_number"), matchObject.getString("comp_level"), blueAlliance, redAlliance, matchProgress.getInt(matchObject.getString("match_number")), matchObject.getLong("time")));
                 }
             }
 

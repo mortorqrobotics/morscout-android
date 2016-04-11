@@ -7,16 +7,16 @@ public class Match extends Entity {
     String[] blueAlliance;
     String[] redAlliance;
     int progress;
-    int time;
+    long time;
 
-    public Match(String id, int number, String compLevel, String[] blueAlliance, String[] redAlliance, int progress, int time) {
+    public Match(String id, int number, String compLevel, String[] blueAlliance, String[] redAlliance, int progress, long time) {
         super(id.split("_")[0]);
         this.number = number;
         this.compLevel = compLevel;
         this.blueAlliance = blueAlliance;
         this.redAlliance = redAlliance;
         this.progress = progress;
-        this.time = time;
+        this.time = time*1000;
     }
 
     public int getNumber() { return number; }
@@ -31,5 +31,5 @@ public class Match extends Entity {
 
     public int getProgress() { return progress; }
 
-    public int getTime() { return time; }
+    public long getTime() { return time; }
 }
