@@ -59,6 +59,8 @@ public class MatchesFragment extends Fragment {
 
     JSONObject matchProgress;
 
+    int matchesLength = 0;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_matches, container, false);
 
@@ -96,7 +98,7 @@ public class MatchesFragment extends Fragment {
                             searchedMatches.add(match);
                             isAdded = true;
                         }
-                        if(!isAdded) {
+                        if (!isAdded) {
                             for (String team : match.getBlueAlliance()) {
                                 if (team.contains(matchSearch)) {
                                     searchedMatches.add(match);
@@ -105,7 +107,7 @@ public class MatchesFragment extends Fragment {
                                 }
                             }
 
-                            if(!isAdded) {
+                            if (!isAdded) {
                                 for (String team : match.getRedAlliance()) {
                                     if (team.contains(matchSearch)) {
                                         searchedMatches.add(match);
@@ -138,8 +140,8 @@ public class MatchesFragment extends Fragment {
                         Intent intent = new Intent(getActivity(), MatchActivity.class);
 //                        intent.putExtra("match", new Gson().toJson(matches.get(position)));
                         int matchNum = Integer.parseInt(((TextView) view.findViewById(R.id.matchlist_matchNumber)).getText().toString().split(" ")[1]);
-                        for(int i = 0; i < matches.size(); i++) {
-                            if(matches.get(i).getNumber() == matchNum) {
+                        for (int i = 0; i < matches.size(); i++) {
+                            if (matches.get(i).getNumber() == matchNum) {
                                 intent.putExtra("match", new Gson().toJson(matches.get(i)));
                                 startActivity(intent);
                                 break;
@@ -158,11 +160,11 @@ public class MatchesFragment extends Fragment {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getProgress();
+                getMatches();
             }
         });
 
-        getProgress();
+        getMatches();
 
         return view;
     }
@@ -171,15 +173,14 @@ public class MatchesFragment extends Fragment {
 
     public void getProgress() {
         Map<String, String> params = new HashMap<>();
-        params.put("matchesLength", "90");
+        params.put("matchesLength", Integer.toString(matchesLength));
 
         CookieRequest requestProgress = new CookieRequest(Request.Method.POST, "/getProgressForMatches", params, preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
-                    System.out.println(response);
                     matchProgress = new JSONObject(response);
-                    getMatches();
+                    initMatches(preferences.getString("matches", "[]"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -201,16 +202,28 @@ public class MatchesFragment extends Fragment {
         CookieRequest requestMatches = new CookieRequest(Request.Method.POST, "/getMatchesForCurrentRegional", preferences, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                System.out.println(response);
-                preferences.edit().putString("matches", response).apply();
-                initMatches(response);
+                try {
+                    preferences.edit().putString("matches", response).apply();
+
+                    JSONArray responseArray = new JSONArray(response);
+
+                    matchesLength = 0;
+
+                    for (int i = 0; i < responseArray.length(); i++) {
+                        matchesLength++;
+                    }
+
+                    getProgress();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                getProgress();
                 error.printStackTrace();
                 Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
-                initMatches(preferences.getString("matches", "[]"));
                 refreshLayout.setRefreshing(false);
             }
         });

@@ -139,6 +139,7 @@ public class ViewReportFragment extends Fragment {
                             }
 
                             yourReportAdapter.setReports(yourReports);
+                            otherReportAdapter.setReports(otherReports);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
