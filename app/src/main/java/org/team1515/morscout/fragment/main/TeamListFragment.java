@@ -116,8 +116,8 @@ public class TeamListFragment extends Fragment {
                         Intent intent = new Intent(getContext(), TeamActivity.class);
                         TextView teamNumView = (TextView) view.findViewById(R.id.teamlist_teamNumber);
                         int teamNum = Integer.parseInt((teamNumView.getText().toString()));
-                        for(Team team : teams) {
-                            if(team.getNumber() == teamNum) {
+                        for (Team team : teams) {
+                            if (team.getNumber() == teamNum) {
                                 intent.putExtra("team", new Gson().toJson(team));
                                 break;
                             }
@@ -149,6 +149,7 @@ public class TeamListFragment extends Fragment {
             @Override
             public void onResponse(String response) {
                 try {
+                    preferences.edit().putString("pitProgress", response).apply();
                     pitProgress = new JSONObject(response);
                     getTeams();
                 } catch (JSONException e) {
@@ -158,8 +159,14 @@ public class TeamListFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                try {
+                    pitProgress = new JSONObject(preferences.getString("pitProgress", "[]"));
+                    getTeams();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+                }
                 error.printStackTrace();
-                Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
             }
         });
         queue.add(requestProgress);
@@ -178,7 +185,6 @@ public class TeamListFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
                 createTeams(preferences.getString("teams", "[]"));
                 refreshLayout.setRefreshing(false);
             }

@@ -45,7 +45,6 @@ public class MatchesFragment extends Fragment {
     private SharedPreferences preferences;
 
     EditText searchMatches;
-    String matchSearch;
 
     ProgressBar progress;
 
@@ -59,7 +58,7 @@ public class MatchesFragment extends Fragment {
 
     JSONObject matchProgress;
 
-    int matchesLength = 0;
+    int matchesLength;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_matches, container, false);
@@ -70,7 +69,6 @@ public class MatchesFragment extends Fragment {
         progress = (ProgressBar) view.findViewById(R.id.matchList_loading);
         progress.getIndeterminateDrawable().setColorFilter(Color.rgb(255, 197, 71), android.graphics.PorterDuff.Mode.MULTIPLY);
 
-        matchSearch = "";
         searchMatches = (EditText) view.findViewById(R.id.matches_searchbar);
         searchMatches.addTextChangedListener(new TextWatcher() {
 
@@ -88,7 +86,7 @@ public class MatchesFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                matchSearch = s.toString().toLowerCase();
+                String matchSearch = s.toString().toLowerCase();
 
                 if (!matchSearch.trim().isEmpty()) {
                     List<Match> searchedMatches = new ArrayList<>();
@@ -138,7 +136,6 @@ public class MatchesFragment extends Fragment {
                     @Override
                     public void onItemClick(View view, int position) {
                         Intent intent = new Intent(getActivity(), MatchActivity.class);
-//                        intent.putExtra("match", new Gson().toJson(matches.get(position)));
                         int matchNum = Integer.parseInt(((TextView) view.findViewById(R.id.matchlist_matchNumber)).getText().toString().split(" ")[1]);
                         for (int i = 0; i < matches.size(); i++) {
                             if (matches.get(i).getNumber() == matchNum) {
@@ -164,12 +161,12 @@ public class MatchesFragment extends Fragment {
             }
         });
 
+        matchesLength = 0;
+
         getMatches();
 
         return view;
     }
-
-    int x = 0;
 
     public void getProgress() {
         Map<String, String> params = new HashMap<>();
@@ -179,6 +176,7 @@ public class MatchesFragment extends Fragment {
             @Override
             public void onResponse(String response) {
                 try {
+                    preferences.edit().putString("matchProgress", response).apply();
                     matchProgress = new JSONObject(response);
                     initMatches(preferences.getString("matches", "[]"));
                 } catch (JSONException e) {
@@ -189,7 +187,13 @@ public class MatchesFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+                try {
+                    matchProgress = new JSONObject(preferences.getString("matchProgress", "[]"));
+                    initMatches(preferences.getString("matches", "[]"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         queue.add(requestProgress);
@@ -199,35 +203,38 @@ public class MatchesFragment extends Fragment {
         progress.setVisibility(View.VISIBLE);
         matchesList.setVisibility(View.GONE);
 
-        CookieRequest requestMatches = new CookieRequest(Request.Method.POST, "/getMatchesForCurrentRegional", preferences, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    preferences.edit().putString("matches", response).apply();
+        if (preferences.contains("matches")) {
+            matchesLength = preferences.getInt("matchesLength", 0);
+            getProgress();
+        } else {
+            CookieRequest requestMatches = new CookieRequest(Request.Method.POST, "/getMatchesForCurrentRegional", preferences, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        preferences.edit().putString("matches", response).apply();
 
-                    JSONArray responseArray = new JSONArray(response);
+                        JSONArray responseArray = new JSONArray(response);
 
-                    matchesLength = 0;
+                        matchesLength = responseArray.length();
 
-                    for (int i = 0; i < responseArray.length(); i++) {
-                        matchesLength++;
+                        preferences.edit().putInt("matchesLength", matchesLength).apply();
+
+                        getProgress();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-
-                    getProgress();
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                getProgress();
-                error.printStackTrace();
-                Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
-                refreshLayout.setRefreshing(false);
-            }
-        });
-        queue.add(requestMatches);
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    getProgress();
+                    error.printStackTrace();
+                    Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+                    refreshLayout.setRefreshing(false);
+                }
+            });
+            queue.add(requestMatches);
+        }
     }
 
     public void initMatches(String json) {
@@ -235,6 +242,7 @@ public class MatchesFragment extends Fragment {
             matches = new ArrayList<>();
             JSONArray matchArray = new JSONArray(json);
 
+            matchesLength = preferences.getInt("matchesLength", 0);
 
             //Create match list
             for (int i = 0; i < matchArray.length(); i++) {
@@ -257,8 +265,6 @@ public class MatchesFragment extends Fragment {
                     for (int j = 0; j < redAlliance.length; j++) {
                         redAlliance[j] = redArray.getString(j).replaceAll("frc", "");
                     }
-
-                    System.out.println(matchObject.getLong("time"));
 
                     matches.add(new Match(matchObject.getString("key"), matchObject.getInt("match_number"), matchObject.getString("comp_level"), blueAlliance, redAlliance, matchProgress.getInt(matchObject.getString("match_number")), matchObject.getLong("time")));
                 }
