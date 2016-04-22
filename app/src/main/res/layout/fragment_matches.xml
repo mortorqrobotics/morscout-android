@@ -23,7 +23,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:hint="search..."
+            android:hint="Search..."
             android:textColor="@color/background"
             android:textColorHint="#b3b3b3" />
 
