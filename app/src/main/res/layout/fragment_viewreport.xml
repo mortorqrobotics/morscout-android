@@ -18,7 +18,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/viewreport_yourTeamReportsList"
         android:layout_width="wrap_content"
-        android:layout_height="200dp"
+        android:layout_height="match_parent"
         android:scrollbars="vertical" />
 
     <TextView
@@ -33,7 +33,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/viewreport_otherTeamsReportsList"
         android:layout_width="wrap_content"
-        android:layout_height="200dp"
+        android:layout_height="match_parent"
         android:scrollbars="vertical" />
 
 </LinearLayout>

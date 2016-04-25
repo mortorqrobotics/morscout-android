@@ -111,7 +111,17 @@ public class ViewReportFragment extends Fragment {
 
                                     FormItem item;
                                     if (itemObj.has("value")) {
-                                        item = new FormItem(itemObj.getString("name"), itemObj.getString("value"));
+                                        String itemValue = itemObj.getString("value");
+
+                                        if (itemValue.contains("&lt;")) {
+                                            itemValue = itemValue.replaceFirst("&lt;", "<");
+                                        }
+
+                                        if (itemValue.contains("&gt;")) {
+                                            itemValue = itemValue.replaceFirst("&gt;", ">");
+                                        }
+
+                                        item = new FormItem(itemObj.getString("name"), itemValue);
                                     } else {
                                         item = new FormItem(itemObj.getString("name"));
                                     }
