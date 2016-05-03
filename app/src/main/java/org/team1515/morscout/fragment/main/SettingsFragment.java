@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SettingsFragment extends Fragment {
     private RequestQueue queue;
@@ -50,12 +52,12 @@ public class SettingsFragment extends Fragment {
     Button setRegionalButton;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        preferences = getActivity().getSharedPreferences(null, 0);
+        queue = Volley.newRequestQueue(getContext());
+
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         setRegionalButton = (Button) view.findViewById(R.id.settings_setRegional);
-
-        preferences = getActivity().getSharedPreferences(null, 0);
-        queue = Volley.newRequestQueue(getContext());
 
         yearsArray = new ArrayList<>();
         for (int i = 1992; i < 2017; i++) {
@@ -78,7 +80,12 @@ public class SettingsFragment extends Fragment {
 
         eventCodes = new ArrayList<>();
 
-        return view;
+        boolean returnValue = preferences.getBoolean("returnValue", false);
+
+        if (returnValue) {
+            return view;
+        }
+        return null;
     }
 
     @Override

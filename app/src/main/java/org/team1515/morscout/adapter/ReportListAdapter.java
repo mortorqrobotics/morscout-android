@@ -44,7 +44,7 @@ public class ReportListAdapter extends RecyclerView.Adapter<ReportListAdapter.Vi
         List<FormItem> report = reports.get(position);
 
         TextView title = (TextView) holder.layout.findViewById(R.id.reportlist_title);
-        String titleText = "Report " + (position + 1);
+        String titleText = "Report " + (position + 1) + " by ";
         title.setText(titleText);
 
         //Refresh layout from previous items

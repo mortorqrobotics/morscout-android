@@ -221,12 +221,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onResponse(String response) {
                         try {
                             JSONObject userObj = new JSONObject(response);
+                            JSONObject userInfo = userObj.getJSONObject("user");
+                            JSONObject teamInfo = userInfo.getJSONObject("current_team");
+
                             preferences.edit()
                                     .putString("userId", userObj.getJSONObject("user").getString("_id"))
                                     .putString("picPath", userObj.getJSONObject("user").getString("profpicpath"))
                                     .putString("teamNumber", userObj.getJSONObject("team").getString("number"))
                                     .putString("regionalCode", userObj.getJSONObject("team").getString("currentRegional"))
                                     .apply();
+
+                            preferences.edit().putBoolean("returnValue", teamInfo.getBoolean("scoutCaptain")).apply();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
