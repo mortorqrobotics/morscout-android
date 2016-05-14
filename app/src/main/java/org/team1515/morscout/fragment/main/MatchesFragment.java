@@ -40,7 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MatchesFragment extends Fragment {
+public class MatchesFragment extends EntityList {
     private RequestQueue queue;
     private SharedPreferences preferences;
 
@@ -58,10 +58,18 @@ public class MatchesFragment extends Fragment {
 
     JSONObject matchProgress;
 
-    int matchesLength;
+    private int matchesLength;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_matches, container, false);
+
+        super.onCreateView(inflater, container);
+
+        return view;
+    }
+
+    public void initViews(View view) {
+        requestType = "match";
 
         preferences = getActivity().getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(getContext());
@@ -157,85 +165,107 @@ public class MatchesFragment extends Fragment {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getMatches();
+                getEntities();
             }
         });
 
         matchesLength = 0;
 
-        getMatches();
-
-        return view;
-    }
-
-    public void getProgress() {
-        Map<String, String> params = new HashMap<>();
-        params.put("matchesLength", Integer.toString(matchesLength));
-
-        CookieRequest requestProgress = new CookieRequest(Request.Method.POST, "/getProgressForMatches", params, preferences, new Response.Listener<String>() {
+        responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
-                    preferences.edit().putString("matchProgress", response).apply();
-                    matchProgress = new JSONObject(response);
-                    initMatches(preferences.getString("matches", "[]"));
+                    preferences.edit().putString("matches", response).apply();
+
+                    JSONArray responseArray = new JSONArray(response);
+
+                    matchesLength = responseArray.length();
+
+                    preferences.edit().putInt("matchesLength", matchesLength).apply();
+
+                    getProgress();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-                try {
-                    matchProgress = new JSONObject(preferences.getString("matchProgress", "[]"));
-                    initMatches(preferences.getString("matches", "[]"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        queue.add(requestProgress);
+        };
     }
 
-    public void getMatches() {
-        progress.setVisibility(View.VISIBLE);
-        matchesList.setVisibility(View.GONE);
+//    public void getProgress() {
+//        Map<String, String> params = new HashMap<>();
+//        params.put("matchesLength", Integer.toString(matchesLength));
+//
+//        CookieRequest requestProgress = new CookieRequest(Request.Method.POST, "/getProgressForMatches", params, preferences, new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                try {
+//                    preferences.edit().putString("matchProgress", response).apply();
+//                    matchProgress = new JSONObject(response);
+//                    initMatches(preferences.getString("matches", "[]"));
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                error.printStackTrace();
+//                try {
+//                    matchProgress = new JSONObject(preferences.getString("matchProgress", "[]"));
+//                    initMatches(preferences.getString("matches", "[]"));
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                    Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+//        queue.add(requestProgress);
+//    }
 
+    public void getEntities() {
         if (preferences.contains("matches")) {
             matchesLength = preferences.getInt("matchesLength", 0);
-            getProgress();
         } else {
-            CookieRequest requestMatches = new CookieRequest(Request.Method.POST, "/getMatchesForCurrentRegional", preferences, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    try {
-                        preferences.edit().putString("matches", response).apply();
-
-                        JSONArray responseArray = new JSONArray(response);
-
-                        matchesLength = responseArray.length();
-
-                        preferences.edit().putInt("matchesLength", matchesLength).apply();
-
-                        getProgress();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    getProgress();
-                    error.printStackTrace();
-                    Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
-                    refreshLayout.setRefreshing(false);
-                }
-            });
-            queue.add(requestMatches);
+            super.getEntities();
         }
     }
+
+//    public void getMatches() {
+//        progress.setVisibility(View.VISIBLE);
+//        matchesList.setVisibility(View.GONE);
+//
+//        if (preferences.contains("matches")) {
+//            matchesLength = preferences.getInt("matchesLength", 0);
+//        } else {
+//            CookieRequest requestMatches = new CookieRequest(Request.Method.POST, "/getMatchesForCurrentRegional", preferences, new Response.Listener<String>() {
+//                @Override
+//                public void onResponse(String response) {
+//                    try {
+//                        preferences.edit().putString("matches", response).apply();
+//
+//                        JSONArray responseArray = new JSONArray(response);
+//
+//                        matchesLength = responseArray.length();
+//
+//                        preferences.edit().putInt("matchesLength", matchesLength).apply();
+//
+//                        getProgress();
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }, new Response.ErrorListener() {
+//                @Override
+//                public void onErrorResponse(VolleyError error) {
+//                    getProgress();
+//                    error.printStackTrace();
+//                    Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
+//                    refreshLayout.setRefreshing(false);
+//                }
+//            });
+//            queue.add(requestMatches);
+//        }
+//    }
 
     public void initMatches(String json) {
         try {

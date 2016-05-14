@@ -40,7 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TeamListFragment extends Fragment {
+public class TeamListFragment extends EntityList {
     private RequestQueue queue;
     private SharedPreferences preferences;
 
@@ -61,6 +61,15 @@ public class TeamListFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_teamlist, container, false);
+
+        getProgress();
+
+        return view;
+    }
+
+    @Override
+    public void initViews(View view) {
+        requestType = "pit";
 
         preferences = getActivity().getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(getContext());
@@ -138,10 +147,6 @@ public class TeamListFragment extends Fragment {
                 getProgress();
             }
         });
-
-        getProgress();
-
-        return view;
     }
 
     public void getProgress() {
