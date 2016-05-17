@@ -61,36 +61,15 @@ public class MatchesFragment extends EntityList {
     private int matchesLength;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_matches, container, false);
+        View view = super.onCreateView(inflater, container);
 
-        super.onCreateView(inflater, container);
-
-        return view;
-    }
-
-    public void initViews(View view) {
-        requestType = "match";
-
-        preferences = getActivity().getSharedPreferences(null, 0);
-        queue = Volley.newRequestQueue(getContext());
-
-        progress = (ProgressBar) view.findViewById(R.id.matchList_loading);
-        progress.getIndeterminateDrawable().setColorFilter(Color.rgb(255, 197, 71), android.graphics.PorterDuff.Mode.MULTIPLY);
-
-        searchMatches = (EditText) view.findViewById(R.id.matches_searchbar);
-        searchMatches.addTextChangedListener(new TextWatcher() {
+        setType("match");
+        setSearchListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // TODO Auto-generated method stub
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -131,32 +110,30 @@ public class MatchesFragment extends EntityList {
             }
         });
 
-        matches = new ArrayList<>();
-
-        matchesList = (RecyclerView) view.findViewById(R.id.matches_list);
-        matchListAdapter = new MatchListAdapter();
-        matchLayoutManager = new LinearLayoutManager(getContext());
-        matchesList.setLayoutManager(matchLayoutManager);
-        matchesList.setAdapter(matchListAdapter);
-
-        matchesList.addOnItemTouchListener(
-                new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Intent intent = new Intent(getActivity(), MatchActivity.class);
-                        int matchNum = Integer.parseInt(((TextView) view.findViewById(R.id.matchlist_matchNumber)).getText().toString().split(" ")[1]);
-                        for (int i = 0; i < matches.size(); i++) {
-                            if (matches.get(i).getNumber() == matchNum) {
-                                intent.putExtra("match", new Gson().toJson(matches.get(i)));
-                                startActivity(intent);
-                                break;
-                            }
-                        }
-
+        setItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getActivity(), MatchActivity.class);
+                int matchNum = Integer.parseInt(((TextView) view.findViewById(R.id.matchlist_matchNumber)).getText().toString().split(" ")[1]);
+                for (int i = 0; i < matches.size(); i++) {
+                    if (matches.get(i).getNumber() == matchNum) {
+                        intent.putExtra("match", new Gson().toJson(matches.get(i)));
+                        startActivity(intent);
+                        break;
                     }
-                })
-        );
+                }
 
+            }
+        }));
+
+        return view;
+    }
+
+    protected void initAdapter() {
+        adapter = new MatchListAdapter();
+    }
+
+    public void initViews(View view) {
         matchesList.setVisibility(View.GONE);
 
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.matches_refreshLayout);
