@@ -158,6 +158,7 @@ public class MatchesFragment extends EntityList {
         try {
             JSONArray matchArray = new JSONArray(matchStr);
 
+            // Store match length for getting progress
             matchesLength = matchArray.length();
 
             for (int i = 0; i < matchArray.length(); i++) {

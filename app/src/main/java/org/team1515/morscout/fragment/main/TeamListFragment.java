@@ -1,28 +1,17 @@
 package org.team1515.morscout.fragment.main;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -32,76 +21,36 @@ import org.team1515.morscout.R;
 import org.team1515.morscout.activity.TeamActivity;
 import org.team1515.morscout.adapter.RecyclerItemClickListener;
 import org.team1515.morscout.adapter.TeamListAdapter;
-import org.team1515.morscout.entity.Match;
 import org.team1515.morscout.entity.Team;
 import org.team1515.morscout.network.CookieRequest;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import static android.view.View.VISIBLE;
 
 public class TeamListFragment extends EntityList {
-    private RequestQueue queue;
-    private SharedPreferences preferences;
-
-    ProgressBar progress;
-
-    EditText searchTeams;
-    String teamSearch;
-
-    List<Team> teams;
-
-    RecyclerView teamsList;
-    TeamListAdapter teamListAdapter;
-    LinearLayoutManager teamListManager;
-
-    SwipeRefreshLayout refreshLayout;
-
-    JSONObject pitProgress;
+    private List<Team> teams;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_teamlist, container, false);
+        setType("pit");
 
-        getProgress();
+        View view = super.onCreateView(inflater, container);
 
-        return view;
-    }
-
-    @Override
-    protected void initAdapter() {
-        adapter = new TeamListAdapter();
-    }
-
-
-    public void initViews(View view) {
-        requestType = "pit";
-
-        preferences = getActivity().getSharedPreferences(null, 0);
-        queue = Volley.newRequestQueue(getContext());
-
-        progress = (ProgressBar) view.findViewById(R.id.teamList_loading);
-        progress.getIndeterminateDrawable().setColorFilter(Color.rgb(255, 197, 71), android.graphics.PorterDuff.Mode.MULTIPLY);
-
-        teamSearch = "";
-        searchTeams = (EditText) view.findViewById(R.id.teamlist_searchbar);
-        searchTeams.addTextChangedListener(new TextWatcher() {
-
+        setSearchListener(new TextWatcher() {
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                teamSearch = s.toString().toLowerCase();
+                String teamSearch = s.toString().toLowerCase();
 
                 if (!teamSearch.trim().isEmpty()) {
                     List<Team> searchedTeams = new ArrayList<>();
@@ -110,127 +59,86 @@ public class TeamListFragment extends EntityList {
                             searchedTeams.add(team);
                         }
                     }
-                    teamListAdapter.setTeams(searchedTeams);
+                    ((TeamListAdapter) adapter).setTeams(searchedTeams);
                 } else {
-                    teamListAdapter.setTeams(teams);
+                    ((TeamListAdapter) adapter).setTeams(teams);
                 }
-                teamListAdapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
             }
         });
 
-        teams = new ArrayList<>();
-
-        teamsList = (RecyclerView) view.findViewById(R.id.teamlist_list);
-        teamListAdapter = new TeamListAdapter();
-        teamListManager = new LinearLayoutManager(getContext());
-        teamsList.setLayoutManager(teamListManager);
-        teamsList.setAdapter(teamListAdapter);
-
-        teamsList.addOnItemTouchListener(
-                new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Intent intent = new Intent(getContext(), TeamActivity.class);
-                        TextView teamNumView = (TextView) view.findViewById(R.id.teamlist_teamNumber);
-                        int teamNum = Integer.parseInt((teamNumView.getText().toString()));
-                        for (Team team : teams) {
-                            if (team.getNumber() == teamNum) {
-                                intent.putExtra("team", new Gson().toJson(team));
-                                break;
-                            }
-                        }
-                        startActivity(intent);
-                    }
-                })
-        );
-
-        teamsList.setVisibility(View.GONE);
-
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.teamlist_refreshLayout);
-        refreshLayout.setColorSchemeResources(R.color.colorAccent);
-        refreshLayout.setRefreshing(false);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        setItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override
-            public void onRefresh() {
-                getProgress();
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getContext(), TeamActivity.class);
+                TextView teamNumView = (TextView) view.findViewById(R.id.teamlist_teamNumber);
+                int teamNum = Integer.parseInt((teamNumView.getText().toString()));
+                for (Team team : teams) {
+                    if (team.getNumber() == teamNum) {
+                        intent.putExtra("team", new Gson().toJson(team));
+                        break;
+                    }
+                }
+                startActivity(intent);
             }
-        });
+        }));
+
+        return view;
     }
 
-    public void getProgress() {
-        CookieRequest requestProgress = new CookieRequest(Request.Method.POST, "/getProgressForPit", preferences, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    preferences.edit().putString("pitProgress", response).apply();
-                    pitProgress = new JSONObject(response);
-                    getTeams();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+    protected void initAdapter() {
+        adapter = new TeamListAdapter();
+    }
+
+    @Override
+    protected void getProgress() {
+        CookieRequest requestProgress = new CookieRequest(Request.Method.POST,
+                "/getProgressForPit",
+                preferences,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            preferences.edit().putString("teamProgress", response).apply();
+
+                            JSONObject progressObj = new JSONObject(response);
+                            for (Team team : teams) {
+                                team.setProgress(progressObj.getInt(team.getNumber() + ""));
+                            }
+                            ((TeamListAdapter) adapter).setTeams(teams);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                try {
-                    pitProgress = new JSONObject(preferences.getString("pitProgress", "[]"));
-                    getTeams();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
-                }
-                error.printStackTrace();
-            }
-        });
+        );
         queue.add(requestProgress);
     }
 
     @Override
-    protected void processEntities(String matches) {
+    protected void processEntities(String teamStr) {
+        teams = new ArrayList<>();
 
-    }
-
-    public void getTeams() {
-        progress.setVisibility(View.VISIBLE);
-        teamsList.setVisibility(View.GONE);
-
-        CookieRequest requestTeams = new CookieRequest(Request.Method.POST, "/getTeamListForRegional", preferences, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                preferences.edit().putString("teams", response).apply();
-                createTeams(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                createTeams(preferences.getString("teams", "[]"));
-                refreshLayout.setRefreshing(false);
-            }
-        });
-
-        queue.add(requestTeams);
-    }
-
-    public void createTeams(String json) {
         try {
             teams = new ArrayList<>();
 
-            JSONArray jsonArray = new JSONArray(json);
+            JSONArray jsonArray = new JSONArray(teamStr);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject team = jsonArray.getJSONObject(i);
-                teams.add(new Team(team.getString("key"), team.getInt("team_number"), team.getString("nickname"), team.getString("website"), team.getString("locality"), team.getString("name"), pitProgress.getInt(team.getString("team_number"))));
+                teams.add(new Team(team.getString("key"), team.getInt("team_number"), team.getString("nickname"), team.getString("website"), team.getString("locality"), team.getString("name")));
             }
 
             sortTeams();
-
-            progress.setVisibility(View.GONE);
-            teamsList.setVisibility(View.VISIBLE);
-
-            teamListAdapter.setTeams(teams);
+            ((TeamListAdapter) adapter).setTeams(teams);
+            setListVisibility(VISIBLE);
         } catch (JSONException e) {
             e.printStackTrace();
-        } finally {
-            refreshLayout.setRefreshing(false);
         }
     }
 

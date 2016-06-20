@@ -44,7 +44,9 @@ public class TeamListAdapter extends RecyclerView.Adapter<TeamListAdapter.ViewHo
         teamName.setText(currentTeam.getName());
 
         TextView teamScoutProgress = (TextView) holder.layout.findViewById(R.id.teamlist_scoutProgress);
-        teamScoutProgress.setText(Integer.toString(currentTeam.getProgress()));
+        if (currentTeam.getProgress() >= 0) {
+            teamScoutProgress.setText(Integer.toString(currentTeam.getProgress()));
+        }
     }
 
     @Override

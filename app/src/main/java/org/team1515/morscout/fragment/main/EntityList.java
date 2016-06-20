@@ -105,12 +105,12 @@ public abstract class EntityList extends Fragment {
         if (requestType.equalsIgnoreCase("pit")) {
             requestString = "/getTeamListForRegional";
             requestType = "teams";
-        } else {
+        } else if (requestType.equalsIgnoreCase("match")) {
             requestString = "/getMatchesForCurrentRegional";
             requestType = "matches";
         }
 
-        CookieRequest requestTeams = new CookieRequest(Request.Method.POST,
+        CookieRequest requestEntities = new CookieRequest(Request.Method.POST,
                 requestString,
                 preferences,
                 new Response.Listener<String>() {
@@ -130,7 +130,7 @@ public abstract class EntityList extends Fragment {
                     }
                 }
         );
-        queue.add(requestTeams);
+        queue.add(requestEntities);
     }
 
     protected void setListVisibility(int visibility) {
