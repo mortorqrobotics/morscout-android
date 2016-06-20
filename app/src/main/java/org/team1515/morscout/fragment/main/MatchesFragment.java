@@ -1,28 +1,17 @@
 package org.team1515.morscout.fragment.main;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -36,40 +25,33 @@ import org.team1515.morscout.entity.Match;
 import org.team1515.morscout.network.CookieRequest;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.view.View.VISIBLE;
+
 public class MatchesFragment extends EntityList {
-    private RequestQueue queue;
-    private SharedPreferences preferences;
-
-    EditText searchMatches;
-
-    ProgressBar progress;
-
-    List<Match> matches;
-
-    RecyclerView matchesList;
-    MatchListAdapter matchListAdapter;
-    LinearLayoutManager matchLayoutManager;
-
-    SwipeRefreshLayout refreshLayout;
-
-    JSONObject matchProgress;
+    private List<Match> matches;
 
     private int matchesLength;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setType("match");
+
         View view = super.onCreateView(inflater, container);
 
-        setType("match");
+
         setSearchListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -102,11 +84,11 @@ public class MatchesFragment extends EntityList {
                             }
                         }
                     }
-                    matchListAdapter.setMatches(searchedMatches);
+                    ((MatchListAdapter) adapter).setMatches(searchedMatches);
                 } else {
-                    matchListAdapter.setMatches(matches);
+                    ((MatchListAdapter) adapter).setMatches(matches);
                 }
-                matchListAdapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
             }
         });
 
@@ -133,125 +115,51 @@ public class MatchesFragment extends EntityList {
         adapter = new MatchListAdapter();
     }
 
-    public void initViews(View view) {
-        matchesList.setVisibility(View.GONE);
+    @Override
+    protected void getProgress() {
+        Map<String, String> params = new HashMap<>();
+        params.put("matchesLength", Integer.toString(matchesLength));
 
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.matches_refreshLayout);
-        refreshLayout.setColorSchemeResources(R.color.colorAccent);
-        refreshLayout.setRefreshing(false);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getEntities();
-            }
-        });
+        CookieRequest requestProgress = new CookieRequest(Request.Method.POST,
+                "/getProgressForMatches",
+                params,
+                preferences,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            preferences.edit().putString("matchProgress", response).apply();
 
-        matchesLength = 0;
-
-        responseListener = new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    preferences.edit().putString("matches", response).apply();
-
-                    JSONArray responseArray = new JSONArray(response);
-
-                    matchesLength = responseArray.length();
-
-                    preferences.edit().putInt("matchesLength", matchesLength).apply();
-
-                    getProgress();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                            List<Integer> progresses = new ArrayList<>();
+                            JSONObject progressObj = new JSONObject(response);
+                            for (int i = 0; i < matchesLength; i++) {
+                                progresses.add(progressObj.getInt(Integer.toString(i + 1)));
+                            }
+                            ((MatchListAdapter) adapter).setProgresses(progresses);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
                 }
-            }
-        };
+        );
+        queue.add(requestProgress);
     }
 
-//    public void getProgress() {
-//        Map<String, String> params = new HashMap<>();
-//        params.put("matchesLength", Integer.toString(matchesLength));
-//
-//        CookieRequest requestProgress = new CookieRequest(Request.Method.POST, "/getProgressForMatches", params, preferences, new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//                try {
-//                    preferences.edit().putString("matchProgress", response).apply();
-//                    matchProgress = new JSONObject(response);
-//                    initMatches(preferences.getString("matches", "[]"));
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                error.printStackTrace();
-//                try {
-//                    matchProgress = new JSONObject(preferences.getString("matchProgress", "[]"));
-//                    initMatches(preferences.getString("matches", "[]"));
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                    Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-//        queue.add(requestProgress);
-//    }
+    @Override
+    protected void processEntities(String matchStr) {
+        matches = new ArrayList<>();
 
-    public void getEntities() {
-        if (preferences.contains("matches")) {
-            matchesLength = preferences.getInt("matchesLength", 0);
-        } else {
-            super.getEntities();
-        }
-    }
-
-//    public void getMatches() {
-//        progress.setVisibility(View.VISIBLE);
-//        matchesList.setVisibility(View.GONE);
-//
-//        if (preferences.contains("matches")) {
-//            matchesLength = preferences.getInt("matchesLength", 0);
-//        } else {
-//            CookieRequest requestMatches = new CookieRequest(Request.Method.POST, "/getMatchesForCurrentRegional", preferences, new Response.Listener<String>() {
-//                @Override
-//                public void onResponse(String response) {
-//                    try {
-//                        preferences.edit().putString("matches", response).apply();
-//
-//                        JSONArray responseArray = new JSONArray(response);
-//
-//                        matchesLength = responseArray.length();
-//
-//                        preferences.edit().putInt("matchesLength", matchesLength).apply();
-//
-//                        getProgress();
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }, new Response.ErrorListener() {
-//                @Override
-//                public void onErrorResponse(VolleyError error) {
-//                    getProgress();
-//                    error.printStackTrace();
-//                    Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
-//                    refreshLayout.setRefreshing(false);
-//                }
-//            });
-//            queue.add(requestMatches);
-//        }
-//    }
-
-    public void initMatches(String json) {
         try {
-            matches = new ArrayList<>();
-            JSONArray matchArray = new JSONArray(json);
+            JSONArray matchArray = new JSONArray(matchStr);
 
-            matchesLength = preferences.getInt("matchesLength", 0);
+            matchesLength = matchArray.length();
 
-            //Create match list
             for (int i = 0; i < matchArray.length(); i++) {
                 JSONObject matchObject = matchArray.getJSONObject(i);
 
@@ -273,37 +181,30 @@ public class MatchesFragment extends EntityList {
                         redAlliance[j] = redArray.getString(j).replaceAll("frc", "");
                     }
 
-                    matches.add(new Match(matchObject.getString("key"), matchObject.getInt("match_number"), matchObject.getString("comp_level"), blueAlliance, redAlliance, matchProgress.getInt(matchObject.getString("match_number")), matchObject.getLong("time")));
+                    matches.add(new Match(matchObject.getString("key"),
+                            matchObject.getInt("match_number"),
+                            matchObject.getString("comp_level"),
+                            blueAlliance,
+                            redAlliance,
+                            matchObject.getLong("time"))
+                    );
                 }
             }
 
             sortMatches();
-
-            progress.setVisibility(View.GONE);
-            matchesList.setVisibility(View.VISIBLE);
-
-            matchListAdapter.setMatches(matches);
-        } catch (Exception e) {
+            ((MatchListAdapter) adapter).setMatches(matches);
+            setListVisibility(VISIBLE);
+        } catch (JSONException e) {
             e.printStackTrace();
-        } finally {
-            refreshLayout.setRefreshing(false);
         }
     }
 
     private void sortMatches() {
-        // Bubble sort for now
-        boolean hasChanged;
-        do {
-            hasChanged = false;
-            for (int i = 0; i < matches.size() - 1; i++) {
-                Match first = matches.get(i);
-                Match last = matches.get(i + 1);
-                if (first.getNumber() > last.getNumber()) {
-                    matches.set(i, last);
-                    matches.set(i + 1, first);
-                    hasChanged = true;
-                }
+        Collections.sort(matches, new Comparator<Match>() {
+            @Override
+            public int compare(Match lhs, Match rhs) {
+                return lhs.getNumber() - rhs.getNumber();
             }
-        } while (hasChanged);
+        });
     }
 }

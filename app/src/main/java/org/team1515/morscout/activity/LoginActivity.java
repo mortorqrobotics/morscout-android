@@ -101,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
 
         CookieRequest loginRequest = new CookieRequest(Request.Method.POST,
                 "http://www.morteam.com",
-                "/f/login",
+                "/login",
                 params,
                 preferences,
                 new Response.Listener<String>() {

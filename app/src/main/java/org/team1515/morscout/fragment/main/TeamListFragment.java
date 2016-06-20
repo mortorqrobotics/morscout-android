@@ -32,10 +32,13 @@ import org.team1515.morscout.R;
 import org.team1515.morscout.activity.TeamActivity;
 import org.team1515.morscout.adapter.RecyclerItemClickListener;
 import org.team1515.morscout.adapter.TeamListAdapter;
+import org.team1515.morscout.entity.Match;
 import org.team1515.morscout.entity.Team;
 import org.team1515.morscout.network.CookieRequest;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +71,11 @@ public class TeamListFragment extends EntityList {
     }
 
     @Override
+    protected void initAdapter() {
+        adapter = new TeamListAdapter();
+    }
+
+
     public void initViews(View view) {
         requestType = "pit";
 
@@ -177,6 +185,11 @@ public class TeamListFragment extends EntityList {
         queue.add(requestProgress);
     }
 
+    @Override
+    protected void processEntities(String matches) {
+
+    }
+
     public void getTeams() {
         progress.setVisibility(View.VISIBLE);
         teamsList.setVisibility(View.GONE);
@@ -222,19 +235,11 @@ public class TeamListFragment extends EntityList {
     }
 
     private void sortTeams() {
-        // Bubble sort for now
-        boolean hasChanged;
-        do {
-            hasChanged = false;
-            for (int i = 0; i < teams.size() - 1; i++) {
-                Team first = teams.get(i);
-                Team last = teams.get(i + 1);
-                if (first.getNumber() > last.getNumber()) {
-                    teams.set(i, last);
-                    teams.set(i + 1, first);
-                    hasChanged = true;
-                }
+        Collections.sort(teams, new Comparator<Team>() {
+            @Override
+            public int compare(Team lhs, Team rhs) {
+                return lhs.getNumber() - rhs.getNumber();
             }
-        } while (hasChanged);
+        });
     }
 }

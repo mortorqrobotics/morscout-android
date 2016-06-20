@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.team1515.morscout.R;
 import org.team1515.morscout.entity.Match;
@@ -14,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.ViewHolder> {
+public class MatchListAdapter extends RecyclerView.Adapter<LinearViewHolder> {
     private List<Match> matches;
 
     DateFormat dateFormat = new SimpleDateFormat("h:mm a");
@@ -28,15 +29,26 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.View
         notifyDataSetChanged();
     }
 
+    public void setProgresses(List<Integer> progresses) {
+        if (progresses.size() == matches.size()) {
+            for (int i = 0; i < matches.size(); i++) {
+                matches.get(i).setProgress(progresses.get(i));
+            }
+            notifyDataSetChanged();
+        } else {
+            System.out.println("Could not get progress for matches");
+        }
+    }
+
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public LinearViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LinearLayout layout = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.list_match, parent, false);
-        ViewHolder viewHolder = new ViewHolder(layout);
+        LinearViewHolder viewHolder = new LinearViewHolder(layout);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(LinearViewHolder holder, int position) {
         Match currentMatch = matches.get(position);
 
         TextView MatchNumber = (TextView) holder.layout.findViewById(R.id.matchlist_matchNumber);
@@ -63,8 +75,10 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.View
         TextView matchScoutProgress = (TextView) holder.layout.findViewById(R.id.matchlist_scoutProgress);
         if (currentMatch.getProgress() == 6) {
             matchScoutProgress.setText("(Complete)");
+        } else if (currentMatch.getProgress() == -1) {
+            matchScoutProgress.setText("");
         } else {
-            matchScoutProgress.setText("(" + Integer.toString(currentMatch.getProgress()) + "/6)");
+            matchScoutProgress.setText("(" + Integer.toString(currentMatch.getProgress()) + " / 6)");
         }
 
         TextView matchTimeView = (TextView) holder.layout.findViewById(R.id.matchlist_matchTime);
@@ -74,15 +88,5 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.View
     @Override
     public int getItemCount() {
         return matches.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public LinearLayout layout;
-
-        public ViewHolder(LinearLayout layout) {
-            super(layout);
-            this.layout = layout;
-        }
-
     }
 }

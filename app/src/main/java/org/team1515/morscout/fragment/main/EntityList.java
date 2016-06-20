@@ -3,6 +3,7 @@ package org.team1515.morscout.fragment.main;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextWatcher;
@@ -11,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -19,34 +19,29 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.team1515.morscout.R;
 import org.team1515.morscout.adapter.RecyclerItemClickListener;
-import org.team1515.morscout.entity.Entity;
 import org.team1515.morscout.network.CookieRequest;
 
-import java.util.ArrayList;
-import java.util.List;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public abstract class EntityList extends Fragment {
 
-    private RequestQueue queue;
-    private SharedPreferences preferences;
+    protected RequestQueue queue;
+    protected SharedPreferences preferences;
 
     // Base layout items
+    private SwipeRefreshLayout refreshLayout;
     private EditText searchBar;
     private ProgressBar progressBar;
     private RecyclerView viewsList;
     private LinearLayoutManager layoutManager;
     protected RecyclerView.Adapter adapter;
-    private Response.Listener<String> responseListener;
-    private List<Entity> entities;
 
     // Type specific
     protected String requestType;
     private String requestString;
-    JSONObject progressObj;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.fragment_entitylist, container, false);
@@ -55,8 +50,7 @@ public abstract class EntityList extends Fragment {
         queue = Volley.newRequestQueue(getContext());
 
         initViews(view);
-
-        entities = new ArrayList<>();
+        getEntities();
 
         return view;
     }
@@ -64,6 +58,16 @@ public abstract class EntityList extends Fragment {
     protected abstract void initAdapter();
 
     private void initViews(View view) {
+        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.entitylist_refreshLayout);
+        refreshLayout.setColorSchemeResources(R.color.colorAccent);
+        refreshLayout.setRefreshing(false);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getEntities();
+            }
+        });
+
         searchBar = (EditText) view.findViewById(R.id.entitylist_searchBar);
 
         progressBar = (ProgressBar) view.findViewById(R.id.entitylist_loading);
@@ -75,13 +79,14 @@ public abstract class EntityList extends Fragment {
         viewsList.setLayoutManager(layoutManager);
 
         initAdapter();
+        viewsList.setAdapter(adapter);
     }
 
     protected void setSearchListener(TextWatcher listener) {
         searchBar.addTextChangedListener(listener);
     }
 
-    protected  void setItemTouchListener(RecyclerItemClickListener listener) {
+    protected void setItemTouchListener(RecyclerItemClickListener listener) {
         viewsList.addOnItemTouchListener(listener);
     }
 
@@ -89,39 +94,12 @@ public abstract class EntityList extends Fragment {
         this.requestType = type;
         if (requestType.equals("pit")) {
             requestString = "/getProgressForPit";
-        } else if (requestType.equals("match")){
+        } else if (requestType.equals("match")) {
             requestString = "/getProgressForMatches";
         }
     }
 
-    private void getProgress() {
-
-        CookieRequest requestProgress = new CookieRequest(Request.Method.POST, requestString, preferences, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    preferences.edit().putString(requestType.toLowerCase() + "Progress", response).apply();
-                    progressObj = new JSONObject(response);
-                    getEntities();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                try {
-                    progressObj = new JSONObject(preferences.getString(requestType.toLowerCase() + "Progress", "[]"));
-                    getEntities();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getContext(), "An error has occurred. Please try again later.", Toast.LENGTH_SHORT).show();
-                }
-                error.printStackTrace();
-            }
-        });
-        queue.add(requestProgress);
-    }
+    protected abstract void getProgress();
 
     private void getEntities() {
         if (requestType.equalsIgnoreCase("pit")) {
@@ -132,18 +110,38 @@ public abstract class EntityList extends Fragment {
             requestType = "matches";
         }
 
-        CookieRequest requestTeams = new CookieRequest(Request.Method.POST, requestString, preferences, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                preferences.edit().putString(requestType, response).apply();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+        CookieRequest requestTeams = new CookieRequest(Request.Method.POST,
+                requestString,
+                preferences,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        preferences.edit().putString(requestType, response).apply();
+                        processEntities(response);
+                        getProgress();
 
-            }
-        });
-
+                        refreshLayout.setRefreshing(false);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                }
+        );
         queue.add(requestTeams);
     }
+
+    protected void setListVisibility(int visibility) {
+        if (visibility == VISIBLE) {
+            viewsList.setVisibility(VISIBLE);
+            progressBar.setVisibility(GONE);
+        } else if (visibility == GONE) {
+            viewsList.setVisibility(GONE);
+            progressBar.setVisibility(VISIBLE);
+        }
+    }
+
+    protected abstract void processEntities(String matches);
 }
