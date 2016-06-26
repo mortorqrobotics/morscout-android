@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -28,8 +29,6 @@ import java.util.Map;
 public class LoginActivity extends AppCompatActivity {
     SharedPreferences preferences;
     RequestQueue queue;
-
-    boolean isEmpty = false;
 
     public static final String[] userData = {
             "_id",
@@ -74,16 +73,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(View view) {
-        TextView usernameView = (TextView) findViewById(R.id.login_username);
-        TextView passwordView = (TextView) findViewById(R.id.login_password);
+        EditText usernameView = (EditText) findViewById(R.id.login_username);
+        EditText passwordView = (EditText) findViewById(R.id.login_password);
         String username = usernameView.getText().toString();
         String password = passwordView.getText().toString();
 
+        // Make sure text boxes are not blank
+        boolean isEmpty = false;
         if (username.trim().isEmpty()) {
             usernameView.setText("");
             usernameView.setHintTextColor(Color.RED);
             isEmpty = true;
         }
+
         if (password.trim().isEmpty()) {
             passwordView.setText("");
             passwordView.setHintTextColor(Color.RED);
@@ -91,7 +93,6 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (isEmpty) {
-            isEmpty = false;
             return;
         }
 
@@ -99,7 +100,8 @@ public class LoginActivity extends AppCompatActivity {
         params.put("username", username);
         params.put("password", password);
 
-        CookieRequest loginRequest = new CookieRequest(Request.Method.POST,
+        CookieRequest loginRequest = new CookieRequest(
+                Request.Method.POST,
                 "http://www.morteam.com",
                 "/login",
                 params,
