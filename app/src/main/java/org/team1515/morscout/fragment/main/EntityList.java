@@ -22,6 +22,7 @@ import com.android.volley.toolbox.Volley;
 import org.team1515.morscout.R;
 import org.team1515.morscout.adapter.RecyclerItemClickListener;
 import org.team1515.morscout.network.CookieRequest;
+import org.team1515.morscout.network.NetworkUtils;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -111,8 +112,7 @@ public abstract class EntityList extends Fragment {
         }
 
         CookieRequest requestEntities = new CookieRequest(Request.Method.POST,
-                requestString,
-                preferences,
+                NetworkUtils.makeMorScoutURL(requestString, true),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

@@ -22,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.team1515.morscout.R;
 import org.team1515.morscout.network.CookieRequest;
+import org.team1515.morscout.network.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -128,7 +129,7 @@ public class SettingsFragment extends Fragment {
         Map<String, String> params = new HashMap<>();
         params.put("year", year);
 
-        CookieRequest requestRegionals = new CookieRequest(Request.Method.POST, "/getRegionalsForTeam", params, preferences, new Response.Listener<String>() {
+        CookieRequest requestRegionals = new CookieRequest(Request.Method.POST, NetworkUtils.makeMorScoutURL("/getRegionalsForTeam", true), params, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -159,7 +160,7 @@ public class SettingsFragment extends Fragment {
         params.put("eventCode", currentRegional);
         params.put("year", year);
 
-        CookieRequest setRegionalRequest = new CookieRequest(Request.Method.POST, "/chooseCurrentRegional", params, preferences, new Response.Listener<String>() {
+        CookieRequest setRegionalRequest = new CookieRequest(Request.Method.POST, NetworkUtils.makeMorScoutURL("/chooseCurrentRegional", true), params, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {

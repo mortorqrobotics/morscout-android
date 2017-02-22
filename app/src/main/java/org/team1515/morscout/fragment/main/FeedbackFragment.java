@@ -19,6 +19,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.team1515.morscout.R;
 import org.team1515.morscout.network.CookieRequest;
+import org.team1515.morscout.network.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -79,7 +80,7 @@ public class FeedbackFragment extends Fragment {
         Map<String, String> params = new HashMap<>();
         params.put("content", content);
 
-        CookieRequest sendFeedback = new CookieRequest(Request.Method.POST, "/sendFeedback", params, preferences, new Response.Listener<String>() {
+        CookieRequest sendFeedback = new CookieRequest(Request.Method.POST, NetworkUtils.makeMorScoutURL("/sendFeedback", true), params, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {

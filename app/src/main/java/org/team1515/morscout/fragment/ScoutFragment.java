@@ -39,6 +39,7 @@ import org.json.JSONObject;
 import org.team1515.morscout.R;
 import org.team1515.morscout.entity.FormItem;
 import org.team1515.morscout.network.CookieRequest;
+import org.team1515.morscout.network.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -337,7 +338,7 @@ public class ScoutFragment extends Fragment {
             params.put("match", String.valueOf(getArguments().getInt("match")));
         }
 
-        CookieRequest submissionRequest = new CookieRequest(Request.Method.POST, "/submitReport", params, preferences, new Response.Listener<String>() {
+        CookieRequest submissionRequest = new CookieRequest(Request.Method.POST, NetworkUtils.makeMorScoutURL("/submitReport", true), params, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 if (response.equals("success")) {

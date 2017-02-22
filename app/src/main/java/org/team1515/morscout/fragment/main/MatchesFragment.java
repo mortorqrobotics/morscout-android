@@ -23,6 +23,7 @@ import org.team1515.morscout.adapter.MatchListAdapter;
 import org.team1515.morscout.adapter.RecyclerItemClickListener;
 import org.team1515.morscout.entity.Match;
 import org.team1515.morscout.network.CookieRequest;
+import org.team1515.morscout.network.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -121,9 +122,8 @@ public class MatchesFragment extends EntityList {
         params.put("matchesLength", Integer.toString(matchesLength));
 
         CookieRequest requestProgress = new CookieRequest(Request.Method.POST,
-                "/getProgressForMatches",
+                NetworkUtils.makeMorScoutURL("/getProgressForMatches", true),
                 params,
-                preferences,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

@@ -23,6 +23,7 @@ import org.team1515.morscout.R;
 import org.team1515.morscout.adapter.ReportListAdapter;
 import org.team1515.morscout.entity.FormItem;
 import org.team1515.morscout.network.CookieRequest;
+import org.team1515.morscout.network.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,9 +89,8 @@ public class ViewReportFragment extends Fragment {
         }
 
         CookieRequest requestTeamReports = new CookieRequest(Request.Method.POST,
-                requestPath,
+                NetworkUtils.makeMorScoutURL(requestPath, true),
                 params,
-                preferences,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

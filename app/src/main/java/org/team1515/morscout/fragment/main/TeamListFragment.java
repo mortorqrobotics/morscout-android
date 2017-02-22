@@ -23,6 +23,7 @@ import org.team1515.morscout.adapter.RecyclerItemClickListener;
 import org.team1515.morscout.adapter.TeamListAdapter;
 import org.team1515.morscout.entity.Team;
 import org.team1515.morscout.network.CookieRequest;
+import org.team1515.morscout.network.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -93,8 +94,7 @@ public class TeamListFragment extends EntityList {
     @Override
     protected void getProgress() {
         CookieRequest requestProgress = new CookieRequest(Request.Method.POST,
-                "/getProgressForPit",
-                preferences,
+                NetworkUtils.makeMorScoutURL("/getProgressForPit", true),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

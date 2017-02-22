@@ -30,9 +30,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.team1515.morscout.R;
-import org.team1515.morscout.network.CacheRequestQueue;
 import org.team1515.morscout.network.CookieRequest;
-import org.team1515.morscout.network.ImageCookieRequest;
+import org.team1515.morscout.network.NetworkUtils;
 import org.w3c.dom.Text;
 
 import java.util.HashMap;
@@ -82,29 +81,28 @@ public class ProfileFragment extends Fragment {
 //                android.R.drawable.ic_dialog_alert, android.R.drawable
 //                        .ic_dialog_alert));
 //        picture.setImageUrl(url, imageLoader);
-        ImageCookieRequest pictureRequest = new ImageCookieRequest("http://www.morteam.com" + preferences.getString("picPath", "") + "-300",
-                preferences,
-                new Response.Listener<Bitmap>() {
-                    @Override
-                    public void onResponse(Bitmap response) {
-                        picture.setImageBitmap(response);
-                    }
-                }, 0, 0, null, Bitmap.Config.RGB_565, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
-        queue.add(pictureRequest);
+//        ImageCookieRequest pictureRequest = new ImageCookieRequest("http://www.morteam.com" + preferences.getString("picPath", "") + "-300",
+//                preferences,
+//                new Response.Listener<Bitmap>() {
+//                    @Override
+//                    public void onResponse(Bitmap response) {
+//                        picture.setImageBitmap(response);
+//                    }
+//                }, 0, 0, null, Bitmap.Config.RGB_565, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                error.printStackTrace();
+//            }
+//        });
+//        queue.add(pictureRequest);
 
         Map<String, String> params = new HashMap<>();
         params.put("scoutID", preferences.getString("userId", ""));
         params.put("userID", preferences.getString("userId", ""));
 
         CookieRequest statsRequest = new CookieRequest(Request.Method.POST,
-                "/getUserStats",
+                NetworkUtils.makeMorScoutURL("/getUserStats", true),
                 params,
-                preferences,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -130,7 +128,6 @@ public class ProfileFragment extends Fragment {
         CookieRequest tasksRequest = new CookieRequest(Request.Method.POST,
                 "/showTasks",
                 params,
-                preferences,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

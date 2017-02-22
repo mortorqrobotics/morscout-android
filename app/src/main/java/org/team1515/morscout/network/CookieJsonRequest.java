@@ -1,36 +1,37 @@
 package org.team1515.morscout.network;
 
-import android.content.SharedPreferences.Editor;
+import org.json.JSONException;
+import org.team1515.morscout.MorScout;
+
+import android.content.SharedPreferences;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Response;
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.Response.Listener;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonObjectRequest;
 
-import org.team1515.morscout.MorScout;
+import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+public class CookieJsonRequest extends JsonObjectRequest {
 
-public class CookieRequest extends StringRequest {
-    private final Map<String, String> params;
 
-    public CookieRequest(int method, String path, Map<String, String> params, Listener<String> listener, ErrorListener errorListener) {
-        super(method, path, listener, errorListener);
-        this.params = params;
+    public CookieJsonRequest(int method, String path, JSONObject jsonRequest, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        super(method, NetworkUtils.makeMorScoutURL(path, true), jsonRequest, listener, errorListener);
     }
 
-    public CookieRequest(int method, String path, Listener<String> listener, ErrorListener errorListener) {
-        super(method, path, listener, errorListener);
-        params = null;
+    public CookieJsonRequest(int method, String path, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        this(method, path, new JSONObject(), listener, errorListener);
     }
 
     @Override
-    protected Response<String> parseNetworkResponse(NetworkResponse response) {
+    protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
         //Store session-id cookie in storage
         if(response.headers.containsKey(NetworkUtils.SET_COOKIE_KEY) && response.headers.get(NetworkUtils.SET_COOKIE_KEY).startsWith(NetworkUtils.SESSION_COOKIE)) {
             String cookie = response.headers.get(NetworkUtils.SET_COOKIE_KEY);
@@ -38,17 +39,26 @@ public class CookieRequest extends StringRequest {
                 String[] splitCookie = cookie.split(";");
                 String[] splitSessionId = splitCookie[0].split("=");
                 cookie = splitSessionId[1];
-                Editor editor = MorScout.preferences.edit();
+                SharedPreferences.Editor editor = MorScout.preferences.edit();
                 editor.putString(NetworkUtils.SESSION_COOKIE, cookie);
                 editor.apply();
             }
         }
-        return super.parseNetworkResponse(response);
-    }
 
-    @Override
-    protected Map<String, String> getParams() {
-        return params;
+        try {
+            String jsonString =
+                    new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+            if (!jsonString.isEmpty()) {
+                return Response.success(new JSONObject(jsonString),
+                        HttpHeaderParser.parseCacheHeaders(response));
+            } else {
+                return Response.success(new JSONObject(), HttpHeaderParser.parseCacheHeaders(response));
+            }
+        } catch (UnsupportedEncodingException e) {
+            return Response.error(new ParseError(e));
+        } catch (JSONException je) {
+            return Response.error(new ParseError(je));
+        }
     }
 
     @Override

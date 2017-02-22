@@ -43,6 +43,7 @@ import org.team1515.morscout.fragment.main.ProfileFragment;
 import org.team1515.morscout.fragment.main.SettingsFragment;
 import org.team1515.morscout.fragment.main.TeamListFragment;
 import org.team1515.morscout.network.CookieRequest;
+import org.team1515.morscout.network.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -128,9 +129,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     for (final Map<String, String> params : matchReports) {
                         CookieRequest matchReportRequest = new CookieRequest(Request.Method.POST,
-                                "/submitReport",
+                                NetworkUtils.makeMorScoutURL("/submitReport", true),
                                 params,
-                                preferences,
                                 new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {
@@ -161,9 +161,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (pitReports != null) {
                     for (final Map<String, String> params : pitReports) {
                         CookieRequest pitReportRequest = new CookieRequest(Request.Method.POST,
-                                "/submitReport",
+                                NetworkUtils.makeMorScoutURL("/submitReport", true),
                                 params,
-                                preferences,
                                 new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {
@@ -189,8 +188,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void getRegionalInfo() {
         CookieRequest regionalRequest = new CookieRequest(Request.Method.POST,
-                "/getCurrentRegionalInfo",
-                preferences,
+                NetworkUtils.makeMorScoutURL("/getCurrentRegionalInfo", true),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -214,8 +212,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void getUserInfo() {
         CookieRequest userRequest = new CookieRequest(Request.Method.POST,
-                "/getInfo",
-                preferences,
+                NetworkUtils.makeMorScoutURL("/getInfo", true),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -253,9 +250,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         params.put("context", context);
 
         CookieRequest formRequest = new CookieRequest(Request.Method.POST,
-                "/getScoutForm",
+                NetworkUtils.makeMorScoutURL("/getScoutForm", true),
                 params,
-                preferences,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -375,8 +371,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         CookieRequest logoutRequest = new CookieRequest(Request.Method.POST,
-                                "/logout",
-                                preferences,
+                                NetworkUtils.makeMorScoutURL("/logout", false),
                                 new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {

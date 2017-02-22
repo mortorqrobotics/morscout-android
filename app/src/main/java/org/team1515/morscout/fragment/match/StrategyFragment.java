@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.team1515.morscout.R;
 import org.team1515.morscout.network.CookieRequest;
+import org.team1515.morscout.network.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -61,9 +62,8 @@ public class StrategyFragment extends Fragment {
         params.put("match", String.valueOf(getArguments().getInt("match")));
 
         CookieRequest strategyRequest = new CookieRequest(Request.Method.POST,
-                "/getMatchStrategy",
+                NetworkUtils.makeMorScoutURL("/getMatchStrategy", true),
                 params,
-                preferences,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -105,9 +105,8 @@ public class StrategyFragment extends Fragment {
                 params.put("strategy", strategy.trim());
 
                 CookieRequest submitStrategy = new CookieRequest(Request.Method.POST,
-                        "/setMatchStrategy",
+                        NetworkUtils.makeMorScoutURL("/setMatchStrategy", true),
                         params,
-                        preferences,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
