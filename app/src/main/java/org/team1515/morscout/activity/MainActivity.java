@@ -35,6 +35,7 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.team1515.morscout.MorScout;
 import org.team1515.morscout.R;
 import org.team1515.morscout.entity.FormItem;
 import org.team1515.morscout.fragment.main.HomeFragment;
@@ -134,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {
-                                        System.out.println(response);
                                         if (response.equals("success")) {
                                             matchReports.remove(params);
                                             preferences.edit().putString("matchReports", new Gson().toJson(matchReports)).apply();
@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void getRegionalInfo() {
         CookieRequest regionalRequest = new CookieRequest(Request.Method.POST,
-                NetworkUtils.makeMorScoutURL("/getCurrentRegionalInfo", true),
+                NetworkUtils.makeMorScoutURL("/getCurrentRegionalInfo", false),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void getUserInfo() {
         CookieRequest userRequest = new CookieRequest(Request.Method.POST,
-                NetworkUtils.makeMorScoutURL("/getInfo", true),
+                NetworkUtils.makeMorScoutURL("/getInfo", false),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         params.put("context", context);
 
         CookieRequest formRequest = new CookieRequest(Request.Method.POST,
-                NetworkUtils.makeMorScoutURL("/getScoutForm", true),
+                NetworkUtils.makeMorScoutURL("/getScoutForm", false),
                 params,
                 new Response.Listener<String>() {
                     @Override
@@ -371,11 +371,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         CookieRequest logoutRequest = new CookieRequest(Request.Method.POST,
-                                NetworkUtils.makeMorScoutURL("/logout", false),
+                                NetworkUtils.makeMorTeamURL("/logout", true),
                                 new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {
-                                        preferences.edit().clear().apply();
+                                        MorScout.preferences.edit().clear().apply();
                                         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                                         startActivity(intent);
                                         finish();
@@ -389,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         offlineLogout.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                preferences.edit().clear().apply();
+                                                MorScout.preferences.edit().clear().apply();
                                                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                                                 startActivity(intent);
                                                 finish();

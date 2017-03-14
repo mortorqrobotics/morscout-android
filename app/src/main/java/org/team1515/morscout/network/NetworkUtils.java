@@ -11,7 +11,7 @@ import java.util.Map;
 public class NetworkUtils {
     // Constants
     public static final String HOSTMT = "http://www.morteam.com";
-    public static final String HOSTMS = "http://www.morscout.com";
+    public static final String HOSTMS = "http://scout.morteam.com";
     public static final String PATH_PREFIX = "/api";
     public static final int PORT = 80;
 

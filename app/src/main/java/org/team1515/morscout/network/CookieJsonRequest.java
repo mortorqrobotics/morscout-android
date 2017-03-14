@@ -23,7 +23,7 @@ public class CookieJsonRequest extends JsonObjectRequest {
 
 
     public CookieJsonRequest(int method, String path, JSONObject jsonRequest, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        super(method, NetworkUtils.makeMorScoutURL(path, true), jsonRequest, listener, errorListener);
+        super(method, path, jsonRequest, listener, errorListener);
     }
 
     public CookieJsonRequest(int method, String path, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
