@@ -9,11 +9,11 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.StringRequest;
 
-import org.team1515.morscout.MorScout;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.team1515.morscout.MorScout.preferences;
 
 
 public class CookieRequest extends StringRequest {
@@ -38,7 +38,7 @@ public class CookieRequest extends StringRequest {
                 String[] splitCookie = cookie.split(";");
                 String[] splitSessionId = splitCookie[0].split("=");
                 cookie = splitSessionId[1];
-                Editor editor = MorScout.preferences.edit();
+                Editor editor = preferences.edit();
                 editor.putString(NetworkUtils.SESSION_COOKIE, cookie);
                 editor.apply();
             }
@@ -59,7 +59,7 @@ public class CookieRequest extends StringRequest {
         }
 
         //Insert session-id cookie into header
-        String sessionId = MorScout.preferences.getString(NetworkUtils.SESSION_COOKIE, "");
+        String sessionId = preferences.getString(NetworkUtils.SESSION_COOKIE, "");
         if(sessionId.length() > 0) {
             StringBuilder builder = new StringBuilder();
             builder.append(NetworkUtils.SESSION_COOKIE);

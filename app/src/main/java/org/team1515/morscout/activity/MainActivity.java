@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -52,8 +51,6 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-    private SharedPreferences preferences;
     private RequestQueue queue;
 
     // Fragments
@@ -72,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        preferences = getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(this);
 
         //Fragments
@@ -122,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onReceive(Context context, Intent intent) {
                 // Send match reports
                 final List<Map<String, String>> matchReports = new Gson().
-                        fromJson(preferences.getString("matchReports", ""),
+                        fromJson(MorScout.preferences.getString("matchReports", ""),
                                 new TypeToken<List<Map<String, String>>>() {
                                 }.getType());
 
@@ -130,14 +126,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     for (final Map<String, String> params : matchReports) {
                         CookieRequest matchReportRequest = new CookieRequest(Request.Method.POST,
-                                NetworkUtils.makeMorScoutURL("/submitReport", true),
+                                NetworkUtils.makeMorScoutURL("/submitReport", false),
                                 params,
                                 new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {
                                         if (response.equals("success")) {
                                             matchReports.remove(params);
-                                            preferences.edit().putString("matchReports", new Gson().toJson(matchReports)).apply();
+                                            MorScout.preferences.edit().putString("matchReports", new Gson().toJson(matchReports)).apply();
                                         }
                                     }
                                 },
@@ -154,21 +150,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 // Send pit reports
                 final List<Map<String, String>> pitReports = new Gson().
-                        fromJson(preferences.getString("pitReports", ""),
+                        fromJson(MorScout.preferences.getString("pitReports", ""),
                                 new TypeToken<List<Map<String, String>>>() {
                                 }.getType());
 
                 if (pitReports != null) {
                     for (final Map<String, String> params : pitReports) {
                         CookieRequest pitReportRequest = new CookieRequest(Request.Method.POST,
-                                NetworkUtils.makeMorScoutURL("/submitReport", true),
+                                NetworkUtils.makeMorScoutURL("/submitReport", false),
                                 params,
                                 new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {
                                         if (response.equals("success")) {
                                             pitReports.remove(params);
-                                            preferences.edit().putString("pitReports", new Gson().toJson(pitReports)).apply();
+                                            MorScout.preferences.edit().putString("pitReports", new Gson().toJson(pitReports)).apply();
                                         }
                                     }
                                 },
@@ -194,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onResponse(String response) {
                         try {
                             JSONObject regionalObj = new JSONObject(response);
-                            preferences.edit().putString("regional", regionalObj.getString("key")).apply();
+                            MorScout.preferences.edit().putString("regional", regionalObj.getString("key")).apply();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -221,14 +217,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             JSONObject userInfo = userObj.getJSONObject("user");
                             JSONObject teamInfo = userInfo.getJSONObject("current_team");
 
-                            preferences.edit()
+                            MorScout.preferences.edit()
                                     .putString("userId", userObj.getJSONObject("user").getString("_id"))
                                     .putString("picPath", userObj.getJSONObject("user").getString("profpicpath"))
                                     .putString("teamNumber", userObj.getJSONObject("team").getString("number"))
                                     .putString("regionalCode", userObj.getJSONObject("team").getString("currentRegional"))
                                     .apply();
 
-                            preferences.edit().putBoolean("returnValue", teamInfo.getBoolean("scoutCaptain")).apply();
+                            MorScout.preferences.edit().putBoolean("returnValue", teamInfo.getBoolean("scoutCaptain")).apply();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -281,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             }
 
                             //Store form
-                            preferences.edit().putString(context + "Form", new Gson().toJson(formItems, new TypeToken<List<FormItem>>() { }.getType())).apply();
+                            MorScout.preferences.edit().putString(context + "Form", new Gson().toJson(formItems, new TypeToken<List<FormItem>>() { }.getType())).apply();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.team1515.morscout.MorScout;
 import org.team1515.morscout.R;
 import org.team1515.morscout.activity.MatchActivity;
 import org.team1515.morscout.adapter.MatchListAdapter;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import static android.view.View.VISIBLE;
+import static org.team1515.morscout.MorScout.preferences;
 
 public class MatchesFragment extends EntityList {
     private List<Match> matches;
@@ -122,13 +124,13 @@ public class MatchesFragment extends EntityList {
         params.put("matchesLength", Integer.toString(matchesLength));
 
         CookieRequest requestProgress = new CookieRequest(Request.Method.POST,
-                NetworkUtils.makeMorScoutURL("/getProgressForMatches", false),
+                NetworkUtils.makeMorScoutURL("/getProgressForMatches", true),
                 params,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            preferences.edit().putString("matchProgress", response).apply();
+                            preferences.edit().putString("matchProgress", response).commit();
 
                             List<Integer> progresses = new ArrayList<>();
                             JSONObject progressObj = new JSONObject(response);

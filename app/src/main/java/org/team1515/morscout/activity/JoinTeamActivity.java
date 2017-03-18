@@ -3,7 +3,6 @@ package org.team1515.morscout.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +15,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
+import org.team1515.morscout.MorScout;
 import org.team1515.morscout.R;
 import org.team1515.morscout.network.CookieRequest;
 import org.team1515.morscout.network.NetworkUtils;
@@ -24,14 +24,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JoinTeamActivity extends AppCompatActivity {
-    SharedPreferences preferences;
     RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        preferences = getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(this);
 
         setContentView(R.layout.activity_jointeam);
@@ -50,7 +48,7 @@ public class JoinTeamActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 if(response.equals("success")) {
-                    preferences.edit().
+                    MorScout.preferences.edit().
                             putBoolean("isOnTeam", true)
                             .apply();
                     Intent intent = new Intent(JoinTeamActivity.this, MainActivity.class);

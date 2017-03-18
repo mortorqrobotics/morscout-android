@@ -26,11 +26,11 @@ import org.team1515.morscout.network.NetworkUtils;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static org.team1515.morscout.MorScout.preferences;
 
 public abstract class EntityList extends Fragment {
 
     protected RequestQueue queue;
-    protected SharedPreferences preferences;
 
     // Base layout items
     private SwipeRefreshLayout refreshLayout;
@@ -47,7 +47,6 @@ public abstract class EntityList extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.fragment_entitylist, container, false);
 
-        preferences = getActivity().getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(getContext());
 
         initViews(view);

@@ -1,7 +1,6 @@
 package org.team1515.morscout.network;
 
 import org.json.JSONException;
-import org.team1515.morscout.MorScout;
 
 import android.content.SharedPreferences;
 
@@ -18,6 +17,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.team1515.morscout.MorScout.preferences;
 
 public class CookieJsonRequest extends JsonObjectRequest {
 
@@ -39,7 +40,7 @@ public class CookieJsonRequest extends JsonObjectRequest {
                 String[] splitCookie = cookie.split(";");
                 String[] splitSessionId = splitCookie[0].split("=");
                 cookie = splitSessionId[1];
-                SharedPreferences.Editor editor = MorScout.preferences.edit();
+                SharedPreferences.Editor editor = preferences.edit();
                 editor.putString(NetworkUtils.SESSION_COOKIE, cookie);
                 editor.apply();
             }
@@ -69,7 +70,8 @@ public class CookieJsonRequest extends JsonObjectRequest {
         }
 
         //Insert session-id cookie into header
-        String sessionId = MorScout.preferences.getString(NetworkUtils.SESSION_COOKIE, "");
+        String sessionId = preferences.getString(NetworkUtils.SESSION_COOKIE, "");
+
         if(sessionId.length() > 0) {
             StringBuilder builder = new StringBuilder();
             builder.append(NetworkUtils.SESSION_COOKIE);

@@ -26,6 +26,9 @@ import org.team1515.morscout.network.NetworkUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.team1515.morscout.MorScout.preferences;
+import static org.team1515.morscout.MorScout.queue;
+
 public class LoginActivity extends AppCompatActivity {
 
     //TODO: Fix this (Fix what?)
@@ -47,9 +50,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         for (String data : userData) {
-            if (!MorScout.preferences.contains(data)) {
+            if (!preferences.contains(data)) {
                 // If not logged in, bring to login page and clear data
-                MorScout.preferences.edit().clear().apply();
+                preferences.edit().clear().apply();
                 setContentView(R.layout.activity_login);
                 return;
             }
@@ -110,21 +113,23 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject userObject) {
                         try {
-                            SharedPreferences.Editor editor =  MorScout.preferences.edit();
+                            SharedPreferences.Editor editor =  preferences.edit();
                             editor.putString("_id", userObject.getString("_id"))
                                     .putString("username", userObject.getString("username"))
                                     .putString("firstname", userObject.getString("firstname"))
                                     .putString("lastname", userObject.getString("lastname"))
                                     .putString("email", userObject.getString("email"))
                                     .putString("phone", userObject.getString("phone"))
-                                    .putString("profpicpath", userObject.getString("profpicpath"));
+                                    .putString("profpicpath", userObject.getString("profpicpath"))
+                                    .commit();
 
                             Intent intent = new Intent();
                             if (userObject.has("team")) {
                                 JSONObject teamObject = userObject.getJSONObject("team");
                                 editor.putString("team_id", teamObject.getString("_id"))
                                         .putString("teamNumber", teamObject.getString("number"))
-                                        .putString("position", userObject.getString("position"));
+                                        .putString("position", userObject.getString("position"))
+                                        .commit();
 
                                 intent.setClass(LoginActivity.this, MainActivity.class);
                             } else {
@@ -163,7 +168,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
         );
-        MorScout.queue.add(loginRequest);
+        queue.add(loginRequest);
     }
 
     public void register(View view) {

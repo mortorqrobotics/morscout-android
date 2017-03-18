@@ -31,6 +31,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static android.view.View.VISIBLE;
+import static org.team1515.morscout.MorScout.preferences;
 
 public class TeamListFragment extends EntityList {
     private List<Team> teams;

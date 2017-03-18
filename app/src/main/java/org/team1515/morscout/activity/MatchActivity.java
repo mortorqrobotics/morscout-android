@@ -15,12 +15,12 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
+import org.team1515.morscout.MorScout;
 import org.team1515.morscout.R;
 import org.team1515.morscout.adapter.MatchPagerAdapter;
 import org.team1515.morscout.entity.Match;
 
 public class MatchActivity extends AppCompatActivity {
-    SharedPreferences preferences;
     RequestQueue queue;
 
     MatchPagerAdapter pagerAdapter;
@@ -39,7 +39,6 @@ public class MatchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
 
-        preferences = getSharedPreferences(null, 0);
         queue = Volley.newRequestQueue(this);
 
         // Set up action bar
@@ -132,7 +131,7 @@ public class MatchActivity extends AppCompatActivity {
         for (int i = 0; i < 3; i++) {
             blueTeamViews[i].setText(blueAlliance[i]);
             blueTeamViews[i].setOnClickListener(blueTeamClick);
-            if(blueAlliance[i].equals(preferences.getString("teamNumber", ""))) {
+            if(blueAlliance[i].equals(MorScout.preferences.getString("teamNumber", ""))) {
                 pagerAdapter.setSize(3);
                 tabLayout.setTabsFromPagerAdapter(pagerAdapter);
             }
@@ -147,7 +146,7 @@ public class MatchActivity extends AppCompatActivity {
         for (int i = 0; i < 3; i++) {
             redTeamViews[i].setText(redAlliance[i]);
             redTeamViews[i].setOnClickListener(redTeamClick);
-            if(redAlliance[i].equals(preferences.getString("teamNumber", ""))) {
+            if(redAlliance[i].equals(MorScout.preferences.getString("teamNumber", ""))) {
                 pagerAdapter.setSize(3);
                 tabLayout.setTabsFromPagerAdapter(pagerAdapter);
             }
