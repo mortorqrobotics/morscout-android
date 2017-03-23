@@ -1,12 +1,7 @@
 package org.team1515.morscout.fragment.main;
 
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -18,13 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
-import com.android.volley.toolbox.Volley;
-import com.google.gson.JsonParseException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,14 +22,14 @@ import org.json.JSONObject;
 import org.team1515.morscout.R;
 import org.team1515.morscout.network.CookieRequest;
 import org.team1515.morscout.network.NetworkUtils;
-import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.team1515.morscout.MorScout.preferences;
+import static org.team1515.morscout.MorScout.queue;
+
 public class ProfileFragment extends Fragment {
-    private RequestQueue queue;
-    private SharedPreferences preferences;
 //    private ImageLoader imageLoader;
 
     private ImageView picture;
@@ -54,9 +44,6 @@ public class ProfileFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-
-        queue = Volley.newRequestQueue(getContext());
-        preferences = getContext().getSharedPreferences(null, 0);
 
         picture = (ImageView) view.findViewById(R.id.profile_picture);
         matchReports = (TextView) view.findViewById(R.id.profile_matchReports);
@@ -98,10 +85,10 @@ public class ProfileFragment extends Fragment {
 
         Map<String, String> params = new HashMap<>();
         params.put("scoutID", preferences.getString("userId", ""));
-        params.put("userID", preferences.getString("userId", ""));
 
-        CookieRequest statsRequest = new CookieRequest(Request.Method.POST,
-                NetworkUtils.makeMorScoutURL("/getUserStats", true),
+        CookieRequest statsRequest = new CookieRequest(
+                Request.Method.POST,
+                NetworkUtils.makeMorScoutURL("/getUserStats"),
                 params,
                 new Response.Listener<String>() {
                     @Override
@@ -125,8 +112,9 @@ public class ProfileFragment extends Fragment {
                 }
         );
 
-        CookieRequest tasksRequest = new CookieRequest(Request.Method.POST,
-                "/showTasks",
+        CookieRequest tasksRequest = new CookieRequest(
+                Request.Method.POST,
+                NetworkUtils.makeMorScoutURL("/showTasks"),
                 params,
                 new Response.Listener<String>() {
                     @Override

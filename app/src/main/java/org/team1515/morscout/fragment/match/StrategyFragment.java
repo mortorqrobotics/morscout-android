@@ -62,7 +62,7 @@ public class StrategyFragment extends Fragment {
         params.put("match", String.valueOf(getArguments().getInt("match")));
 
         CookieRequest strategyRequest = new CookieRequest(Request.Method.POST,
-                NetworkUtils.makeMorScoutURL("/getMatchStrategy", true),
+                NetworkUtils.makeMorScoutURL("/getMatchStrategy"),
                 params,
                 new Response.Listener<String>() {
                     @Override
@@ -105,7 +105,7 @@ public class StrategyFragment extends Fragment {
                 params.put("strategy", strategy.trim());
 
                 CookieRequest submitStrategy = new CookieRequest(Request.Method.POST,
-                        NetworkUtils.makeMorScoutURL("/setMatchStrategy", true),
+                        NetworkUtils.makeMorScoutURL("/setMatchStrategy"),
                         params,
                         new Response.Listener<String>() {
                             @Override

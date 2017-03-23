@@ -1,6 +1,5 @@
 package org.team1515.morscout.fragment;
 
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -26,10 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -46,10 +43,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ScoutFragment extends Fragment {
-    private RequestQueue queue;
-    private SharedPreferences preferences;
+import static org.team1515.morscout.MorScout.preferences;
+import static org.team1515.morscout.MorScout.queue;
 
+public class ScoutFragment extends Fragment {
     private String context;
     private List<FormItem> formItems;
 
@@ -57,9 +54,6 @@ public class ScoutFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_scout, container, false);
-
-        preferences = getActivity().getSharedPreferences(null, 0);
-        queue = Volley.newRequestQueue(getContext());
 
         context = getArguments().getString("context");
 
@@ -338,7 +332,7 @@ public class ScoutFragment extends Fragment {
             params.put("match", String.valueOf(getArguments().getInt("match")));
         }
 
-        CookieRequest submissionRequest = new CookieRequest(Request.Method.POST, NetworkUtils.makeMorScoutURL("/submitReport", true), params, new Response.Listener<String>() {
+        CookieRequest submissionRequest = new CookieRequest(Request.Method.POST, NetworkUtils.makeMorScoutURL("/submitReport"), params, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 if (response.equals("success")) {

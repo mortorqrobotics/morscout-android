@@ -123,8 +123,9 @@ public class MatchesFragment extends EntityList {
         Map<String, String> params = new HashMap<>();
         params.put("matchesLength", Integer.toString(matchesLength));
 
-        CookieRequest requestProgress = new CookieRequest(Request.Method.POST,
-                NetworkUtils.makeMorScoutURL("/getProgressForMatches", true),
+        CookieRequest requestProgress = new CookieRequest(
+                Request.Method.POST,
+                NetworkUtils.makeMorScoutURL("/getProgressForMatches"),
                 params,
                 new Response.Listener<String>() {
                     @Override

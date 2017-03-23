@@ -80,7 +80,7 @@ public class FeedbackFragment extends Fragment {
         Map<String, String> params = new HashMap<>();
         params.put("content", content);
 
-        CookieRequest sendFeedback = new CookieRequest(Request.Method.POST, NetworkUtils.makeMorScoutURL("/sendFeedback", true), params, new Response.Listener<String>() {
+        CookieRequest sendFeedback = new CookieRequest(Request.Method.POST, NetworkUtils.makeMorScoutURL("/sendFeedback"), params, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {

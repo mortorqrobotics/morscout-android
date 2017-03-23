@@ -94,8 +94,9 @@ public class TeamListFragment extends EntityList {
 
     @Override
     protected void getProgress() {
-        CookieRequest requestProgress = new CookieRequest(Request.Method.POST,
-                NetworkUtils.makeMorScoutURL("/getProgressForPit", true),
+        CookieRequest requestProgress = new CookieRequest(
+                Request.Method.POST,
+                NetworkUtils.makeMorScoutURL("/getProgressForPit"),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

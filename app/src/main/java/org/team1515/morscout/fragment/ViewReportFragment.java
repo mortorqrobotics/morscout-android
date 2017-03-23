@@ -89,7 +89,7 @@ public class ViewReportFragment extends Fragment {
         }
 
         CookieRequest requestTeamReports = new CookieRequest(Request.Method.POST,
-                NetworkUtils.makeMorScoutURL(requestPath, true),
+                NetworkUtils.makeMorScoutURL(requestPath),
                 params,
                 new Response.Listener<String>() {
                     @Override

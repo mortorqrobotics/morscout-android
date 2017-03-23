@@ -111,7 +111,7 @@ public abstract class EntityList extends Fragment {
         }
 
         CookieRequest requestEntities = new CookieRequest(Request.Method.POST,
-                NetworkUtils.makeMorScoutURL(requestString, true),
+                NetworkUtils.makeMorScoutURL(requestString),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

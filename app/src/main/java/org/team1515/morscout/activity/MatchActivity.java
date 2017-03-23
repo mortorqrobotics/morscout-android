@@ -1,6 +1,5 @@
 package org.team1515.morscout.activity;
 
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -11,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
@@ -20,9 +18,9 @@ import org.team1515.morscout.R;
 import org.team1515.morscout.adapter.MatchPagerAdapter;
 import org.team1515.morscout.entity.Match;
 
-public class MatchActivity extends AppCompatActivity {
-    RequestQueue queue;
+import static org.team1515.morscout.MorScout.queue;
 
+public class MatchActivity extends AppCompatActivity {
     MatchPagerAdapter pagerAdapter;
     ViewPager viewPager;
     TabLayout tabLayout;
@@ -85,7 +83,6 @@ public class MatchActivity extends AppCompatActivity {
                 pagerAdapter.setMatch(match.getNumber());
                 pagerAdapter.setRegional(match.getId());
 
-                viewPager.setAdapter(pagerAdapter);
                 tabLayout.setTabsFromPagerAdapter(pagerAdapter);
 
                 tabLayout.setVisibility(View.VISIBLE);
@@ -112,7 +109,6 @@ public class MatchActivity extends AppCompatActivity {
                 pagerAdapter.setMatch(match.getNumber());
                 pagerAdapter.setRegional(match.getId());
 
-                viewPager.setAdapter(pagerAdapter);
                 tabLayout.setTabsFromPagerAdapter(pagerAdapter);
 
                 tabLayout.setVisibility(View.VISIBLE);

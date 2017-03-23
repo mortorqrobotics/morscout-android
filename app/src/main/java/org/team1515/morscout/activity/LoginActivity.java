@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
 
         CookieRequest loginRequest = new CookieRequest(
                 Request.Method.POST,
-                NetworkUtils.makeMorTeamURL("/login?scout", true),
+                NetworkUtils.makeMorTeamURL("/login", true),
                 params,
                 new Response.Listener<String>() {
                     @Override
@@ -126,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putString("team_id", teamObject.getString("_id"))
                                         .putString("teamNumber", teamObject.getString("number"))
                                         .putString("position", userObject.getString("position"))
-                                        .commit();
+                                        .apply();
 
                                 intent.setClass(LoginActivity.this, MainActivity.class);
                             } else {

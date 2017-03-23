@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     for (final Map<String, String> params : matchReports) {
                         CookieRequest matchReportRequest = new CookieRequest(Request.Method.POST,
-                                NetworkUtils.makeMorScoutURL("/submitReport", false),
+                                NetworkUtils.makeMorScoutURL("/submitReport"),
                                 params,
                                 new Response.Listener<String>() {
                                     @Override
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (pitReports != null) {
                     for (final Map<String, String> params : pitReports) {
                         CookieRequest pitReportRequest = new CookieRequest(Request.Method.POST,
-                                NetworkUtils.makeMorScoutURL("/submitReport", false),
+                                NetworkUtils.makeMorScoutURL("/submitReport"),
                                 params,
                                 new Response.Listener<String>() {
                                     @Override
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void getRegionalInfo() {
         CookieRequest regionalRequest = new CookieRequest(
                 Request.Method.POST,
-                NetworkUtils.makeMorScoutURL("/getCurrentRegionalInfo", false),
+                NetworkUtils.makeMorScoutURL("/getCurrentRegionalInfo"),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -208,23 +208,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void getUserInfo() {
         CookieRequest userRequest = new CookieRequest(
                 Request.Method.POST,
-                NetworkUtils.makeMorScoutURL("/getInfo", false),
+                NetworkUtils.makeMorScoutURL("/getInfo"),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
                             JSONObject userObj = new JSONObject(response);
                             JSONObject userInfo = userObj.getJSONObject("user");
-                            JSONObject teamInfo = userInfo.getJSONObject("current_team");
+                            JSONObject teamInfo = userObj.getJSONObject("team");
 
                             preferences.edit()
-                                    .putString("userId", userObj.getJSONObject("user").getString("_id"))
-                                    .putString("picPath", userObj.getJSONObject("user").getString("profpicpath"))
-                                    .putString("teamNumber", userObj.getJSONObject("team").getString("number"))
-                                    .putString("regionalCode", userObj.getJSONObject("team").getString("currentRegional"))
+                                    .putString("userId", userInfo.getString("_id"))
+                                    .putString("picPath", userInfo.getString("profpicpath"))
+                                    .putString("teamNumber", teamInfo.getString("number"))
+                                    .putString("regionalCode", teamInfo.getString("currentRegional"))
+                                    .putBoolean("returnValue", userInfo.getBoolean("scoutCaptain"))
                                     .apply();
-
-                            preferences.edit().putBoolean("returnValue", teamInfo.getBoolean("scoutCaptain")).apply();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -247,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         CookieRequest formRequest = new CookieRequest(
                 Request.Method.POST,
-                NetworkUtils.makeMorScoutURL("/getScoutForm", false),
+                NetworkUtils.makeMorScoutURL("/getScoutForm"),
                 params,
                 new Response.Listener<String>() {
                     @Override

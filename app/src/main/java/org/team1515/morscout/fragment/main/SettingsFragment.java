@@ -1,6 +1,5 @@
 package org.team1515.morscout.fragment.main;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -28,13 +27,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+
+import static org.team1515.morscout.MorScout.preferences;
+import static org.team1515.morscout.MorScout.queue;
 
 public class SettingsFragment extends Fragment {
-    private RequestQueue queue;
-    private SharedPreferences preferences;
-
     Spinner regionalYears;
     Spinner regionalsList;
 
@@ -53,15 +50,12 @@ public class SettingsFragment extends Fragment {
     Button setRegionalButton;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        preferences = getActivity().getSharedPreferences(null, 0);
-        queue = Volley.newRequestQueue(getContext());
-
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         setRegionalButton = (Button) view.findViewById(R.id.settings_setRegional);
 
         yearsArray = new ArrayList<>();
-        for (int i = 1992; i < 2017; i++) {
+        for (int i = 1992; i < 2018; i++) {
             yearsArray.add(i + "");
         }
 
@@ -129,7 +123,7 @@ public class SettingsFragment extends Fragment {
         Map<String, String> params = new HashMap<>();
         params.put("year", year);
 
-        CookieRequest requestRegionals = new CookieRequest(Request.Method.POST, NetworkUtils.makeMorScoutURL("/getRegionalsForTeam", true), params, new Response.Listener<String>() {
+        CookieRequest requestRegionals = new CookieRequest(Request.Method.POST, NetworkUtils.makeMorScoutURL("/getRegionalsForTeam"), params, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -160,7 +154,7 @@ public class SettingsFragment extends Fragment {
         params.put("eventCode", currentRegional);
         params.put("year", year);
 
-        CookieRequest setRegionalRequest = new CookieRequest(Request.Method.POST, NetworkUtils.makeMorScoutURL("/chooseCurrentRegional", true), params, new Response.Listener<String>() {
+        CookieRequest setRegionalRequest = new CookieRequest(Request.Method.POST, NetworkUtils.makeMorScoutURL("/chooseCurrentRegional"), params, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
