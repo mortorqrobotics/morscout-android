@@ -34,7 +34,6 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.team1515.morscout.MorScout;
 import org.team1515.morscout.R;
 import org.team1515.morscout.entity.FormItem;
 import org.team1515.morscout.fragment.main.HomeFragment;
@@ -50,9 +49,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private RequestQueue queue;
+import static org.team1515.morscout.MorScout.preferences;
+import static org.team1515.morscout.MorScout.queue;
 
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     // Fragments
     private Fragment homeFrag,
             matchesFrag,
@@ -68,8 +68,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        queue = Volley.newRequestQueue(this);
 
         //Fragments
         homeFrag = new HomeFragment();
@@ -118,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onReceive(Context context, Intent intent) {
                 // Send match reports
                 final List<Map<String, String>> matchReports = new Gson().
-                        fromJson(MorScout.preferences.getString("matchReports", ""),
+                        fromJson(preferences.getString("matchReports", ""),
                                 new TypeToken<List<Map<String, String>>>() {
                                 }.getType());
 
@@ -133,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     public void onResponse(String response) {
                                         if (response.equals("success")) {
                                             matchReports.remove(params);
-                                            MorScout.preferences.edit().putString("matchReports", new Gson().toJson(matchReports)).apply();
+                                            preferences.edit().putString("matchReports", new Gson().toJson(matchReports)).apply();
                                         }
                                     }
                                 },
@@ -150,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 // Send pit reports
                 final List<Map<String, String>> pitReports = new Gson().
-                        fromJson(MorScout.preferences.getString("pitReports", ""),
+                        fromJson(preferences.getString("pitReports", ""),
                                 new TypeToken<List<Map<String, String>>>() {
                                 }.getType());
 
@@ -164,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     public void onResponse(String response) {
                                         if (response.equals("success")) {
                                             pitReports.remove(params);
-                                            MorScout.preferences.edit().putString("pitReports", new Gson().toJson(pitReports)).apply();
+                                            preferences.edit().putString("pitReports", new Gson().toJson(pitReports)).apply();
                                         }
                                     }
                                 },
@@ -183,14 +181,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void getRegionalInfo() {
-        CookieRequest regionalRequest = new CookieRequest(Request.Method.POST,
+        CookieRequest regionalRequest = new CookieRequest(
+                Request.Method.POST,
                 NetworkUtils.makeMorScoutURL("/getCurrentRegionalInfo", false),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
                             JSONObject regionalObj = new JSONObject(response);
-                            MorScout.preferences.edit().putString("regional", regionalObj.getString("key")).apply();
+                            preferences.edit().putString("regional", regionalObj.getString("key")).apply();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -207,7 +206,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void getUserInfo() {
-        CookieRequest userRequest = new CookieRequest(Request.Method.POST,
+        CookieRequest userRequest = new CookieRequest(
+                Request.Method.POST,
                 NetworkUtils.makeMorScoutURL("/getInfo", false),
                 new Response.Listener<String>() {
                     @Override
@@ -217,14 +217,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             JSONObject userInfo = userObj.getJSONObject("user");
                             JSONObject teamInfo = userInfo.getJSONObject("current_team");
 
-                            MorScout.preferences.edit()
+                            preferences.edit()
                                     .putString("userId", userObj.getJSONObject("user").getString("_id"))
                                     .putString("picPath", userObj.getJSONObject("user").getString("profpicpath"))
                                     .putString("teamNumber", userObj.getJSONObject("team").getString("number"))
                                     .putString("regionalCode", userObj.getJSONObject("team").getString("currentRegional"))
                                     .apply();
 
-                            MorScout.preferences.edit().putBoolean("returnValue", teamInfo.getBoolean("scoutCaptain")).apply();
+                            preferences.edit().putBoolean("returnValue", teamInfo.getBoolean("scoutCaptain")).apply();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -245,7 +245,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Map<String, String> params = new HashMap<>(1);
         params.put("context", context);
 
-        CookieRequest formRequest = new CookieRequest(Request.Method.POST,
+        CookieRequest formRequest = new CookieRequest(
+                Request.Method.POST,
                 NetworkUtils.makeMorScoutURL("/getScoutForm", false),
                 params,
                 new Response.Listener<String>() {
@@ -277,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             }
 
                             //Store form
-                            MorScout.preferences.edit().putString(context + "Form", new Gson().toJson(formItems, new TypeToken<List<FormItem>>() { }.getType())).apply();
+                            preferences.edit().putString(context + "Form", new Gson().toJson(formItems, new TypeToken<List<FormItem>>() { }.getType())).apply();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -371,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {
-                                        MorScout.preferences.edit().clear().apply();
+                                        preferences.edit().clear().apply();
                                         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                                         startActivity(intent);
                                         finish();
@@ -385,7 +386,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         offlineLogout.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                MorScout.preferences.edit().clear().apply();
+                                                preferences.edit().clear().apply();
                                                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                                                 startActivity(intent);
                                                 finish();

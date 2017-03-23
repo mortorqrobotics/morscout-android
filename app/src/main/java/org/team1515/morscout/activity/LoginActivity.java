@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import org.team1515.morscout.MorScout;
 import org.team1515.morscout.R;
 import org.team1515.morscout.network.CookieJsonRequest;
+import org.team1515.morscout.network.CookieRequest;
 import org.team1515.morscout.network.NetworkUtils;
 
 import java.util.HashMap;
@@ -95,24 +96,20 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        JSONObject params = new JSONObject();
-        try {
-            params.put("username", username);
-            params.put("password", password);
-            params.put("rememberMe", rememberMe.isChecked());
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return;
-        }
+        Map<String, String> params = new HashMap<>();
+        params.put("username", username);
+        params.put("password", password);
+        params.put("rememberMe", String.valueOf(rememberMe.isChecked()));
 
-        CookieJsonRequest loginRequest = new CookieJsonRequest(
+        CookieRequest loginRequest = new CookieRequest(
                 Request.Method.POST,
                 NetworkUtils.makeMorTeamURL("/login?scout", true),
                 params,
-                new Response.Listener<JSONObject>() {
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONObject userObject) {
+                    public void onResponse(String response) {
                         try {
+                            JSONObject userObject = new JSONObject(response);
                             SharedPreferences.Editor editor =  preferences.edit();
                             editor.putString("_id", userObject.getString("_id"))
                                     .putString("username", userObject.getString("username"))
@@ -121,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
                                     .putString("email", userObject.getString("email"))
                                     .putString("phone", userObject.getString("phone"))
                                     .putString("profpicpath", userObject.getString("profpicpath"))
-                                    .commit();
+                                    .apply();
 
                             Intent intent = new Intent();
                             if (userObject.has("team")) {

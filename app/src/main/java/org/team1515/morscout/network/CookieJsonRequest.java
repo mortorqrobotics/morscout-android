@@ -71,7 +71,6 @@ public class CookieJsonRequest extends JsonObjectRequest {
 
         //Insert session-id cookie into header
         String sessionId = preferences.getString(NetworkUtils.SESSION_COOKIE, "");
-
         if(sessionId.length() > 0) {
             StringBuilder builder = new StringBuilder();
             builder.append(NetworkUtils.SESSION_COOKIE);

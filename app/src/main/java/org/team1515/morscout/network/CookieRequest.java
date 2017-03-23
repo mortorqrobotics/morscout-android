@@ -34,6 +34,7 @@ public class CookieRequest extends StringRequest {
         //Store session-id cookie in storage
         if(response.headers.containsKey(NetworkUtils.SET_COOKIE_KEY) && response.headers.get(NetworkUtils.SET_COOKIE_KEY).startsWith(NetworkUtils.SESSION_COOKIE)) {
             String cookie = response.headers.get(NetworkUtils.SET_COOKIE_KEY);
+
             if (cookie.length() > 0) {
                 String[] splitCookie = cookie.split(";");
                 String[] splitSessionId = splitCookie[0].split("=");
@@ -60,6 +61,7 @@ public class CookieRequest extends StringRequest {
 
         //Insert session-id cookie into header
         String sessionId = preferences.getString(NetworkUtils.SESSION_COOKIE, "");
+
         if(sessionId.length() > 0) {
             StringBuilder builder = new StringBuilder();
             builder.append(NetworkUtils.SESSION_COOKIE);

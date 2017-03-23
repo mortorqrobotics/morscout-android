@@ -23,8 +23,6 @@ public class MorScout extends Application {
 
         preferences = getSharedPreferences("org.team1515.morscout", MODE_PRIVATE);
 
-        System.out.println("PREFERENCES: " + preferences);
-
         queue = Volley.newRequestQueue(this);
         imageLoader = new CookieImageLoader(queue, new ImageLoader.ImageCache() {
             private final LruCache<String, Bitmap> cache = new LruCache<>(50);
