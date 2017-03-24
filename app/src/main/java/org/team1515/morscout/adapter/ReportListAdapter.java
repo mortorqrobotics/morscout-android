@@ -44,8 +44,6 @@ public class ReportListAdapter extends RecyclerView.Adapter<ReportListAdapter.Vi
         List<FormItem> report = reports.get(position);
 
         TextView title = (TextView) holder.layout.findViewById(R.id.reportlist_title);
-        String titleText = "Report " + (position + 1) + " by ";
-        title.setText(titleText);
 
         //Refresh layout from previous items
         holder.layout.removeViews(1, holder.layout.getChildCount() - 1);
@@ -53,8 +51,7 @@ public class ReportListAdapter extends RecyclerView.Adapter<ReportListAdapter.Vi
         for(FormItem formItem : report) {
             View item = null;
 
-            //Check for titles
-            if(formItem.getValue() == null) {
+            if (formItem.getValue() == null) { //Check for titles/headers
                 item = new TextView(holder.layout.getContext());
                 ((TextView) item).setText(formItem.getName());
                 ((TextView) item).setTextSize(19);
@@ -62,34 +59,39 @@ public class ReportListAdapter extends RecyclerView.Adapter<ReportListAdapter.Vi
                 ((TextView) item).setGravity(Gravity.CENTER);
                 ((TextView) item).setTextColor(item.getResources().getColor(R.color.black));
             } else {
-                item = new RelativeLayout(holder.layout.getContext());
+                if (formItem.getValue().equals("scouterInfo")) { //Check for scouter name
+                    String titleText = "Report " + (position + 1) + " by " + formItem.getName() + ":";
+                    title.setText(titleText);
+                } else {
+                    item = new RelativeLayout(holder.layout.getContext());
 
-                DisplayMetrics displayMetrics = item.getContext().getResources().getDisplayMetrics();
-                float screenWidth = displayMetrics.widthPixels;
+                    DisplayMetrics displayMetrics = item.getContext().getResources().getDisplayMetrics();
+                    float screenWidth = displayMetrics.widthPixels;
 
-                TextView key = new TextView(item.getContext());
-                RelativeLayout.LayoutParams keyParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                keyParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                key.setLayoutParams(keyParams);
-                key.setWidth((int) (screenWidth * 3 / 8));
-                String keyString = formItem.getName() + ": ";
-                key.setText(keyString);
-                key.setTextSize(17);
-                key.setTextColor(item.getResources().getColor(R.color.black));
-                key.setGravity(Gravity.START);
+                    TextView key = new TextView(item.getContext());
+                    RelativeLayout.LayoutParams keyParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    keyParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                    key.setLayoutParams(keyParams);
+                    key.setWidth((int) (screenWidth * 3 / 8));
+                    String keyString = formItem.getName() + ": ";
+                    key.setText(keyString);
+                    key.setTextSize(17);
+                    key.setTextColor(item.getResources().getColor(R.color.black));
+                    key.setGravity(Gravity.START);
 
-                TextView value = new TextView(item.getContext());
-                RelativeLayout.LayoutParams valueParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                valueParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                value.setLayoutParams(valueParams);
-                value.setWidth((int) (screenWidth * 3 / 8));
-                value.setText(formItem.getValue());
-                value.setTextSize(17);
-                value.setTextColor(item.getResources().getColor(R.color.black));
-                value.setGravity(Gravity.START);
+                    TextView value = new TextView(item.getContext());
+                    RelativeLayout.LayoutParams valueParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    valueParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    value.setLayoutParams(valueParams);
+                    value.setWidth((int) (screenWidth * 3 / 8));
+                    value.setText(formItem.getValue());
+                    value.setTextSize(17);
+                    value.setTextColor(item.getResources().getColor(R.color.black));
+                    value.setGravity(Gravity.START);
 
-                ((RelativeLayout) item).addView(key);
-                ((RelativeLayout) item).addView(value);
+                    ((RelativeLayout) item).addView(key);
+                    ((RelativeLayout) item).addView(value);
+                }
             }
 
             if (item != null) {

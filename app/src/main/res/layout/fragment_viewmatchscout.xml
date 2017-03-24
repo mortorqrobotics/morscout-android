@@ -1,40 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/gray">
+    android:background="@color/gray"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/matchscout_viewYourTeamReports"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Your Team Reports"
-        android:textSize="26sp"
         android:layout_marginBottom="5dp"
-        android:textColor="@color/black"/>
+        android:text="Your Team Reports"
+        android:textColor="@color/black"
+        android:textSize="26sp" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/matchscout_yourTeamReportsList"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="vertical" />
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/matchscout_yourTeamReportsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
 
     <TextView
         android:id="@+id/matchscout_viewOtherTeamsReports"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Other Teams Reports"
-        android:textSize="26sp"
         android:layout_marginBottom="5dp"
-        android:textColor="@color/black"/>
+        android:text="Other Teams Reports"
+        android:textColor="@color/black"
+        android:textSize="26sp" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/matchscout_otherTeamsReportsList"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/matchscout_otherTeamsReportsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
 
 </LinearLayout>

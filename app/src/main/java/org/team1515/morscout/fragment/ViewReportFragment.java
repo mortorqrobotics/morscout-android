@@ -95,9 +95,23 @@ public class ViewReportFragment extends Fragment {
                     @Override
                     public void onResponse(String response) {
                         try {
+                            List<FormItem> formItems = new ArrayList<>();
+
                             JSONObject matchObject = new JSONObject(response);
                             JSONArray yourTeamArray = matchObject.getJSONArray("yourTeam");
                             JSONArray otherTeamsArray = matchObject.getJSONArray("otherTeams");
+
+                            if (yourTeamArray.length() > 0) {
+                                JSONObject teamScouterInfo = yourTeamArray.getJSONObject(0).getJSONObject("scout");
+                                FormItem teamScouterName = new FormItem(teamScouterInfo.getString("firstname") + " " + teamScouterInfo.getString("lastname"), "scouterInfo");
+                                formItems.add(teamScouterName);
+                            }
+
+                            if (otherTeamsArray.length() > 0) {
+                                JSONObject otherTeamScouterInfo = otherTeamsArray.getJSONObject(0).getJSONObject("scout");
+                                FormItem otherTeamsScouterName = new FormItem(otherTeamScouterInfo.getString("firstname") + " " + otherTeamScouterInfo.getString("lastname"), "scouterInfo");
+                                formItems.add(otherTeamsScouterName);
+                            }
 
                             yourReports = new ArrayList<>();
                             otherReports = new ArrayList<>();
@@ -105,7 +119,6 @@ public class ViewReportFragment extends Fragment {
                             for (int i = 0; i < yourTeamArray.length(); i++) {
                                 JSONArray formArray = yourTeamArray.getJSONObject(i).getJSONArray("data");
 
-                                List<FormItem> formItems = new ArrayList<>();
                                 for (int j = 0; j < formArray.length(); j++) {
                                     JSONObject itemObj = formArray.getJSONObject(j);
 
@@ -133,7 +146,6 @@ public class ViewReportFragment extends Fragment {
                             for (int i = 0; i < otherTeamsArray.length(); i++) {
                                 JSONArray formArray = otherTeamsArray.getJSONObject(i).getJSONArray("data");
 
-                                List<FormItem> formItems = new ArrayList<>();
                                 for (int j = 0; j < formArray.length(); j++) {
                                     JSONObject itemObj = formArray.getJSONObject(j);
 
