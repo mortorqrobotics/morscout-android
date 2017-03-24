@@ -18,7 +18,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/matchscout_yourTeamReportsList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:scrollbars="vertical" />
 
     <TextView
@@ -27,7 +27,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Other Teams Reports"
-        android:textSize="18sp" />
+        android:textSize="26sp"
+        android:layout_marginBottom="5dp"
+        android:textColor="@color/black"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/matchscout_otherTeamsReportsList"

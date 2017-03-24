@@ -54,7 +54,7 @@ public class MatchActivity extends AppCompatActivity {
         // Create fragment viewpager
         viewPager = (ViewPager) findViewById(R.id.match_pager);
         pagerAdapter = new MatchPagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(pagerAdapter);
+//        viewPager.setAdapter(pagerAdapter);
 
         // Set up tabs for viewpager
         tabLayout = (TabLayout) findViewById(R.id.match_tabLayout);
@@ -83,7 +83,7 @@ public class MatchActivity extends AppCompatActivity {
                 pagerAdapter.setMatch(match.getNumber());
                 pagerAdapter.setRegional(match.getId());
 
-                tabLayout.setTabsFromPagerAdapter(pagerAdapter);
+                viewPager.setAdapter(pagerAdapter);
 
                 tabLayout.setVisibility(View.VISIBLE);
                 viewPager.setVisibility(View.VISIBLE);
@@ -109,7 +109,7 @@ public class MatchActivity extends AppCompatActivity {
                 pagerAdapter.setMatch(match.getNumber());
                 pagerAdapter.setRegional(match.getId());
 
-                tabLayout.setTabsFromPagerAdapter(pagerAdapter);
+                viewPager.setAdapter(pagerAdapter);
 
                 tabLayout.setVisibility(View.VISIBLE);
                 viewPager.setVisibility(View.VISIBLE);

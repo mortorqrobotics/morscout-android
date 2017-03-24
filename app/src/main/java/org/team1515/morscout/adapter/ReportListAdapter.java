@@ -75,7 +75,7 @@ public class ReportListAdapter extends RecyclerView.Adapter<ReportListAdapter.Vi
                 String keyString = formItem.getName() + ": ";
                 key.setText(keyString);
                 key.setTextSize(17);
-                ((TextView) key).setTextColor(item.getResources().getColor(R.color.black));
+                key.setTextColor(item.getResources().getColor(R.color.black));
                 key.setGravity(Gravity.START);
 
                 TextView value = new TextView(item.getContext());
@@ -85,7 +85,7 @@ public class ReportListAdapter extends RecyclerView.Adapter<ReportListAdapter.Vi
                 value.setWidth((int) (screenWidth * 3 / 8));
                 value.setText(formItem.getValue());
                 value.setTextSize(17);
-                ((TextView) value).setTextColor(item.getResources().getColor(R.color.black));
+                value.setTextColor(item.getResources().getColor(R.color.black));
                 value.setGravity(Gravity.START);
 
                 ((RelativeLayout) item).addView(key);
