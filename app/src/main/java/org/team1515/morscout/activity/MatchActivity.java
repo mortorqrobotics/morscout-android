@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -45,7 +46,8 @@ public class MatchActivity extends AppCompatActivity {
         Typeface typeface = Typeface.createFromAsset(getAssets(), "Exo2-Medium.ttf");
         toolbarTitle.setTypeface(typeface);
 
-        match = new Gson().fromJson(getIntent().getStringExtra("match"), Match.class);
+
+        match = new Gson().fromJson(this.getIntent().getStringExtra("match"), Match.class);
 
         // Create match title
         TextView title = (TextView) findViewById(R.id.match_title);
@@ -57,6 +59,7 @@ public class MatchActivity extends AppCompatActivity {
 //        viewPager.setAdapter(pagerAdapter);
 
         // Set up tabs for viewpager
+        Log.i("ass", "ass");
         tabLayout = (TabLayout) findViewById(R.id.match_tabLayout);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);

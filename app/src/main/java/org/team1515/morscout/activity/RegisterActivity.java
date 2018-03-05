@@ -120,7 +120,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         System.out.println(response);
-                        if(response.equals("success")) {
+                        if(response.equals("OK")) {
                             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                             startActivity(intent);
                             finish();

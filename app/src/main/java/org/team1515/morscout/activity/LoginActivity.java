@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -153,6 +154,7 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.e("hey", "BRO");
                         error.printStackTrace();
 
                         Map<String, Pair<String, String>> errors = new HashMap<>();

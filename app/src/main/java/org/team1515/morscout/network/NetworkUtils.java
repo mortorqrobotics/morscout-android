@@ -3,6 +3,7 @@ package org.team1515.morscout.network;
 import android.content.Context;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 
 import com.android.volley.NetworkResponse;
 
@@ -10,10 +11,10 @@ import java.util.Map;
 
 public class NetworkUtils {
     // Constants
-    public static final String HOSTMT = "http://www.morteam.com";
-    public static final String HOSTMS = "http://www.scout.morteam.com";
+    public static final String HOSTMT = "https://www.morteam.com";
+    public static final String HOSTMS = "https://www.scout.morteam.com";
     public static final String PATH_PREFIX = "/api";
-    public static final int PORT = 80;
+    public static final int PORT = 443;
 
     public static final String SET_COOKIE_KEY = "set-cookie";
     public static final String COOKIE_KEY = "Cookie";
@@ -29,9 +30,9 @@ public class NetworkUtils {
 
     public static String makePictureURL(String path, String size) {
         if (path.length() > 2 && path.substring(0, 3).equals("/pp")) {
-            return "http://profilepics.morteam.com.s3.amazonaws.com" + path.substring(3) + size;
+            return "https://s3-us-west-2.amazonaws.com/profilepics.morteam.com/" + path.substring(3) + size;
         } else {
-            return "http://www.morteam.com" + path + size;
+            return "https://www.morteam.com" + path + size;
         }
     }
 
@@ -62,10 +63,14 @@ public class NetworkUtils {
             } else {
                 dialog.setTitle("Cannot connect to server");
                 dialog.setMessage("Please make sure you have a stable internet connection.");
+
+                Log.e("FUCK", "FUCK");
             }
         } else {
             dialog.setTitle("Cannot connect to server");
             dialog.setMessage("Please make sure you have a stable internet connection.");
+
+            Log.e("FUCK", "SHIT");
         }
 
         dialog.show();

@@ -25,8 +25,10 @@ public class CookieRequest extends StringRequest {
     }
 
     public CookieRequest(int method, String path, Listener<String> listener, ErrorListener errorListener) {
-        super(method, path, listener, errorListener);
-        params = null;
+//        super(method, path, listener, errorListener);
+//        params = null;
+
+        this(method, path, null, listener, errorListener);
     }
 
     @Override

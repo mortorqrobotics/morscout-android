@@ -11,6 +11,22 @@ import com.android.volley.toolbox.Volley;
 
 import org.team1515.morscout.network.CookieImageLoader;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+
+import javax.net.SocketFactory;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
+
 public class MorScout extends Application {
     public static SharedPreferences preferences;
 
@@ -24,6 +40,8 @@ public class MorScout extends Application {
         preferences = getSharedPreferences("org.team1515.morscout", MODE_PRIVATE);
 
         queue = Volley.newRequestQueue(this);
+        this.allowHttpsCert();
+
         imageLoader = new CookieImageLoader(queue, new ImageLoader.ImageCache() {
             private final LruCache<String, Bitmap> cache = new LruCache<>(50);
 
@@ -37,6 +55,44 @@ public class MorScout extends Application {
                 cache.put(url, bitmap);
             }
         });
+    }
+
+    public void allowHttpsCert() {
+        try {
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+
+            InputStream caInput = this.getResources().openRawResource(R.raw.chain);
+            Certificate ca;
+            try {
+                ca = cf.generateCertificate(caInput);
+            } finally {
+                caInput.close();
+            }
+            // Create a KeyStore containing our trusted CAs
+            String keyStoreType = KeyStore.getDefaultType();
+            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+            keyStore.load(null, null);
+            keyStore.setCertificateEntry("ca", ca);
+            // Create a TrustManager that trusts the CAs in our KeyStore
+            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+            tmf.init(keyStore);
+            // Create an SSLContext that uses our TrustManager
+            SSLContext context = SSLContext.getInstance("TLS");
+            context.init(null, tmf.getTrustManagers(), null);
+            HttpsURLConnection.setDefaultSSLSocketFactory(context
+                    .getSocketFactory());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        }
     }
 
 //    public static void setNetworkImage(String url, NetworkImageView view) {

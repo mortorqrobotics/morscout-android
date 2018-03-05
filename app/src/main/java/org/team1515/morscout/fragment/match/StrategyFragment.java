@@ -110,7 +110,7 @@ public class StrategyFragment extends Fragment {
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
-                                if(response.equals("success")) {
+                                if(response.equals("OK")) {
                                     getStrategy();
                                 } else {
                                     Toast.makeText(getContext(), "Failed to set strategy.", Toast.LENGTH_SHORT).show();
