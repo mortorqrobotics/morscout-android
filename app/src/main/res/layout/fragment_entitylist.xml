@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/entitylist_refreshLayout">
@@ -25,6 +27,102 @@
             android:hint="Search..."
             android:textColor="@color/background"
             android:textColorHint="#b3b3b3" />
+
+        <Button
+            android:id="@+id/toggle_filter_btn"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Filters" />
+
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/filter_settings_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <CheckBox
+                android:id="@+id/should_filter_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginTop="16dp"
+                android:text="Should filter time"
+                app:layout_constraintEnd_toEndOf="@+id/start_time_btn"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/time_lbl_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="16dp"
+                android:text="Between"
+                app:layout_constraintBottom_toBottomOf="@+id/start_time_btn"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/start_time_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="29dp"
+                android:text="[start time]"
+                android:alpha="0.5"
+                app:layout_constraintEnd_toStartOf="@+id/should_filter_date"
+                app:layout_constraintTop_toTopOf="@+id/should_filter_date" />
+
+            <TextView
+                android:id="@+id/time_lbl_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="12dp"
+                android:text="and"
+                app:layout_constraintBottom_toBottomOf="@+id/end_time_btn"
+                app:layout_constraintEnd_toStartOf="@+id/end_time_btn" />
+
+            <CheckBox
+                android:id="@+id/should_filter_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="9dp"
+                android:layout_marginTop="16dp"
+                android:text="Should filter date"
+                app:layout_constraintEnd_toEndOf="@+id/end_time_btn"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/end_time_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="42dp"
+                android:layout_marginTop="29dp"
+                android:text="[end time]"
+                android:alpha="0.5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/should_filter_date" />
+
+            <TextView
+                android:id="@+id/date_lbl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="13dp"
+                android:text="on"
+                app:layout_constraintBottom_toBottomOf="@+id/date_btn"
+                app:layout_constraintEnd_toStartOf="@+id/date_btn" />
+
+            <Button
+                android:id="@+id/date_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[date]"
+                android:alpha="0.5"
+                app:layout_constraintStart_toStartOf="@+id/start_time_btn"
+                app:layout_constraintTop_toBottomOf="@+id/start_time_btn" />
+
+        </android.support.constraint.ConstraintLayout>
 
         <ProgressBar
             android:id="@+id/entitylist_loading"

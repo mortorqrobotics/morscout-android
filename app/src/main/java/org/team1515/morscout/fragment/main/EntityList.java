@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
@@ -50,6 +51,9 @@ public abstract class EntityList extends Fragment {
         queue = Volley.newRequestQueue(getContext());
 
         initViews(view);
+        if (!requestType.equals("match"))
+            view.findViewById(R.id.toggle_filter_btn).setVisibility(View.GONE);
+
         getEntities();
 
         return view;
