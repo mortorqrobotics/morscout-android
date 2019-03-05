@@ -47,7 +47,7 @@ public class JoinTeamActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if(response.equals("OK")) {
+                if(response.equals("OK") || response.equals("success")) {
                     MorScout.preferences.edit().
                             putBoolean("isOnTeam", true)
                             .apply();

@@ -335,7 +335,7 @@ public class ScoutFragment extends Fragment {
         CookieRequest submissionRequest = new CookieRequest(Request.Method.POST, NetworkUtils.makeMorScoutURL("/submitReport"), params, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (response.equals("OK")) {
+                if (response.equals("success") || response.equals("OK")) {
                     Toast.makeText(getContext(), "Report Submitted.", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), "Error submitting report. Make sure you have filled out every item.", Toast.LENGTH_SHORT).show();

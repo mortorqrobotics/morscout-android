@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {
-                                        if (response.equals("OK")) {
+                                        if (response.equals("OK") || response.equals("success")) {
                                             matchReports.remove(params);
                                             preferences.edit().putString("matchReports", new Gson().toJson(matchReports)).apply();
                                         }
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {
-                                        if (response.equals("OK")) {
+                                        if (response.equals("OK") || response.equals("success")) {
                                             pitReports.remove(params);
                                             preferences.edit().putString("pitReports", new Gson().toJson(pitReports)).apply();
                                         }
